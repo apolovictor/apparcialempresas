@@ -164,7 +164,9 @@ class AppDrawerState extends ConsumerState<AppDrawer> with RouteAware {
                             title: Text(
                               PageTitles.home.toUpperCase(),
                               style: const TextStyle(
-                                  color: Colors.white54, fontSize: 14),
+                                color: Colors.white54,
+                                fontSize: 14,
+                              ),
                             ),
                             onTap: () async {
                               await _navigateTo(context, RouteNames.home);

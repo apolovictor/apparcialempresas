@@ -6,7 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'constants/route_names.dart';
 import 'modules/home/controller/home_notifier.dart';
-import 'modules/products/views/home_products.dart';
+import 'modules/products/views/home_products_impl.dart';
 import 'widgets/app_route_observer.dart';
 
 Future main() async {
@@ -42,9 +42,24 @@ class MyApp extends HookConsumerWidget {
           color: Colors.white,
           titleTextStyle: TextStyle(color: Colors.black87),
         ),
+        fontFamily: 'HelveticaNeue',
         primaryColor: Colors.white,
         colorScheme: ThemeData().colorScheme.copyWith(
             secondary: const Color(0xFF181818), background: Colors.white),
+        textTheme: ThemeData().textTheme.copyWith(
+              bodySmall: const TextStyle(
+                  fontSize: 12,
+                  fontFamily: 'HelveticaNeue',
+                  fontWeight: FontWeight.w100),
+              bodyMedium: const TextStyle(
+                  fontSize: 14,
+                  fontFamily: 'HelveticaNeue',
+                  fontWeight: FontWeight.w400),
+              bodyLarge: const TextStyle(
+                  fontSize: 22,
+                  fontFamily: 'HelveticaNeue',
+                  fontWeight: FontWeight.w800),
+            ),
         pageTransitionsTheme: PageTransitionsTheme(
           // makes all platforms that can run Flutter apps display routes without any animation
           builders: Map<TargetPlatform,

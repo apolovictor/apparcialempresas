@@ -1,28 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../widgets/app_scaffold.dart';
-
-class HomeProducts extends StatelessWidget {
-  const HomeProducts({Key? key}) : super(key: key);
-
-  // final Key dataKey = new GlobalKey();
-
-  @override
-  Widget build(BuildContext context) {
-    return AppScaffold(
-      pageTitle: "Produtos",
-      // orders: orders,
-      body: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        routes: {
-          '/': (context) => const ProductScreen(),
-        },
-      ),
-      key: key,
-    );
-  }
-}
-
 class ProductScreen extends StatelessWidget {
   const ProductScreen({Key? key, this.title}) : super(key: key);
 
@@ -45,16 +22,18 @@ class ProductScreen extends StatelessWidget {
           children: [
             Expanded(
               flex: !displayMobileLayout ? 4 : 2,
-              child: const SizedBox(
+              child: SizedBox(
                 width: double.infinity,
                 child: Column(children: [
                   Row(children: [
                     Text(
                       ' CATEGORIAS ',
-                      style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16,
-                          decoration: TextDecoration.none),
+                      style: Theme.of(context).textTheme.titleMedium,
+                      // TextStyle(
+                      //   fontWeight:
+                      //       FontWeight.w900, // fontFamily: "HelveticaNeueBold",
+                      //   fontSize: 16,
+                      // ),
                     ),
                   ]),
                   // Expanded(child: CategoryHorizontalList()),
@@ -69,19 +48,16 @@ class ProductScreen extends StatelessWidget {
             ),
             Expanded(
               flex: !displayMobileLayout ? 12 : 4,
-              child: const SizedBox(
+              child: SizedBox(
                 width: double.infinity,
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         ' PRODUTOS',
-                        style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 16,
-                            decoration: TextDecoration.none),
+                        style: Theme.of(context).textTheme.titleMedium,
                       ),
-                      SizedBox(height: 5),
+                      const SizedBox(height: 5),
                       // Expanded(
                       //   child: watch(tables.tableChangeNotifier).when(
                       //       loading: () => const Center(
