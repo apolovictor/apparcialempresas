@@ -13,6 +13,7 @@ Future main() async {
   //     appId: "1:900861690548:web:001dff373b3178e7b28de1"
   //   ),
   // );
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
