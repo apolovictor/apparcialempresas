@@ -55,15 +55,33 @@ class HomeProducts extends StatelessWidget {
                 titleSmall: const TextStyle(
                     fontSize: 14,
                     fontFamily: 'HelveticaNeue',
-                    fontWeight: FontWeight.w300),
+                    fontWeight: FontWeight.w300,
+                    color: Colors.black54),
                 titleMedium: const TextStyle(
                     fontSize: 16,
                     fontFamily: 'HelveticaNeue',
-                    fontWeight: FontWeight.w700),
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black54),
                 titleLarge: const TextStyle(
                     fontSize: 18,
                     fontFamily: 'HelveticaNeue',
-                    fontWeight: FontWeight.w900),
+                    fontWeight: FontWeight.w900,
+                    color: Colors.black54),
+                headlineSmall: const TextStyle(
+                    fontSize: 22,
+                    fontFamily: 'HelveticaNeue',
+                    fontWeight: FontWeight.w100,
+                    color: Colors.black87),
+                headlineMedium: const TextStyle(
+                    fontSize: 26,
+                    fontFamily: 'HelveticaNeue',
+                    fontWeight: FontWeight.w400,
+                    color: Colors.black87),
+                headlineLarge: const TextStyle(
+                    fontSize: 32,
+                    fontFamily: 'HelveticaNeue',
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black87),
               ),
         ),
       ),

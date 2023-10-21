@@ -43,6 +43,9 @@ dependencies:
   googleapis_auth: ^1.4.1
   gcloud: ^0.8.11
   mime: ^1.0.4
+  flutter_staggered_animations: ^1.1.1
+  flutter_hooks: ^0.20.3
+  flutter_sequence_animation: ^4.0.0
 
 dev_dependencies:
   flutter_test:
@@ -69,8 +72,8 @@ flutter:
  
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
+  assets:
+    - assets/icons/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
