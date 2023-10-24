@@ -1,3 +1,5 @@
+import 'package:apparcialempresas/modules/products/model/products_model.dart';
+import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class WidthProductCardProvider extends StateNotifier<double> {
@@ -14,6 +16,71 @@ class OpacityProductCardProvider extends StateNotifier<double> {
   fetchOpacity(double opacity) => state = opacity;
 }
 
+class ScrollListProvider extends StateNotifier<ScrollController> {
+  ScrollListProvider() : super(scrollController);
+
+  static ScrollController scrollController = ScrollController();
+}
+
+class OffsetProductListProvider extends StateNotifier<Offset> {
+  OffsetProductListProvider() : super(offset);
+
+  static Offset offset = const Offset(0, 0);
+
+  setOffset(offset) => state = offset;
+}
+
+class IsActiveProvider extends StateNotifier<bool> {
+  IsActiveProvider() : super(isActive);
+
+  static bool isActive = false;
+
+  setIsActive(isActive) => state = isActive;
+}
+
+class ProductListSize extends StateNotifier<double> {
+  ProductListSize() : super(size);
+
+  static double size = 0.0;
+
+  setSize(size) => state = size;
+}
+
+class ProductItemProvider extends StateNotifier<List<ProductItem>> {
+  ProductItemProvider() : super([]);
+
+  setProduct(ProductItem item) {
+    // state.clear();
+    // print(item.index);
+    // print(item.offset);
+    state.add(item);
+    // print(state.map((e) => e.index));
+    // print(state.map((e) => e.offset));
+  }
+
+  // state.clear();
+  updateOffset(int index, ProductItem productItem) {
+    // print(productItem.offset);
+    // print(state.map((e) => e.index));
+    // print(state.map((e) => e.offset));
+    // state.removeAt(index);
+    state[index] = productItem;
+  }
+}
+
+final productItemNotifier =
+    StateNotifierProvider<ProductItemProvider, List<ProductItem>>(
+        (ref) => ProductItemProvider());
+final isActiveNotifier =
+    StateNotifierProvider<IsActiveProvider, bool>((ref) => IsActiveProvider());
+final productListSizeNotifier =
+    StateNotifierProvider<ProductListSize, double>((ref) => ProductListSize());
+final offsetProductNotifier =
+    StateNotifierProvider<OffsetProductListProvider, Offset>(
+        (ref) => OffsetProductListProvider());
+final scrollControllerNotifier =
+    StateNotifierProvider<ScrollListProvider, ScrollController>(
+        (ref) => ScrollListProvider());
 final opacityProductCardNotifier =
     StateNotifierProvider<OpacityProductCardProvider, double>(
         (ref) => OpacityProductCardProvider());

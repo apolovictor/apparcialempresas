@@ -11,7 +11,6 @@ import '../controller/products_notifier.dart';
 import 'product_list.dart';
 
 GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
-GlobalKey<AnimatedListState> _listKey2 = GlobalKey<AnimatedListState>();
 final storage = FirebaseStorage.instance;
 
 class ProductScreen extends HookConsumerWidget {
@@ -129,51 +128,65 @@ class ProductScreen extends HookConsumerWidget {
                                                                             .name),
                                                             child:
                                                                 SlideAnimation(
-                                                                    horizontalOffset:
-                                                                        MediaQuery.of(context)
-                                                                            .size
-                                                                            .width,
-                                                                    child: AnimatedBuilder(
-                                                                        animation: categoriesController,
-                                                                        builder: (context, child) {
-                                                                          return Padding(
-                                                                            padding:
-                                                                                const EdgeInsets.only(right: 50.0),
-                                                                            child:
-                                                                                Column(
-                                                                              children: [
-                                                                                CircleAvatar(
-                                                                                    radius: sequenceAnimation['avatarSize'].value,
-                                                                                    backgroundColor: Color(int.parse('${category.color != null ? category.color : 0xFFF4F4F6}')),
-                                                                                    child: FutureBuilder<String>(
-                                                                                        future: downloadUrl(category.icon),
-                                                                                        builder: (context, snapshot) {
-                                                                                          // print("snapshot.data =========== ${snapshot.data}");
-                                                                                          if (snapshot.connectionState == ConnectionState.waiting) {
-                                                                                            return const Center(
-                                                                                              child: CircularProgressIndicator(),
-                                                                                            );
-                                                                                          } else {
-                                                                                            if (snapshot.data != null) {
-                                                                                              return SvgPicture.network(
-                                                                                                snapshot.data.toString(),
-                                                                                                color: Colors.black,
-                                                                                                height: sequenceAnimation['iconSize'].value,
-                                                                                              );
-                                                                                            } else {
-                                                                                              return const SizedBox();
-                                                                                            }
-                                                                                          }
-                                                                                        })),
-                                                                                const SizedBox(height: 25),
-                                                                                Text(
-                                                                                  category.name.toUpperCase(),
-                                                                                  style: Theme.of(context).textTheme.bodyLarge!.apply(color: Colors.grey[500]),
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                          );
-                                                                        })),
+                                                              horizontalOffset:
+                                                                  MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width,
+                                                              child: Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                        .only(
+                                                                        right:
+                                                                            50.0),
+                                                                child: Column(
+                                                                  children: [
+                                                                    CircleAvatar(
+                                                                        radius: sequenceAnimation['avatarSize']
+                                                                            .value,
+                                                                        backgroundColor:
+                                                                            Color(int.parse(
+                                                                                '${category.color != null ? category.color : 0xFFF4F4F6}')),
+                                                                        child: FutureBuilder<
+                                                                                String>(
+                                                                            future:
+                                                                                downloadUrl(category.icon),
+                                                                            builder: (context, snapshot) {
+                                                                              // print("snapshot.data =========== ${snapshot.data}");
+                                                                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                                                                return const Center(
+                                                                                  child: CircularProgressIndicator(),
+                                                                                );
+                                                                              } else {
+                                                                                if (snapshot.data != null) {
+                                                                                  return SvgPicture.network(
+                                                                                    snapshot.data.toString(),
+                                                                                    color: Colors.black,
+                                                                                    height: sequenceAnimation['iconSize'].value,
+                                                                                  );
+                                                                                } else {
+                                                                                  return const SizedBox();
+                                                                                }
+                                                                              }
+                                                                            })),
+                                                                    const SizedBox(
+                                                                        height:
+                                                                            15),
+                                                                    Text(
+                                                                      category
+                                                                          .name
+                                                                          .toUpperCase(),
+                                                                      style: Theme.of(
+                                                                              context)
+                                                                          .textTheme
+                                                                          .bodyLarge!
+                                                                          .apply(
+                                                                              color: Colors.grey[500]),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ),
                                                           ))
                                                       .toList(),
                                                 ),
@@ -184,43 +197,39 @@ class ProductScreen extends HookConsumerWidget {
                                     AnimatedBuilder(
                                         animation: categoriesController,
                                         builder: (context, child) {
-                                          return Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 20.0),
-                                            child: Column(
-                                              children: [
-                                                MaterialButton(
-                                                  shape: CircleBorder(),
-                                                  onPressed: () {
-                                                    ref
-                                                        .read(isOpenedProvider
-                                                            .notifier)
-                                                        .fetch(true);
-                                                  },
-                                                  child: CircleAvatar(
-                                                      radius: sequenceAnimation[
-                                                              'avatarSize']
+                                          return Column(
+                                            children: [
+                                              MaterialButton(
+                                                shape: CircleBorder(),
+                                                onPressed: () {
+                                                  ref
+                                                      .read(isOpenedProvider
+                                                          .notifier)
+                                                      .fetch(true);
+                                                },
+                                                child: CircleAvatar(
+                                                    radius: sequenceAnimation[
+                                                            'avatarSize']
+                                                        .value,
+                                                    backgroundColor:
+                                                        Colors.grey[200],
+                                                    child: Icon(
+                                                      Icons.add,
+                                                      size: sequenceAnimation[
+                                                              'iconSize']
                                                           .value,
-                                                      backgroundColor:
-                                                          Colors.grey[200],
-                                                      child: Icon(
-                                                        Icons.add,
-                                                        size: sequenceAnimation[
-                                                                'iconSize']
-                                                            .value,
-                                                        color: Colors.black,
-                                                      )),
-                                                ),
-                                                const SizedBox(height: 25),
-                                                Text("ADD",
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodyLarge!
-                                                        .apply(
-                                                            color: Colors
-                                                                .grey[500])),
-                                              ],
-                                            ),
+                                                      color: Colors.black,
+                                                    )),
+                                              ),
+                                              const SizedBox(height: 15),
+                                              Text("ADD",
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyLarge!
+                                                      .apply(
+                                                          color: Colors
+                                                              .grey[500])),
+                                            ],
                                           );
                                         }),
                                   ]),
@@ -249,7 +258,11 @@ class ProductScreen extends HookConsumerWidget {
                                     Theme.of(context).textTheme.headlineLarge,
                               ),
                               const SizedBox(height: 5),
-                              ProductsList(),
+                              ref.watch(productsNotifier).value != null
+                                  ? ProductsList(
+                                      products:
+                                          ref.watch(productsNotifier).value!)
+                                  : SizedBox(),
                               // Expanded(
                               //   child: watch(tables.tableChangeNotifier).when(
                               //       loading: () => const Center(

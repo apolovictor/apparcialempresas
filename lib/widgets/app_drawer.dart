@@ -86,6 +86,7 @@ class AppDrawerState extends ConsumerState<AppDrawer> with RouteAware {
             children: [
               SizedBox(
                 height: MediaQuery.of(context).size.height,
+                // width: MediaQuery.of(context).size.width * 0.2,
                 child: ListView(
                   padding: EdgeInsets.zero,
                   children: [

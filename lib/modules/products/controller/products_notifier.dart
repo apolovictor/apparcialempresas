@@ -34,6 +34,7 @@ final productsNotifier = StreamProvider<List<Product>>((ref) {
   var products = _businessCollection
       .doc(ref.watch(idDocumentNotifier))
       .collection("products")
+      .where("")
       .snapshots()
       .map((snapshot) =>
           snapshot.docs.map((doc) => Product.fromDoc(doc)).toList());

@@ -80,3 +80,35 @@ class Categories {
     );
   }
 }
+
+class ProductItem {
+  int? index;
+  Product product;
+  double offset;
+  bool? isActive;
+
+  ProductItem({
+    required this.index,
+    required this.product,
+    required this.offset,
+    this.isActive,
+  });
+
+  Map<dynamic, dynamic> toMap() {
+    return {
+      'index': index,
+      'product': product,
+      'offset': offset,
+      'isActive': isActive,
+    };
+  }
+
+  static ProductItem fromDoc(dynamic doc) {
+    return ProductItem(
+      index: doc.data()['index'],
+      product: doc.data()['product'],
+      offset: doc.data()['offset'],
+      isActive: doc.data()['isActive'],
+    );
+  }
+}
