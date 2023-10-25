@@ -35,81 +35,48 @@ class _ProductsListState extends ConsumerState<ProductsList> {
     // getPostsData();
   }
 
+  double itemWidth = 300.0;
+
   @override
   Widget build(BuildContext context) {
-    ScrollController controller = ref.watch(scrollControllerNotifier);
-    // print(MediaQuery.of(context).size.width * 0.12);
-    // print(currentOffset.dx);
-    // print(currentOffset);
-    List<ProductItem> listItems = [];
-    controller.addListener(() {
-      double value = controller.offset / 280;
-      double value2 =
-          (controller.offset) + (ref.watch(productListSizeNotifier) / 2);
-      // print("controller.offset -============== ${controller.offset}");
-
-      setState(() {
-        leftContainer = value;
-        middleList = value2;
-      });
-    });
     final products = ref.watch(productsNotifier).value;
     final categories = ref.watch(categoriesNotifier).value;
+    int itemCount = products!.length;
+
+    int selected = ref.watch(selectedProductNotifier);
+
+    FixedExtentScrollController scrollController =
+        ref.watch(scrollListNotifier(selected));
 
     return LayoutBuilder(builder: (context, constraints) {
       return SingleChildScrollView(
-        child: Container(
-          color: Colors.grey,
-          height: 500,
-          child: Column(
-            children: <Widget>[
-              const SizedBox(
-                height: 10,
-              ),
-              Expanded(
-                  child: products != null
-                      ? ListView.builder(
-                          controller: controller,
-                          itemCount: products.length,
-                          scrollDirection: Axis.horizontal,
-                          physics: const BouncingScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            LabeledGlobalKey key =
-                                LabeledGlobalKey(index.toString());
-                            ref.read(productItemNotifier.notifier).setProduct(
-                                ProductItem(
-                                    index: index,
-                                    product: products[index],
-                                    offset: 0.0,
-                                    isActive: false));
-                            double scale = 1.0;
-                            if (leftContainer > 0.5) {
-                              scale = index + 0.5 - leftContainer;
-                              if (scale < 0) {
-                                scale = 0;
-                              } else if (scale > 1) {
-                                scale = 1;
-                              }
-                            }
-
-                            return Opacity(
-                              opacity: scale,
-                              child: Transform(
-                                  transform: Matrix4.identity()
-                                    ..scale(scale, scale),
-                                  alignment: Alignment.centerLeft,
-                                  child: ProductCard(
-                                    product: products[index],
-                                    labelKey: key,
-                                    categories: categories!,
-                                    index: index,
-                                    screenSize: constraints.maxWidth,
-                                  )),
-                            );
-                          })
-                      : const SizedBox()),
-            ],
-          ),
+        scrollDirection: Axis.horizontal,
+        child: SizedBox(
+          height: (9 / 17) * MediaQuery.of(context).size.height,
+          width: constraints.maxWidth,
+          child: RotatedBox(
+              quarterTurns: -1,
+              child: ListWheelScrollView.useDelegate(
+                perspective: 0.0001,
+                squeeze: 1,
+                physics: const FixedExtentScrollPhysics(),
+                onSelectedItemChanged: (x) {
+                  ref.read(selectedProductNotifier.notifier).setSelected(x);
+                },
+                controller: scrollController,
+                childDelegate: ListWheelChildLoopingListDelegate(
+                    children: List.generate(itemCount, (index) {
+                  return RotatedBox(
+                    quarterTurns: 1,
+                    child: ProductCard(
+                      product: products[index],
+                      categories: categories!,
+                      index: index,
+                    ),
+                  );
+                })),
+                itemExtent: itemWidth,
+              )),
         ),
       );
     });

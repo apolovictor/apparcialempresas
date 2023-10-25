@@ -22,6 +22,17 @@ class ScrollListProvider extends StateNotifier<ScrollController> {
   static ScrollController scrollController = ScrollController();
 }
 
+final scrollListNotifier = ProviderFamily(
+    (ref, int arg) => FixedExtentScrollController(initialItem: arg));
+
+final selectedItemNotifier = ProviderFamily((_, int arg) => arg);
+
+class SelectedProductListProvider extends StateNotifier<int> {
+  SelectedProductListProvider() : super(0);
+
+  setSelected(selected) => state = selected;
+}
+
 class OffsetProductListProvider extends StateNotifier<Offset> {
   OffsetProductListProvider() : super(offset);
 
@@ -78,6 +89,9 @@ final productListSizeNotifier =
 final offsetProductNotifier =
     StateNotifierProvider<OffsetProductListProvider, Offset>(
         (ref) => OffsetProductListProvider());
+final selectedProductNotifier =
+    StateNotifierProvider<SelectedProductListProvider, int>(
+        (ref) => SelectedProductListProvider());
 final scrollControllerNotifier =
     StateNotifierProvider<ScrollListProvider, ScrollController>(
         (ref) => ScrollListProvider());

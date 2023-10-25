@@ -240,9 +240,6 @@ class ProductScreen extends HookConsumerWidget {
                     ),
                   ),
                   SizedBox(
-                    height: !displayMobileLayout ? 10 : 10,
-                  ),
-                  SizedBox(
                     height: !displayMobileLayout ? 0 : 10,
                   ),
                   Expanded(
@@ -257,7 +254,6 @@ class ProductScreen extends HookConsumerWidget {
                                 style:
                                     Theme.of(context).textTheme.headlineLarge,
                               ),
-                              const SizedBox(height: 5),
                               ref.watch(productsNotifier).value != null
                                   ? ProductsList(
                                       products:
