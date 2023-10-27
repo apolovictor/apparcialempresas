@@ -28,7 +28,7 @@ final scrollListNotifier = ProviderFamily(
 final selectedItemNotifier = ProviderFamily((_, int arg) => arg);
 
 class SelectedProductListProvider extends StateNotifier<int> {
-  SelectedProductListProvider() : super(0);
+  SelectedProductListProvider() : super(-1);
 
   setSelected(selected) => state = selected;
 }
@@ -47,6 +47,14 @@ class IsActiveProvider extends StateNotifier<bool> {
   static bool isActive = false;
 
   setIsActive(isActive) => state = isActive;
+}
+
+class IsQuickEditProvider extends StateNotifier<bool> {
+  IsQuickEditProvider() : super(isActiveEdit);
+
+  static bool isActiveEdit = false;
+
+  setIsActiveEdit(isActiveEdit) => state = isActiveEdit;
 }
 
 class ProductListSize extends StateNotifier<double> {
@@ -79,6 +87,8 @@ class ProductItemProvider extends StateNotifier<List<ProductItem>> {
   }
 }
 
+final isActiveEditNotifier = StateNotifierProvider<IsQuickEditProvider, bool>(
+    (ref) => IsQuickEditProvider());
 final productItemNotifier =
     StateNotifierProvider<ProductItemProvider, List<ProductItem>>(
         (ref) => ProductItemProvider());

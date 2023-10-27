@@ -41,8 +41,8 @@ final productsNotifier = StreamProvider<List<Product>>((ref) {
   return products;
 });
 
-class IsOpeneNotifier extends StateNotifier<bool> {
-  IsOpeneNotifier() : super(isOpened);
+class IsCategoriesOpeneNotifier extends StateNotifier<bool> {
+  IsCategoriesOpeneNotifier() : super(isOpened);
 
   static bool isOpened = false;
 
@@ -51,11 +51,25 @@ class IsOpeneNotifier extends StateNotifier<bool> {
   }
 }
 
-final isOpenedProvider =
-    StateNotifierProvider<IsOpeneNotifier, bool>((ref) => IsOpeneNotifier());
+class IsProductsOpeneNotifier extends StateNotifier<bool> {
+  IsProductsOpeneNotifier() : super(isOpened);
 
-getController(WidgetRef ref) {
-  final isOpened = ref.watch(isOpenedProvider);
+  static bool isOpened = false;
+
+  fetch(bool isOpened) {
+    state = isOpened;
+  }
+}
+
+final isProductsOpenedProvider =
+    StateNotifierProvider<IsProductsOpeneNotifier, bool>(
+        (ref) => IsProductsOpeneNotifier());
+final isCategoriesOpenedProvider =
+    StateNotifierProvider<IsCategoriesOpeneNotifier, bool>(
+        (ref) => IsCategoriesOpeneNotifier());
+
+getCategoriesController(WidgetRef ref) {
+  final isOpened = ref.watch(isCategoriesOpenedProvider);
 
   final controller =
       useAnimationController(duration: const Duration(milliseconds: 375));

@@ -1,5 +1,6 @@
 class Product {
   String categories;
+  String color;
   String name;
   Map<String, dynamic> price;
   String quantity;
@@ -9,6 +10,7 @@ class Product {
 
   Product({
     required this.categories,
+    required this.color,
     required this.name,
     required this.price,
     required this.quantity,
@@ -20,6 +22,7 @@ class Product {
   Map<dynamic, dynamic> toMap() {
     return {
       'categories': categories,
+      'color': color,
       'name': name,
       'price': price,
       'quantity': quantity,
@@ -32,6 +35,7 @@ class Product {
   static Product fromDoc(dynamic doc) {
     return Product(
       categories: doc.data()['categories'],
+      color: doc.data()['color'],
       name: doc.data()['name'],
       price: doc.data()['price'],
       quantity: doc.data()['quantity'],

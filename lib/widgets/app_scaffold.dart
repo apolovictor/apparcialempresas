@@ -25,10 +25,10 @@ class AppScaffold extends StatelessWidget {
     final bool displayMobileLayout = MediaQuery.of(context).size.width < 600;
     return Row(
       children: [
-        if (!displayMobileLayout)
-          const AppDrawer(
-            permanentlyDisplay: true,
-          ),
+        // if (!displayMobileLayout)
+        //   const AppDrawer(
+        //     permanentlyDisplay: true,
+        //   ),
         Expanded(
           child: Scaffold(
             appBar: AppBar(
@@ -38,12 +38,11 @@ class AppScaffold extends StatelessWidget {
               automaticallyImplyLeading: displayMobileLayout,
               title: Text(pageTitle ?? ""),
             ),
-            drawer: displayMobileLayout
-                ? const AppDrawer(
-                    // orders: orders,
-                    permanentlyDisplay: false,
-                  )
-                : null,
+            drawer: const AppDrawer(
+              // orders: orders,
+              permanentlyDisplay: false,
+            ),
+            //     : null,
             body: body,
           ),
         )
