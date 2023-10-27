@@ -6,7 +6,11 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'constants/route_names.dart';
 import 'modules/home/controller/home_notifier.dart';
+import 'modules/products/controller/product_list.notifier.dart';
+import 'modules/products/controller/products_notifier.dart';
 import 'modules/products/views/home_products_impl.dart';
+import 'modules/products/views/product_details.dart';
+import 'modules/products/views/product_details_impl.dart';
 import 'widgets/app_route_observer.dart';
 
 Future main() async {
@@ -31,6 +35,9 @@ class MyApp extends HookConsumerWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    int productSelected = ref.watch(selectedProductNotifier);
+    final products = ref.watch(productsNotifier).value;
+
     return MaterialApp(
       title: ref.watch(responseProvider("bandiis")).when(
           data: (dataResponse) => dataResponse.name,
@@ -74,9 +81,9 @@ class MyApp extends HookConsumerWidget {
       routes: {
         RouteNames.home: (_) => const HomeProducts(),
         RouteNames.products: (_) => const HomeProducts(),
-        // RouteNames.reports: (_) => MainReports(key: key),
-        // RouteNames.settings: (_) => MainSettings(key: key),
-        // RouteNames.tables: (_) => MainTables(key: key),
+        RouteNames.productDetails: (_) => products != null
+            ? ProductDetails(product: products[productSelected])
+            : ProductDetails(product: products![0]),
       },
     );
   }

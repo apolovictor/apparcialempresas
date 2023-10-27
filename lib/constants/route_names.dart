@@ -1,6 +1,7 @@
 class RouteNames {
   static const String home = '/';
   static const String products = '/produtos';
+  static const String productDetails = '/productDetails';
   static const String reports = '/relatorios';
   static const String settings = '/configuracoes';
   static const String tables = '/tabelas';

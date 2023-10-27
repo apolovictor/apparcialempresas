@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:apparcialempresas/constants/route_names.dart';
 import 'package:apparcialempresas/modules/products/model/products_model.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +12,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../controller/product_list.notifier.dart';
 import '../controller/products_notifier.dart';
+import 'product_details.dart';
+import 'product_details_impl.dart';
 import 'product_list.dart';
 
 GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
@@ -35,6 +40,9 @@ class ProductScreen extends HookConsumerWidget {
 
     bool isActiveEdit = ref.watch(isActiveEditNotifier);
     bool isActiveProductRegister = ref.watch(isProductsOpenedProvider);
+
+    print("isActiveEdit ========= $isActiveEdit");
+    print("isActiveProductRegister ========= $isActiveProductRegister");
 
     final categories = ref.watch(categoriesNotifier).value;
 
@@ -76,6 +84,27 @@ class ProductScreen extends HookConsumerWidget {
             tag: 'fontSize')
         .animate(categoriesController);
     categoriesController.forward();
+    Route _createRoute() {
+      return PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => ProductDetails(
+          product: products![productSelected],
+        ),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(1.0, 0.0);
+          const end = Offset.zero;
+          const curve = Curves.ease;
+
+          var tween =
+              Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+          return SlideTransition(
+            position: animation.drive(tween),
+            child: child,
+          );
+        },
+      );
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: LayoutBuilder(builder: (context, constraints) {
@@ -367,65 +396,86 @@ class ProductScreen extends HookConsumerWidget {
                       ? Color(int.parse(products[productSelected].color))
                       : Colors.transparent,
                   child: LayoutBuilder(builder: (context, constraints) {
-                    return Stack(
-                      children: [
-                        SingleChildScrollView(
-                          child: Stack(
-                            children: [
-                              Align(
-                                alignment: Alignment(-1.1, -1),
-                                child: InkWell(
-                                  onTap: () {
-                                    ref
-                                        .read(isActiveEditNotifier.notifier)
-                                        .setIsActiveEdit(false);
-                                  },
-                                  child: Container(
-                                    height: 50.0,
-                                    width: 50.0,
-                                    decoration: BoxDecoration(
-                                        color: Colors.black87,
-                                        borderRadius:
-                                            BorderRadius.circular(30.0)),
-                                    child: const Icon(
-                                      Icons.close,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                height: constraints.maxHeight,
-                                child: AnimatedAlign(
-                                  duration: const Duration(milliseconds: 375),
-                                  alignment: Alignment(
-                                      -1.2,
-                                      constraints.maxWidth == width * 0.3
-                                          ? 0
-                                          : -1),
-                                  child: Container(
-                                    height: 75.0,
-                                    width: 75.0,
-                                    decoration: BoxDecoration(
-                                        color: Colors.black87,
-                                        borderRadius:
-                                            BorderRadius.circular(50.0)),
-                                    child: InkWell(
-                                      onTap: () {
-                                        print(true);
-                                      },
+                    return Hero(
+                      tag: 'detailProduct',
+                      flightShuttleBuilder:
+                          (_, Animation<double> animation, __, ___, ____) {
+                        final customAnimation = Tween<double>(
+                                begin: 0, end: constraints.maxWidth * 0.3)
+                            .animate(animation);
+
+                        return AnimatedBuilder(
+                            animation: customAnimation,
+                            builder: (context, child) {
+                              return ProductDetails(
+                                product: products![productSelected],
+                              );
+                            });
+                      },
+                      child: Stack(
+                        children: [
+                          SingleChildScrollView(
+                            child: Stack(
+                              children: [
+                                Align(
+                                  alignment: Alignment(-1.1, -1),
+                                  child: InkWell(
+                                    onTap: () {
+                                      ref
+                                          .read(isActiveEditNotifier.notifier)
+                                          .setIsActiveEdit(false);
+                                    },
+                                    child: Container(
+                                      height: 50.0,
+                                      width: 50.0,
+                                      decoration: BoxDecoration(
+                                          color: Colors.black87,
+                                          borderRadius:
+                                              BorderRadius.circular(30.0)),
                                       child: const Icon(
-                                        Icons.arrow_back,
+                                        Icons.close,
                                         color: Colors.white,
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
+                                SizedBox(
+                                  height: constraints.maxHeight,
+                                  child: AnimatedAlign(
+                                    duration: const Duration(milliseconds: 375),
+                                    alignment: Alignment(
+                                        -1.2,
+                                        constraints.maxWidth == width * 0.3
+                                            ? 0
+                                            : -1),
+                                    child: Container(
+                                      height: 75.0,
+                                      width: 75.0,
+                                      decoration: BoxDecoration(
+                                          color: Colors.black87,
+                                          borderRadius:
+                                              BorderRadius.circular(50.0)),
+                                      child: InkWell(
+                                        onTap: () {
+                                          Navigator.of(context)
+                                              .push(_createRoute());
+                                          //  ProductDetail(
+                                          //   product: products![productSelected],
+                                          // );
+                                        },
+                                        child: const Icon(
+                                          Icons.arrow_back,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     );
                   }),
                 ),
@@ -482,5 +532,12 @@ class ProductScreen extends HookConsumerWidget {
         );
       }),
     );
+  }
+
+  Future<void> _navigateTo(BuildContext context, String routeName) async {
+    // if (widget.permanentlyDisplay) {
+    //   Navigator.pop(context);
+    // }
+    await Navigator.pushNamed(context, routeName);
   }
 }

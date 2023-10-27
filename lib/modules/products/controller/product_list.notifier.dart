@@ -65,33 +65,9 @@ class ProductListSize extends StateNotifier<double> {
   setSize(size) => state = size;
 }
 
-class ProductItemProvider extends StateNotifier<List<ProductItem>> {
-  ProductItemProvider() : super([]);
-
-  setProduct(ProductItem item) {
-    // state.clear();
-    // print(item.index);
-    // print(item.offset);
-    state.add(item);
-    // print(state.map((e) => e.index));
-    // print(state.map((e) => e.offset));
-  }
-
-  // state.clear();
-  updateOffset(int index, ProductItem productItem) {
-    // print(productItem.offset);
-    // print(state.map((e) => e.index));
-    // print(state.map((e) => e.offset));
-    // state.removeAt(index);
-    state[index] = productItem;
-  }
-}
-
 final isActiveEditNotifier = StateNotifierProvider<IsQuickEditProvider, bool>(
     (ref) => IsQuickEditProvider());
-final productItemNotifier =
-    StateNotifierProvider<ProductItemProvider, List<ProductItem>>(
-        (ref) => ProductItemProvider());
+
 final isActiveNotifier =
     StateNotifierProvider<IsActiveProvider, bool>((ref) => IsActiveProvider());
 final productListSizeNotifier =

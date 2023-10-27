@@ -51,6 +51,16 @@ class IsCategoriesOpeneNotifier extends StateNotifier<bool> {
   }
 }
 
+class IsProductDetailOpeneNotifier extends StateNotifier<bool> {
+  IsProductDetailOpeneNotifier() : super(isOpened);
+
+  static bool isOpened = false;
+
+  fetch(bool isOpened) {
+    state = isOpened;
+  }
+}
+
 class IsProductsOpeneNotifier extends StateNotifier<bool> {
   IsProductsOpeneNotifier() : super(isOpened);
 
@@ -61,15 +71,47 @@ class IsProductsOpeneNotifier extends StateNotifier<bool> {
   }
 }
 
+class IsCProductDetailOpeneNotifier extends StateNotifier<bool> {
+  IsCProductDetailOpeneNotifier() : super(isOpened);
+
+  static bool isOpened = false;
+
+  fetch(bool isOpened) {
+    state = isOpened;
+  }
+}
+
 final isProductsOpenedProvider =
-    StateNotifierProvider<IsProductsOpeneNotifier, bool>(
-        (ref) => IsProductsOpeneNotifier());
+    StateNotifierProvider<IsCProductDetailOpeneNotifier, bool>(
+        (ref) => IsCProductDetailOpeneNotifier());
+
+final isLoadingWidgetProvider =
+    StateNotifierProvider<IsProductDetailOpeneNotifier, bool>(
+        (ref) => IsProductDetailOpeneNotifier());
 final isCategoriesOpenedProvider =
+    StateNotifierProvider<IsCategoriesOpeneNotifier, bool>(
+        (ref) => IsCategoriesOpeneNotifier());
+final isProductDetailOpenedProvider =
     StateNotifierProvider<IsCategoriesOpeneNotifier, bool>(
         (ref) => IsCategoriesOpeneNotifier());
 
 getCategoriesController(WidgetRef ref) {
   final isOpened = ref.watch(isCategoriesOpenedProvider);
+
+  final controller =
+      useAnimationController(duration: const Duration(milliseconds: 375));
+
+  if (isOpened) {
+    controller.forward();
+  } else {
+    controller.reverse();
+  }
+
+  return controller;
+}
+
+getProductController(WidgetRef ref) {
+  final isOpened = ref.watch(isLoadingWidgetProvider);
 
   final controller =
       useAnimationController(duration: const Duration(milliseconds: 375));

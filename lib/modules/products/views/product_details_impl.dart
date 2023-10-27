@@ -1,23 +1,28 @@
+import 'package:apparcialempresas/modules/products/model/products_model.dart';
 import 'package:flutter/material.dart';
 
 import '../../../widgets/app_scaffold.dart';
 import 'home_products.dart';
+import 'product_details.dart';
 
-class HomeProducts extends StatelessWidget {
-  const HomeProducts({Key? key}) : super(key: key);
+class ProductDetails extends StatelessWidget {
+  const ProductDetails({Key? key, required this.product}) : super(key: key);
 
   // final Key dataKey = new GlobalKey();
+
+  final Product product;
 
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
-      pageTitle: "Produtos",
+      pageTitle: "Detalhe do produto",
+
       // orders: orders,
       loadingAppBar: true,
       body: MaterialApp(
         debugShowCheckedModeBanner: false,
         routes: {
-          '/': (context) => const ProductScreen(),
+          '/': (context) => ProductDetailScreen(product: product),
         },
         theme: ThemeData(
           appBarTheme: const AppBarTheme(
