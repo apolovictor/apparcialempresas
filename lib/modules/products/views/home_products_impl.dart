@@ -76,7 +76,7 @@ class HomeProducts extends StatelessWidget {
                 headlineMedium: const TextStyle(
                     fontSize: 26,
                     fontFamily: 'HelveticaNeue',
-                    fontWeight: FontWeight.w400,
+                    fontWeight: FontWeight.w700,
                     color: Colors.black87),
                 headlineLarge: const TextStyle(
                     fontSize: 32,

@@ -81,9 +81,7 @@ class MyApp extends HookConsumerWidget {
       routes: {
         RouteNames.home: (_) => const HomeProducts(),
         RouteNames.products: (_) => const HomeProducts(),
-        RouteNames.productDetails: (_) => products != null
-            ? ProductDetails(product: products[productSelected])
-            : ProductDetails(product: products![0]),
+        RouteNames.productDetails: (_) => ProductDetails(),
       },
     );
   }

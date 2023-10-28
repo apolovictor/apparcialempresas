@@ -9,9 +9,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../controller/products_notifier.dart';
 
 class ProductDetailScreen extends HookConsumerWidget {
-  const ProductDetailScreen({super.key, required this.product});
-
-  final Product product;
+  const ProductDetailScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -23,18 +21,21 @@ class ProductDetailScreen extends HookConsumerWidget {
     final double width = MediaQuery.of(context).size.width;
     final double height = MediaQuery.of(context).size.height;
     final controller =
-        useAnimationController(duration: const Duration(milliseconds: 375));
+        useAnimationController(duration: const Duration(milliseconds: 500));
+    int selected = ref.watch(selectedProductNotifier);
+    final products = ref.watch(productsNotifier).value;
 
+    final Product product = products![selected];
     final Animation<double> containerScaleTweenAnimation =
         Tween(begin: .0, end: width).animate(CurvedAnimation(
-            parent: getProductController(ref), curve: Curves.ease));
+            parent: getProductController(ref), curve: Curves.easeIn));
     final Animation<double> containerAlignTweenAnimation =
         Tween(begin: 0.0, end: -1.0).animate(CurvedAnimation(
-            parent: getProductController(ref), curve: Curves.ease));
+            parent: getProductController(ref), curve: Curves.easeIn));
 
     final Animation<double> containerBorderRadiusAnimation =
         Tween(begin: 100.0, end: 15.0).animate(CurvedAnimation(
-            parent: getProductController(ref), curve: Curves.ease));
+            parent: getProductController(ref), curve: Curves.easeIn));
 
     var timer = Timer(
       const Duration(milliseconds: 300),
@@ -53,7 +54,6 @@ class ProductDetailScreen extends HookConsumerWidget {
 
     return isLoadingWidget
         ? Scaffold(
-            backgroundColor: Colors.amber,
             body: Stack(
               children: [
                 Padding(

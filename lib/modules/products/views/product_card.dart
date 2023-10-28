@@ -33,7 +33,13 @@ class ProductCard extends HookConsumerWidget {
             padding: EdgeInsets.only(top: height > 900 ? 60 : 10, right: 25.0),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 375),
-              height: selected == index ? 350.0 : 300.0,
+              height: selected == index && height > 800
+                  ? 350.0
+                  : selected == index && height < 800
+                      ? 280
+                      : height < 800
+                          ? 240
+                          : 300.0,
               width: selected == index ? 450.0 : 400.0,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(15.0),

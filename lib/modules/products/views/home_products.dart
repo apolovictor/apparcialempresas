@@ -28,6 +28,7 @@ class ProductScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final bool displayMobileLayout = MediaQuery.of(context).size.width < 600;
     double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     int productSelected = ref.watch(selectedProductNotifier);
     final products = ref.watch(productsNotifier).value;
 
@@ -86,9 +87,8 @@ class ProductScreen extends HookConsumerWidget {
     categoriesController.forward();
     Route _createRoute() {
       return PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => ProductDetails(
-          product: products![productSelected],
-        ),
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            ProductDetails(),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           const begin = Offset(1.0, 0.0);
           const end = Offset.zero;
@@ -131,7 +131,26 @@ class ProductScreen extends HookConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Expanded(
-                            flex: !displayMobileLayout ? 5 : 2,
+                            flex: height < 806 ? 2 : 3,
+                            child: Container(
+                              color: Colors.black54,
+                              child: Center(
+                                child: Text(
+                                  "TOP",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineLarge!
+                                      .apply(color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: !displayMobileLayout && height > 805
+                                ? 5
+                                : height < 806 && !displayMobileLayout
+                                    ? 6
+                                    : 2,
                             child: SizedBox(
                               width: double.infinity,
                               child: Column(
@@ -139,9 +158,13 @@ class ProductScreen extends HookConsumerWidget {
                                   Row(children: [
                                     Text(
                                       ' Categorias ',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headlineLarge,
+                                      style: height < 806
+                                          ? Theme.of(context)
+                                              .textTheme
+                                              .headlineMedium
+                                          : Theme.of(context)
+                                              .textTheme
+                                              .headlineLarge,
                                     ),
                                   ]),
                                   const SizedBox(height: 20),
@@ -279,9 +302,10 @@ class ProductScreen extends HookConsumerWidget {
                               ),
                             ),
                           ),
-                          SizedBox(
-                            height: !displayMobileLayout ? 0 : 10,
-                          ),
+                          // SizedBox(
+                          //   height:
+                          //       !displayMobileLayout && height < 806 ? 0 : 10,
+                          // ),
                           Expanded(
                             flex: !displayMobileLayout ? 12 : 4,
                             child: SizedBox(
@@ -296,9 +320,13 @@ class ProductScreen extends HookConsumerWidget {
                                         children: [
                                           Text(
                                             ' Meus Produtos',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headlineLarge,
+                                            style: height < 800
+                                                ? Theme.of(context)
+                                                    .textTheme
+                                                    .headlineMedium
+                                                : Theme.of(context)
+                                                    .textTheme
+                                                    .headlineLarge,
                                           ),
                                           Row(
                                             children: [
@@ -407,9 +435,7 @@ class ProductScreen extends HookConsumerWidget {
                         return AnimatedBuilder(
                             animation: customAnimation,
                             builder: (context, child) {
-                              return ProductDetails(
-                                product: products![productSelected],
-                              );
+                              return ProductDetails();
                             });
                       },
                       child: Stack(

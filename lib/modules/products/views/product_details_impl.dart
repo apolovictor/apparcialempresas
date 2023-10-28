@@ -6,11 +6,11 @@ import 'home_products.dart';
 import 'product_details.dart';
 
 class ProductDetails extends StatelessWidget {
-  const ProductDetails({Key? key, required this.product}) : super(key: key);
+  const ProductDetails({Key? key}) : super(key: key);
 
   // final Key dataKey = new GlobalKey();
 
-  final Product product;
+  // final Product product;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class ProductDetails extends StatelessWidget {
       body: MaterialApp(
         debugShowCheckedModeBanner: false,
         routes: {
-          '/': (context) => ProductDetailScreen(product: product),
+          '/': (context) => ProductDetailScreen(),
         },
         theme: ThemeData(
           appBarTheme: const AppBarTheme(
