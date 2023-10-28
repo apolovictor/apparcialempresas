@@ -32,25 +32,25 @@ class AppScaffold extends StatelessWidget {
         //   const AppDrawer(
         //     permanentlyDisplay: true,
         //   ),
-        loadingAppBar!
-            ? Expanded(
-                child: Scaffold(
-                  appBar: AppBar(
-                    elevation: 0,
-                    toolbarHeight: !displayMobileLayout ? 157 : 100,
-                    // when the app isn't displaying the mobile version of app, hide the menu button that is used to open the navigation drawer
-                    automaticallyImplyLeading: displayMobileLayout,
-                    title: Text(pageTitle ?? ""),
-                  ),
-                  drawer: const AppDrawer(
-                    // orders: orders,
-                    permanentlyDisplay: false,
-                  ),
-                  //     : null,
-                  body: body,
-                ),
-              )
-            : Scaffold(body: body),
+        // loadingAppBar! ?
+        Expanded(
+          child: Scaffold(
+            // appBar: AppBar(
+            //   elevation: 0,
+            //   toolbarHeight: !displayMobileLayout ? 157 : 100,
+            //   // when the app isn't displaying the mobile version of app, hide the menu button that is used to open the navigation drawer
+            //   automaticallyImplyLeading: displayMobileLayout,
+            //   title: Text(pageTitle ?? ""),
+            // ),
+            drawer: const AppDrawer(
+              // orders: orders,
+              permanentlyDisplay: false,
+            ),
+            //     : null,
+            body: body,
+          ),
+        )
+        // : Scaffold(body: body),
       ],
     );
   }
