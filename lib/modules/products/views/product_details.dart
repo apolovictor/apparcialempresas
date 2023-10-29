@@ -13,7 +13,6 @@ class ProductDetailScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    bool isLoadingWidget = ref.watch(isLoadingWidgetProvider);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // executes after build
       ref.read(isActiveEditNotifier.notifier).setIsActiveEdit(false);
@@ -21,75 +20,42 @@ class ProductDetailScreen extends HookConsumerWidget {
     final double width = MediaQuery.of(context).size.width;
     final double height = MediaQuery.of(context).size.height;
     final controller =
-        useAnimationController(duration: const Duration(milliseconds: 500));
+        useAnimationController(duration: const Duration(milliseconds: 750));
     int selected = ref.watch(selectedProductNotifier);
+    // ref.watch(selectedProductNotifier);
     final products = ref.watch(productsNotifier).value;
 
     final Product product = products![selected];
     final Animation<double> containerScaleTweenAnimation =
-        Tween(begin: .0, end: width).animate(CurvedAnimation(
-            parent: getProductController(ref), curve: Curves.easeIn));
+        Tween(begin: .0, end: width)
+            .animate(CurvedAnimation(parent: controller, curve: Curves.easeIn));
     final Animation<double> containerAlignTweenAnimation =
-        Tween(begin: 0.0, end: -1.0).animate(CurvedAnimation(
-            parent: getProductController(ref), curve: Curves.easeIn));
+        Tween(begin: 0.0, end: -1.0)
+            .animate(CurvedAnimation(parent: controller, curve: Curves.easeIn));
 
     final Animation<double> containerBorderRadiusAnimation =
-        Tween(begin: 100.0, end: 15.0).animate(CurvedAnimation(
-            parent: getProductController(ref), curve: Curves.easeIn));
+        Tween(begin: 100.0, end: 15.0)
+            .animate(CurvedAnimation(parent: controller, curve: Curves.easeIn));
 
-    var timer = Timer(
-      const Duration(milliseconds: 300),
-      () {
-        if (isLoadingWidget == false) {
-          ref.read(isLoadingWidgetProvider.notifier).fetch(true);
-        }
-      },
-    );
+    controller.forward();
 
-    controller.addStatusListener((status) {
-      if (AnimationStatus.completed == controller.status) {
-        timer.cancel();
-      }
-    });
-
-    return isLoadingWidget
-        ? Scaffold(
-            body: Stack(
+    return Scaffold(
+      body: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 0),
+            child: Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 0),
-                  child: Column(
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: AnimatedBuilder(
-                          animation: containerScaleTweenAnimation,
-                          builder: (context, child) {
-                            return Align(
-                              alignment: Alignment(
-                                  containerAlignTweenAnimation.value,
-                                  containerAlignTweenAnimation.value),
-                              child: Hero(
-                                tag: 'detailProduct',
-                                child: Container(
-                                  height: containerScaleTweenAnimation.value,
-                                  width: containerScaleTweenAnimation.value,
-                                  padding: const EdgeInsets.all(8.0),
-                                  clipBehavior: Clip.antiAlias,
-                                  decoration: BoxDecoration(
-                                      color: Color(int.parse(product.color)),
-                                      borderRadius: BorderRadius.circular(
-                                          containerBorderRadiusAnimation
-                                              .value)),
-                                  child: child,
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                      Expanded(
-                          flex: 1,
+                Expanded(
+                  flex: 1,
+                  child: AnimatedBuilder(
+                    animation: containerScaleTweenAnimation,
+                    builder: (context, child) {
+                      return Align(
+                        alignment: Alignment(containerAlignTweenAnimation.value,
+                            containerAlignTweenAnimation.value),
+                        child: Hero(
+                          tag: 'detailProduct',
                           child: Container(
                             height: containerScaleTweenAnimation.value,
                             width: containerScaleTweenAnimation.value,
@@ -99,13 +65,23 @@ class ProductDetailScreen extends HookConsumerWidget {
                                 color: Color(int.parse(product.color)),
                                 borderRadius: BorderRadius.circular(
                                     containerBorderRadiusAnimation.value)),
-                          ))
-                    ],
+                            child: child,
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ),
+                Expanded(
+                    flex: 1,
+                    child: Container(
+                      padding: const EdgeInsets.all(8.0),
+                    ))
               ],
             ),
-          )
-        : const SizedBox();
+          ),
+        ],
+      ),
+    );
   }
 }

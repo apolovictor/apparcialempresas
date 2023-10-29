@@ -1,23 +1,11 @@
-import 'dart:math';
-
-import 'package:apparcialempresas/constants/route_names.dart';
-import 'package:apparcialempresas/modules/products/model/products_model.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_sequence_animation/flutter_sequence_animation.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../controller/product_list.notifier.dart';
 import '../controller/products_notifier.dart';
-import 'product_details.dart';
+import 'categories_list.dart';
 import 'product_details_impl.dart';
 import 'product_list.dart';
-
-GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
-final storage = FirebaseStorage.instance;
 
 class ProductScreen extends HookConsumerWidget {
   const ProductScreen({Key? key, this.title}) : super(key: key);
@@ -30,22 +18,11 @@ class ProductScreen extends HookConsumerWidget {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     int productSelected = ref.watch(selectedProductNotifier);
+    // print(ref.watch(filterNotifier));
     final products = ref.watch(productsNotifier).value;
-
-    Future<String> downloadUrl(icon) async {
-      var downloadUrl =
-          storage.ref("categories_icons").child(icon).getDownloadURL();
-
-      return downloadUrl;
-    }
 
     bool isActiveEdit = ref.watch(isActiveEditNotifier);
     bool isActiveProductRegister = ref.watch(isProductsOpenedProvider);
-
-    print("isActiveEdit ========= $isActiveEdit");
-    print("isActiveProductRegister ========= $isActiveProductRegister");
-
-    final categories = ref.watch(categoriesNotifier).value;
 
     final Animation<double> containerScaleTweenAnimation =
         Tween(begin: .0, end: MediaQuery.of(context).size.width * 0.3).animate(
@@ -60,35 +37,10 @@ class ProductScreen extends HookConsumerWidget {
         Tween(begin: 100.0, end: 15.0).animate(CurvedAnimation(
             parent: getCategoriesController(ref), curve: Curves.ease));
 
-    AnimationController categoriesController =
-        useAnimationController(duration: const Duration(milliseconds: 0));
-    SequenceAnimation sequenceAnimation;
-
-    sequenceAnimation = SequenceAnimationBuilder()
-        .addAnimatable(
-            animatable: Tween(begin: 0.0, end: 50.0),
-            curve: Curves.easeOut,
-            from: const Duration(milliseconds: 300),
-            to: const Duration(milliseconds: 600),
-            tag: 'avatarSize')
-        .addAnimatable(
-            animatable: Tween(begin: 0.0, end: 40.0),
-            curve: Curves.easeOut,
-            from: const Duration(milliseconds: 500),
-            to: const Duration(milliseconds: 750),
-            tag: 'iconSize')
-        .addAnimatable(
-            animatable: Tween<double>(begin: 0.0, end: 12.0),
-            curve: Curves.easeOut,
-            from: const Duration(milliseconds: 500),
-            to: const Duration(milliseconds: 750),
-            tag: 'fontSize')
-        .animate(categoriesController);
-    categoriesController.forward();
-    Route _createRoute() {
+    Route createRoute() {
       return PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
-            ProductDetails(),
+            const ProductDetails(),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           const begin = Offset(1.0, 0.0);
           const end = Offset.zero;
@@ -104,6 +56,8 @@ class ProductScreen extends HookConsumerWidget {
         },
       );
     }
+
+    // ref.read(filteredProductListProvider.notifier).fetchFilteredList(products);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -168,144 +122,11 @@ class ProductScreen extends HookConsumerWidget {
                                     ),
                                   ]),
                                   const SizedBox(height: 20),
-                                  Expanded(
-                                    child: Container(
-                                      width: MediaQuery.of(context).size.width,
-                                      child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            SingleChildScrollView(
-                                              scrollDirection: Axis.horizontal,
-                                              child: categories?.length != null
-                                                  ? AnimatedBuilder(
-                                                      key: _listKey,
-                                                      animation:
-                                                          categoriesController,
-                                                      builder:
-                                                          (context, child) =>
-                                                              AnimationLimiter(
-                                                        child: Row(
-                                                          children: categories!
-                                                              .map((category) =>
-                                                                  AnimationConfiguration
-                                                                      .staggeredList(
-                                                                    position: categories.indexWhere((element) =>
-                                                                        element
-                                                                            .name ==
-                                                                        category
-                                                                            .name),
-                                                                    child:
-                                                                        SlideAnimation(
-                                                                      horizontalOffset: MediaQuery.of(
-                                                                              context)
-                                                                          .size
-                                                                          .width,
-                                                                      child:
-                                                                          Padding(
-                                                                        padding: const EdgeInsets
-                                                                            .only(
-                                                                            right:
-                                                                                50.0),
-                                                                        child:
-                                                                            Column(
-                                                                          children: [
-                                                                            CircleAvatar(
-                                                                                radius: sequenceAnimation['avatarSize'].value,
-                                                                                backgroundColor: Color(int.parse('${category.color != null ? category.color : 0xFFF4F4F6}')),
-                                                                                child: FutureBuilder<String>(
-                                                                                    future: downloadUrl(category.icon),
-                                                                                    builder: (context, snapshot) {
-                                                                                      if (snapshot.connectionState == ConnectionState.waiting) {
-                                                                                        return const Center(
-                                                                                          child: CircularProgressIndicator(),
-                                                                                        );
-                                                                                      } else {
-                                                                                        if (snapshot.data != null) {
-                                                                                          return SvgPicture.network(
-                                                                                            snapshot.data.toString(),
-                                                                                            color: Colors.black,
-                                                                                            height: sequenceAnimation['iconSize'].value,
-                                                                                          );
-                                                                                        } else {
-                                                                                          return const SizedBox();
-                                                                                        }
-                                                                                      }
-                                                                                    })),
-                                                                            const SizedBox(height: 15),
-                                                                            Text(
-                                                                              category.name.toUpperCase(),
-                                                                              style: Theme.of(context).textTheme.bodyLarge!.apply(color: Colors.grey[500]),
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  ))
-                                                              .toList(),
-                                                        ),
-                                                      ),
-                                                    )
-                                                  : const SizedBox(),
-                                            ),
-                                            AnimatedBuilder(
-                                                animation: categoriesController,
-                                                builder: (context, child) {
-                                                  return Column(
-                                                    children: [
-                                                      MaterialButton(
-                                                        shape: CircleBorder(),
-                                                        onPressed: () {
-                                                          // if (isActiveProductRegister ==
-                                                          //     false) {
-                                                          ref
-                                                              .read(
-                                                                  isCategoriesOpenedProvider
-                                                                      .notifier)
-                                                              .fetch(true);
-                                                          // }
-                                                        },
-                                                        child: CircleAvatar(
-                                                            radius: sequenceAnimation[
-                                                                    'avatarSize']
-                                                                .value,
-                                                            backgroundColor:
-                                                                Colors
-                                                                    .grey[200],
-                                                            child: Icon(
-                                                              Icons.add,
-                                                              size: sequenceAnimation[
-                                                                      'iconSize']
-                                                                  .value,
-                                                              color:
-                                                                  Colors.black,
-                                                            )),
-                                                      ),
-                                                      const SizedBox(
-                                                          height: 15),
-                                                      Text("ADD",
-                                                          style: Theme.of(
-                                                                  context)
-                                                              .textTheme
-                                                              .bodyLarge!
-                                                              .apply(
-                                                                  color: Colors
-                                                                          .grey[
-                                                                      500])),
-                                                    ],
-                                                  );
-                                                }),
-                                          ]),
-                                    ),
-                                  ),
+                                  const Expanded(child: CategoriesList()),
                                 ],
                               ),
                             ),
                           ),
-                          // SizedBox(
-                          //   height:
-                          //       !displayMobileLayout && height < 806 ? 0 : 10,
-                          // ),
                           Expanded(
                             flex: !displayMobileLayout ? 12 : 4,
                             child: SizedBox(
@@ -339,7 +160,7 @@ class ProductScreen extends HookConsumerWidget {
                                                                 .notifier)
                                                         .setIsActiveEdit(false);
                                                     Future.delayed(
-                                                        Duration(
+                                                        const Duration(
                                                             milliseconds: 400),
                                                         () {
                                                       ref
@@ -356,7 +177,7 @@ class ProductScreen extends HookConsumerWidget {
                                                         .fetch(true);
                                                   }
                                                 },
-                                                side: BorderSide(
+                                                side: const BorderSide(
                                                     color: Colors.transparent),
                                                 backgroundColor:
                                                     Colors.grey[200],
@@ -364,7 +185,7 @@ class ProductScreen extends HookConsumerWidget {
                                                   borderRadius:
                                                       BorderRadius.circular(10),
                                                 ),
-                                                label: Container(
+                                                label: SizedBox(
                                                     child: Text(
                                                         "Adicionar Produto",
                                                         style: Theme.of(context)
@@ -435,7 +256,7 @@ class ProductScreen extends HookConsumerWidget {
                         return AnimatedBuilder(
                             animation: customAnimation,
                             builder: (context, child) {
-                              return ProductDetails();
+                              return const ProductDetails();
                             });
                       },
                       child: Stack(
@@ -444,7 +265,7 @@ class ProductScreen extends HookConsumerWidget {
                             child: Stack(
                               children: [
                                 Align(
-                                  alignment: Alignment(-1.1, -1),
+                                  alignment: const Alignment(-1.1, -1),
                                   child: InkWell(
                                     onTap: () {
                                       ref
@@ -484,7 +305,7 @@ class ProductScreen extends HookConsumerWidget {
                                       child: InkWell(
                                         onTap: () {
                                           Navigator.of(context)
-                                              .push(_createRoute());
+                                              .push(createRoute());
                                           //  ProductDetail(
                                           //   product: products![productSelected],
                                           // );
@@ -558,12 +379,5 @@ class ProductScreen extends HookConsumerWidget {
         );
       }),
     );
-  }
-
-  Future<void> _navigateTo(BuildContext context, String routeName) async {
-    // if (widget.permanentlyDisplay) {
-    //   Navigator.pop(context);
-    // }
-    await Navigator.pushNamed(context, routeName);
   }
 }

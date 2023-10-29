@@ -116,3 +116,13 @@ class ProductItem {
     );
   }
 }
+
+class Filter {
+  String? categories;
+  int? status;
+
+  Filter({
+    this.categories,
+    this.status,
+  });
+}

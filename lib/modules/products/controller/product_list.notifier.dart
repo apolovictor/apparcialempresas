@@ -87,3 +87,6 @@ final opacityProductCardNotifier =
 final widthProductCardNotifier =
     StateNotifierProvider<WidthProductCardProvider, double>(
         (ref) => WidthProductCardProvider());
+final indexProvider = Provider<int>((_) {
+  return 0;
+});

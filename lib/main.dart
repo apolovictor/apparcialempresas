@@ -35,9 +35,6 @@ class MyApp extends HookConsumerWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    int productSelected = ref.watch(selectedProductNotifier);
-    final products = ref.watch(productsNotifier).value;
-
     return MaterialApp(
       title: ref.watch(responseProvider("bandiis")).when(
           data: (dataResponse) => dataResponse.name,
