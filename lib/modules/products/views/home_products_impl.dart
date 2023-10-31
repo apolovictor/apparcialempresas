@@ -15,42 +15,8 @@ class HomeProducts extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final filter = ref.watch(filterNotifier);
-
     List<Product> filteredProducts = ref.watch(filteredProductListProvider);
     List<Product>? products = ref.watch(exampleProvider).value;
-
-    downloadUrl(product) async =>
-        await storage.ref("products").child(product).getDownloadURL();
-
-    updateImageToProductList() async {
-      if (products != null) {
-        for (var i = 0; i < products.length; i++) {
-          var imgLink = await downloadUrl(products[i].logo);
-
-          if (imgLink.isNotEmpty) {
-            ref.read(imageProductsNotifier.notifier).fetchimageProductList(
-                UrlProduct(
-                    title: products[i].logo!,
-                    url: imgLink,
-                    category: products[i].categories));
-          }
-        }
-      }
-    }
-
-    useValueChanged(filter, (_, __) async {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        ref.read(filteredProductListProvider.notifier).fetchFilteredList(
-            products!
-                .where((product) => product.categories == filter['category'])
-                .toList());
-        ref.read(imageProductsNotifier.notifier).clear();
-        updateImageToProductList();
-      });
-    });
-
-    updateImageToProductList();
 
     return AppScaffold(
       pageTitle: "Produtos",

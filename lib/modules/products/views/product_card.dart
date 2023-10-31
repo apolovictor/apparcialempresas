@@ -11,14 +11,14 @@ import '../model/products_model.dart';
 import 'product_card_image.dart';
 
 class ProductCard extends HookConsumerWidget {
-  ProductCard({
+  const ProductCard({
     super.key,
     required this.product,
     required this.index,
     this.productPhoto,
   });
 
-  Product product;
+  final Product product;
   final String? productPhoto;
 
   final int index;
