@@ -47,11 +47,6 @@ class HomeProducts extends HookConsumerWidget {
                 .toList());
         ref.read(imageProductsNotifier.notifier).clear();
         updateImageToProductList();
-        // ref.read(imageProductsNotifier.notifier).fetchimageFilteredProductList(
-        //     ref
-        //         .watch(imageProductsNotifier)
-        //         .where((e) => e.category == filter['category'])
-        //         .toList());
       });
     });
 

@@ -32,17 +32,12 @@ class ProductsList extends HookConsumerWidget {
 
     List<Product> filteredProducts = ref.watch(filteredProductListProvider);
     List<Product>? products = ref.watch(exampleProvider).value;
-    List<UrlProduct> productstListPhoto = ref.watch(imageProductsNotifier);
 
     FixedExtentScrollController scrollController =
         ref.watch(scrollListNotifier(selected));
 
     return products != null || filteredProducts.length > 0
         ? LayoutBuilder(builder: (context, constraints) {
-            print(products!.length);
-            print(productstListPhoto.length);
-            // print(filteredProducts.length == productstListPhoto.length);
-            // print(productstListPhoto.length);
             return SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: SizedBox(
@@ -62,7 +57,7 @@ class ProductsList extends HookConsumerWidget {
                         children: List.generate(
                             filter['category'].isNotEmpty
                                 ? filteredProducts.length
-                                : products.length, (index) {
+                                : products!.length, (index) {
                       return RotatedBox(
                           quarterTurns: 1,
                           child: filter['category'].isNotEmpty
@@ -72,7 +67,7 @@ class ProductsList extends HookConsumerWidget {
                                 )
                               : ProductCard(
                                   index: index,
-                                  product: products[index],
+                                  product: products![index],
                                 ));
                     })),
                     itemExtent: itemWidth,

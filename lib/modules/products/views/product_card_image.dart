@@ -1,5 +1,6 @@
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../controller/product_list.notifier.dart';
@@ -30,8 +31,6 @@ class ProductCardImg extends HookConsumerWidget {
 
     List<UrlProduct> productstListPhoto = ref.watch(imageProductsNotifier);
 
-    print("index ========= ${productstListPhoto.map((e) => e.title)}");
-
     return ClipRRect(
       borderRadius: BorderRadius.circular(15.0),
       child: Container(
@@ -50,24 +49,15 @@ class ProductCardImg extends HookConsumerWidget {
                     .isNotEmpty
                 ? Card(
                     elevation: 5,
-                    child: Image.network(
-                      loadingBuilder: (context, child, progress) {
-                        if (progress == null) {
-                          return child;
-                        }
-                        return Center(
-                          child: CircularProgressIndicator(
-                              color: Colors.grey[300]),
-                        );
-                      },
+                    child: SvgPicture.network(
                       productstListPhoto
                           .firstWhere(
                               (element) => element.title == product.logo)
                           .url,
-                      cacheWidth: 380,
-                      cacheHeight: height < 750 ? 100 : 150,
+                      // cacheWidth: 380,
+                      // cacheHeight: height < 750 ? 100 : 150,
                       height: height < 750 ? 100 : 200,
-                      // fit: BoxFit.cover,
+                      fit: BoxFit.cover,
                     )
 
                     //  FutureBuilder<String>(
