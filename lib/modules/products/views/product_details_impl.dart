@@ -6,7 +6,7 @@ import 'home_products.dart';
 import 'product_details.dart';
 
 class ProductDetails extends StatelessWidget {
-  const ProductDetails({Key? key}) : super(key: key);
+  ProductDetails({Key? key}) : super(key: key);
 
   // final Key dataKey = new GlobalKey();
 

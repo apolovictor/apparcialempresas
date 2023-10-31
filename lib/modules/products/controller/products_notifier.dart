@@ -38,7 +38,6 @@ class FilteredProductProvider extends StateNotifier<List<Product>> {
   FilteredProductProvider() : super([]);
 
   fetchFilteredList(list) {
-    print("list ========== $list");
     state = list;
   }
 }
@@ -59,7 +58,6 @@ final categoriesNotifier = StreamProvider<List<Categories>>((ref) {
 });
 
 final productsNotifier = StreamProvider<List<Product>>((ref) {
-  // print(filter);
   final products = _businessCollection
       .doc(ref.watch(idDocumentNotifier))
       .collection("products")

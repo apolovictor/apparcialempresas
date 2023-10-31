@@ -6,6 +6,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../controller/product_list.notifier.dart';
 import '../controller/products_notifier.dart';
 
 GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
@@ -75,6 +76,10 @@ class CategoriesList extends HookConsumerWidget {
                                         MaterialButton(
                                           shape: CircleBorder(),
                                           onPressed: () {
+                                            ref
+                                                .read(selectedProductNotifier
+                                                    .notifier)
+                                                .setSelected(0);
                                             ref
                                                 .read(categoryNotifier.notifier)
                                                 .state = category.documentId;

@@ -8,22 +8,22 @@ import '../controller/products_notifier.dart';
 import '../model/products_model.dart';
 
 class ProductCard extends HookConsumerWidget {
-  const ProductCard({
+  ProductCard({
     super.key,
     required this.product,
-    required this.categories,
     required this.index,
   });
 
-  final Product product;
-  final List<Categories> categories;
-  final int index;
+  Product product;
+
+  final int? index;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     int selected = ref.watch(selectedProductNotifier);
     bool isActiveProductRegister = ref.watch(isProductsOpenedProvider);
-
+    final categories = ref.watch(categoriesNotifier).value;
+    ref.watch(filterNotifier);
     double height = MediaQuery.of(context).size.height;
 
     return LayoutBuilder(builder: (context, constraints) {
@@ -43,20 +43,22 @@ class ProductCard extends HookConsumerWidget {
               width: selected == index ? 450.0 : 400.0,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(15.0),
-                child: Container(
-                  color: product.categories.isNotEmpty
-                      ? Color(int.parse(
-                          '${categories.firstWhere((element) => element.documentId == product.categories).color}'))
-                      : Colors.grey[300],
-                  child: Column(
-                    children: [
-                      Text(
-                        product.name,
-                        style: Theme.of(context).textTheme.labelLarge,
+                child: categories != null
+                    ? Container(
+                        color: product.categories.isNotEmpty
+                            ? Color(int.parse(
+                                '${categories.firstWhere((element) => element.documentId == product.categories).color}'))
+                            : Colors.grey[300],
+                        child: Column(
+                          children: [
+                            Text(
+                              product.name,
+                              style: Theme.of(context).textTheme.labelLarge,
+                            )
+                          ],
+                        ),
                       )
-                    ],
-                  ),
-                ),
+                    : SizedBox(),
               ),
             ),
           ),
