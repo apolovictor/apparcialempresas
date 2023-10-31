@@ -30,6 +30,7 @@ class ProductCardImg extends HookConsumerWidget {
     // }
 
     List<UrlProduct> productstListPhoto = ref.watch(imageProductsNotifier);
+    print(true);
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(15.0),
@@ -39,25 +40,17 @@ class ProductCardImg extends HookConsumerWidget {
         width: double.infinity,
         height: height < 750 ? 100 : 150,
         child: product.logo != null
-            ?
-            // Image.network(
-            //     'gs://appparcial-123.appspot.com/products/amstel.svg',
-            //     loadingBuilder: (),
-            //     height: height < 750 ? 100 : 200,
-            //   )
-            productstListPhoto
+            ? productstListPhoto
                     .where((element) => element.title == product.logo)
                     .isNotEmpty
                 ? Card(
-                    // color: Colors.transparent,
+                    color: Colors.transparent,
                     elevation: 5,
                     child: SvgPicture.network(
                       productstListPhoto
                           .firstWhere(
                               (element) => element.title == product.logo)
                           .url,
-                      // cacheWidth: 380,
-                      // cacheHeight: height < 750 ? 100 : 150,
                       height: height < 750 ? 100 : 200,
                       // fit: BoxFit.cover,
                     )

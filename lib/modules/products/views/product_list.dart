@@ -12,15 +12,6 @@ class ProductsList extends HookConsumerWidget {
   ProductsList({
     super.key,
   });
-  // List<Product> products;
-
-  // ScrollController controller = ScrollController();
-  bool lloseLeftContainer = false;
-  double leftContainer = 0;
-  double middleList = 0;
-
-  List<Product> itemsData = [];
-  bool isTransform = false;
 
   double itemWidth = 300.0;
 
