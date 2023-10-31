@@ -20,7 +20,7 @@ class ProductScreen extends HookConsumerWidget {
     final filter = ref.watch(filterNotifier);
 
     List<Product> filteredProducts = ref.watch(filteredProductListProvider);
-    List<Product>? products = ref.watch(productsNotifier).value;
+    List<Product>? products = ref.watch(exampleProvider).value;
 
     bool isActiveEdit = ref.watch(isActiveEditNotifier);
     bool isActiveProductRegister = ref.watch(isProductsOpenedProvider);

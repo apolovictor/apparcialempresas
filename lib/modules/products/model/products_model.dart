@@ -126,3 +126,15 @@ class Filter {
     this.status,
   });
 }
+
+class UrlProduct {
+  String title;
+  String url;
+  String category;
+
+  UrlProduct({
+    required this.title,
+    required this.url,
+    required this.category,
+  });
+}

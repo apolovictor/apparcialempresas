@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../widgets/app_scaffold.dart';
+import '../controller/product_list.notifier.dart';
 import '../controller/products_notifier.dart';
 import '../model/products_model.dart';
 import 'home_products.dart';
@@ -17,7 +18,26 @@ class HomeProducts extends HookConsumerWidget {
     final filter = ref.watch(filterNotifier);
 
     List<Product> filteredProducts = ref.watch(filteredProductListProvider);
-    List<Product>? products = ref.watch(productsNotifier).value;
+    List<Product>? products = ref.watch(exampleProvider).value;
+
+    downloadUrl(product) async =>
+        await storage.ref("products").child(product).getDownloadURL();
+
+    updateImageToProductList() async {
+      if (products != null) {
+        for (var i = 0; i < products.length; i++) {
+          var imgLink = await downloadUrl(products[i].logo);
+
+          if (imgLink.isNotEmpty) {
+            ref.read(imageProductsNotifier.notifier).fetchimageProductList(
+                UrlProduct(
+                    title: products[i].logo!,
+                    url: imgLink,
+                    category: products[i].categories));
+          }
+        }
+      }
+    }
 
     useValueChanged(filter, (_, __) async {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -25,8 +45,17 @@ class HomeProducts extends HookConsumerWidget {
             products!
                 .where((product) => product.categories == filter['category'])
                 .toList());
+        ref.read(imageProductsNotifier.notifier).clear();
+        updateImageToProductList();
+        // ref.read(imageProductsNotifier.notifier).fetchimageFilteredProductList(
+        //     ref
+        //         .watch(imageProductsNotifier)
+        //         .where((e) => e.category == filter['category'])
+        //         .toList());
       });
     });
+
+    updateImageToProductList();
 
     return AppScaffold(
       pageTitle: "Produtos",

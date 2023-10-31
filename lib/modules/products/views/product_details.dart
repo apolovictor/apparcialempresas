@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:apparcialempresas/modules/products/controller/product_list.notifier.dart';
 import 'package:apparcialempresas/modules/products/model/products_model.dart';
 import 'package:flutter/material.dart';
@@ -23,9 +21,10 @@ class ProductDetailScreen extends HookConsumerWidget {
         useAnimationController(duration: const Duration(milliseconds: 750));
     int selected = ref.watch(selectedProductNotifier);
     final filter = ref.watch(filterNotifier);
+
     List<Product> products = filter['category'].isNotEmpty
         ? ref.watch(filteredProductListProvider)
-        : ref.watch(productsNotifier).value ?? [];
+        : ref.watch(exampleProvider).value ?? [];
 
     final Product product = products[selected];
     final Animation<double> containerScaleTweenAnimation =

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../controller/product_list.notifier.dart';
@@ -33,13 +31,18 @@ class ProductsList extends HookConsumerWidget {
     final filter = ref.watch(filterNotifier);
 
     List<Product> filteredProducts = ref.watch(filteredProductListProvider);
-    List<Product>? products = ref.watch(productsNotifier).value;
+    List<Product>? products = ref.watch(exampleProvider).value;
+    List<UrlProduct> productstListPhoto = ref.watch(imageProductsNotifier);
 
     FixedExtentScrollController scrollController =
         ref.watch(scrollListNotifier(selected));
 
     return products != null || filteredProducts.length > 0
         ? LayoutBuilder(builder: (context, constraints) {
+            print(products!.length);
+            print(productstListPhoto.length);
+            // print(filteredProducts.length == productstListPhoto.length);
+            // print(productstListPhoto.length);
             return SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: SizedBox(
@@ -59,16 +62,18 @@ class ProductsList extends HookConsumerWidget {
                         children: List.generate(
                             filter['category'].isNotEmpty
                                 ? filteredProducts.length
-                                : products!.length, (index) {
+                                : products.length, (index) {
                       return RotatedBox(
-                        quarterTurns: 1,
-                        child: ProductCard(
-                          index: index,
-                          product: filter['category'].isNotEmpty
-                              ? filteredProducts[index]
-                              : products![index],
-                        ),
-                      );
+                          quarterTurns: 1,
+                          child: filter['category'].isNotEmpty
+                              ? ProductCard(
+                                  index: index,
+                                  product: filteredProducts[index],
+                                )
+                              : ProductCard(
+                                  index: index,
+                                  product: products[index],
+                                ));
                     })),
                     itemExtent: itemWidth,
                   ),

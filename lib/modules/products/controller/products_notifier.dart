@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart' as cloudFirestore;
-import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../model/products_model.dart';
+import 'product_list.notifier.dart';
 
 cloudFirestore.FirebaseFirestore _firestore =
     cloudFirestore.FirebaseFirestore.instance;
@@ -42,6 +42,19 @@ class FilteredProductProvider extends StateNotifier<List<Product>> {
   }
 }
 
+class ImageProductsProvider extends StateNotifier<List<UrlProduct>> {
+  ImageProductsProvider() : super([]);
+
+  fetchimageProductList(UrlProduct img) {
+    state = [...state, img];
+  }
+
+  clear() => state.clear();
+}
+
+final imageProductsNotifier =
+    StateNotifierProvider<ImageProductsProvider, List<UrlProduct>>(
+        (ref) => ImageProductsProvider());
 final idDocumentNotifier = StateNotifierProvider<IdDocumentProvider, String>(
     (ref) => IdDocumentProvider());
 final filteredProductListProvider =
@@ -57,16 +70,84 @@ final categoriesNotifier = StreamProvider<List<Categories>>((ref) {
           snapshot.docs.map((doc) => Categories.fromDoc(doc)).toList());
 });
 
-final productsNotifier = StreamProvider<List<Product>>((ref) {
-  final products = _businessCollection
-      .doc(ref.watch(idDocumentNotifier))
-      .collection("products")
-      .where("")
-      .snapshots()
-      .map((snapshot) =>
-          snapshot.docs.map((doc) => Product.fromDoc(doc)).toList());
-  return products;
+// final productsNotifier = StreamProvider<List<Product>>((ref) {
+//   final products = _businessCollection
+//       .doc(ref.watch(idDocumentNotifier))
+//       .collection("products")
+//       .where("")
+//       .snapshots()
+//       .map((snapshot) {
+//     return snapshot.docs.map((doc) {
+//       Product product = Product.fromDoc(doc);
+
+//       return product;
+//     }).toList();
+//   });
+
+//   return products;
+// });
+
+final exampleProvider =
+    StreamNotifierProvider.autoDispose<ExampleNotifier, List<Product>>(() {
+  return ExampleNotifier();
 });
+
+class ExampleNotifier extends AutoDisposeStreamNotifier<List<Product>> {
+  downloadUrl(product) async =>
+      await storage.ref("products").child(product).getDownloadURL();
+
+  @override
+  Stream<List<Product>> build() {
+    return _businessCollection
+        .doc(ref.watch(idDocumentNotifier))
+        .collection("products")
+        .where("")
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs.map((doc) {
+        Product product = Product.fromDoc(doc);
+
+        return product;
+      }).toList();
+    });
+  }
+
+  updateImageToProductList(String photo, int index) async {
+    return await state.map(
+        data: (e) {
+          e.value[index].logo = photo;
+        },
+        error: (e) {},
+        loading: (e) {});
+  }
+}
+
+// Add methods to mutate the state
+
+// final productsProvider =
+//     NotifierProvider.autoDispose<ExampleNotifier, List<Product>>(
+//   ExampleNotifier.new,
+// );
+
+// class ExampleNotifier extends AutoDisposeNotifier<List<Product>> {
+//   @override
+//   List<Product> build() async {
+//     return _businessCollection
+//         .doc(ref.watch(idDocumentNotifier))
+//         .collection("products")
+//         .where("")
+//         .snapshots()
+//         .map((snapshot) {
+//       return snapshot.docs.map((doc) {
+//         Product product = Product.fromDoc(doc);
+
+//         return product;
+//       }).toList();
+//     });
+//   }
+
+//   // Add methods to mutate the state
+// }
 
 // class FilteredProductList extends StateNotifier {
 //   FilteredProductList() : super([]);
