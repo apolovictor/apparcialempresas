@@ -34,6 +34,7 @@ class ProductCardImg extends HookConsumerWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(15.0),
       child: Container(
+        color: Colors.transparent,
         padding: EdgeInsets.all(12),
         width: double.infinity,
         height: height < 750 ? 100 : 150,
@@ -48,6 +49,7 @@ class ProductCardImg extends HookConsumerWidget {
                     .where((element) => element.title == product.logo)
                     .isNotEmpty
                 ? Card(
+                    // color: Colors.transparent,
                     elevation: 5,
                     child: SvgPicture.network(
                       productstListPhoto
@@ -57,7 +59,7 @@ class ProductCardImg extends HookConsumerWidget {
                       // cacheWidth: 380,
                       // cacheHeight: height < 750 ? 100 : 150,
                       height: height < 750 ? 100 : 200,
-                      fit: BoxFit.cover,
+                      // fit: BoxFit.cover,
                     )
 
                     //  FutureBuilder<String>(
