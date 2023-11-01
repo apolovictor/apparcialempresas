@@ -8,8 +8,6 @@ import '../controller/products_notifier.dart';
 import '../model/products_model.dart';
 import 'product_card.dart';
 
-GlobalKey<AnimatedListState> _listKey2 = GlobalKey<AnimatedListState>();
-
 class ProductsList extends HookConsumerWidget {
   const ProductsList({
     super.key,
@@ -70,27 +68,17 @@ class ProductsList extends HookConsumerWidget {
                         children: List.generate(
                             filter['category'].isNotEmpty
                                 ? filteredProducts.length
-                                : products!.length, (index) {
+                                : products.length, (index) {
                       return RotatedBox(
                           quarterTurns: 1,
                           child: filter['category'].isNotEmpty
                               ? ProductCard(
                                   index: index,
                                   product: filteredProducts[index],
-                                  remotePicture: RemotePicture(
-                                    mapKey: products![index].logo!,
-                                    imagePath:
-                                        'gs://appparcial-123.appspot.com/products/${products![index].logo!}',
-                                  ),
                                 )
                               : ProductCard(
                                   index: index,
-                                  product: products![index],
-                                  remotePicture: RemotePicture(
-                                    mapKey: products[index].logo!,
-                                    imagePath:
-                                        'gs://appparcial-123.appspot.com/products/${products[index].logo!}',
-                                  ),
+                                  product: products[index],
                                 ));
                     })),
                     itemExtent: itemWidth,

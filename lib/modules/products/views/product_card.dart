@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:cached_firestorage/lib.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -14,12 +13,10 @@ class ProductCard extends HookConsumerWidget {
     super.key,
     required this.product,
     required this.index,
-    required this.remotePicture,
   });
 
   final Product product;
 
-  final RemotePicture remotePicture;
   final int index;
 
   @override
@@ -63,7 +60,6 @@ class ProductCard extends HookConsumerWidget {
                             children: [
                               ProductCardImg(
                                 product: product,
-                                remotePicture: remotePicture,
                               ),
                               Text(
                                 product.name,
