@@ -1,3 +1,4 @@
+import 'package:cached_firestorage/lib.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -25,48 +26,31 @@ class ProductsList extends HookConsumerWidget {
     List<Product> filteredProducts = ref.watch(filteredProductListProvider);
     List<Product>? products = ref.watch(exampleProvider).value;
 
-    downloadUrl(product) async =>
-        await storage.ref("products").child(product).getDownloadURL();
-
-    updateImageToProductList() async {
-      print(true);
-      if (products != null) {
-        for (var i = 0; i < products.length; i++) {
-          var imgLink = await downloadUrl(products[i].logo);
-
-          if (imgLink.isNotEmpty) {
-            ref.read(imageProductsNotifier.notifier).fetchimageProductList(
-                UrlProduct(
-                    title: products[i].logo!,
-                    url: imgLink,
-                    category: products[i].categories));
-          }
-        }
-      }
-    }
-
     useValueChanged(filter, (_, __) async {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ref.read(filteredProductListProvider.notifier).fetchFilteredList(
             products!
                 .where((product) => product.categories == filter['category'])
                 .toList());
-        ref.read(imageProductsNotifier.notifier).clear();
-        updateImageToProductList();
       });
     });
-
-    if (selected == -1) {
-      updateImageToProductList();
-    }
-
-    print(selected);
 
     FixedExtentScrollController scrollController =
         ref.watch(scrollListNotifier(selected));
 
     return products != null || filteredProducts.length > 0
         ? LayoutBuilder(builder: (context, constraints) {
+            for (var i = 0; i < products!.length; i++) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                ref
+                    .read(pictureProductListProvider.notifier)
+                    .fetchPictureList(RemotePicture(
+                      mapKey: products[i].logo!,
+                      imagePath:
+                          'gs://appparcial-123.appspot.com/products/${products[i].logo!}',
+                    ));
+              });
+            }
             return SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: SizedBox(
@@ -93,10 +77,20 @@ class ProductsList extends HookConsumerWidget {
                               ? ProductCard(
                                   index: index,
                                   product: filteredProducts[index],
+                                  remotePicture: RemotePicture(
+                                    mapKey: products![index].logo!,
+                                    imagePath:
+                                        'gs://appparcial-123.appspot.com/products/${products![index].logo!}',
+                                  ),
                                 )
                               : ProductCard(
                                   index: index,
                                   product: products![index],
+                                  remotePicture: RemotePicture(
+                                    mapKey: products[index].logo!,
+                                    imagePath:
+                                        'gs://appparcial-123.appspot.com/products/${products[index].logo!}',
+                                  ),
                                 ));
                     })),
                     itemExtent: itemWidth,
@@ -105,6 +99,6 @@ class ProductsList extends HookConsumerWidget {
               ),
             );
           })
-        : SizedBox();
+        : const SizedBox();
   }
 }

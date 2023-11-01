@@ -9,7 +9,7 @@ import '../model/products_model.dart';
 import 'home_products.dart';
 
 class HomeProducts extends HookConsumerWidget {
-  const HomeProducts({Key? key}) : super(key: key);
+  const HomeProducts({super.key});
 
   // final Key dataKey = new GlobalKey();
 
@@ -95,7 +95,7 @@ class HomeProducts extends HookConsumerWidget {
                     ),
               ),
             )
-          : SizedBox(),
+          : const SizedBox(),
       key: key,
     );
   }

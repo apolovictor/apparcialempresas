@@ -1,8 +1,7 @@
 import 'dart:ui';
 
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:cached_firestorage/lib.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../controller/product_list.notifier.dart';
@@ -15,17 +14,18 @@ class ProductCard extends HookConsumerWidget {
     super.key,
     required this.product,
     required this.index,
-    this.productPhoto,
+    required this.remotePicture,
   });
 
   final Product product;
-  final String? productPhoto;
 
+  final RemotePicture remotePicture;
   final int index;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     int selected = ref.watch(selectedProductNotifier);
+
     bool isActiveProductRegister = ref.watch(isProductsOpenedProvider);
     final categories = ref.watch(categoriesNotifier).value;
 
@@ -63,6 +63,7 @@ class ProductCard extends HookConsumerWidget {
                             children: [
                               ProductCardImg(
                                 product: product,
+                                remotePicture: remotePicture,
                               ),
                               Text(
                                 product.name,
@@ -108,7 +109,7 @@ class ProductCard extends HookConsumerWidget {
                     child: AnimatedOpacity(
                       opacity: selected == index ? 1.0 : 0.0,
                       duration: const Duration(milliseconds: 500),
-                      child: SingleChildScrollView(
+                      child: const SingleChildScrollView(
                         child: Column(
                           children: [
                             Text("Bloquear"),
@@ -166,7 +167,7 @@ class ProductCard extends HookConsumerWidget {
                         ref
                             .read(isProductsOpenedProvider.notifier)
                             .fetch(false);
-                        Future.delayed(Duration(milliseconds: 400), () {
+                        Future.delayed(const Duration(milliseconds: 400), () {
                           ref
                               .read(isActiveEditNotifier.notifier)
                               .setIsActiveEdit(true);

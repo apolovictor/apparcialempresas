@@ -1,4 +1,6 @@
+import 'package:cached_firestorage/lib.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' as cloudFirestore;
+import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -42,6 +44,14 @@ class FilteredProductProvider extends StateNotifier<List<Product>> {
   }
 }
 
+class PictureProductProvider extends StateNotifier<List<RemotePicture>> {
+  PictureProductProvider() : super([]);
+
+  fetchPictureList(img) {
+    state = [...state, img];
+  }
+}
+
 class ImageProductsProvider extends StateNotifier<List<UrlProduct>> {
   ImageProductsProvider() : super([]);
 
@@ -57,6 +67,9 @@ final imageProductsNotifier =
         (ref) => ImageProductsProvider());
 final idDocumentNotifier = StateNotifierProvider<IdDocumentProvider, String>(
     (ref) => IdDocumentProvider());
+final pictureProductListProvider =
+    StateNotifierProvider<PictureProductProvider, List<RemotePicture>>(
+        (ref) => PictureProductProvider());
 final filteredProductListProvider =
     StateNotifierProvider<FilteredProductProvider, List<Product>>(
         (ref) => FilteredProductProvider());
