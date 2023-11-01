@@ -51,19 +51,6 @@ class PictureProductProvider extends StateNotifier<List<RemotePicture>> {
   }
 }
 
-class ImageProductsProvider extends StateNotifier<List<UrlProduct>> {
-  ImageProductsProvider() : super([]);
-
-  fetchimageProductList(UrlProduct img) {
-    state = [...state, img];
-  }
-
-  clear() => state.clear();
-}
-
-final imageProductsNotifier =
-    StateNotifierProvider<ImageProductsProvider, List<UrlProduct>>(
-        (ref) => ImageProductsProvider());
 final idDocumentNotifier = StateNotifierProvider<IdDocumentProvider, String>(
     (ref) => IdDocumentProvider());
 final pictureProductListProvider =

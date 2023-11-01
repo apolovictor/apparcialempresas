@@ -68,26 +68,12 @@ class ProductListSize extends StateNotifier<double> {
   setSize(size) => state = size;
 }
 
-class ImageProductProvider extends StateNotifier<String> {
-  ImageProductProvider() : super("");
-
-  downloadUrl(product) async {
-    var downloadUrl =
-        await storage.ref("products").child(product).getDownloadURL();
-
-    state = downloadUrl;
-  }
-}
-
 final imgProvider = FutureProvider<String>((ref) async {
   if (ref.state.isRefreshing) {}
 
   return "";
 });
 
-final imageProductNotifier =
-    StateNotifierProvider<ImageProductProvider, String>(
-        (ref) => ImageProductProvider());
 final isActiveEditNotifier = StateNotifierProvider<IsQuickEditProvider, bool>(
     (ref) => IsQuickEditProvider());
 
