@@ -1,47 +1,57 @@
+import 'package:flutter/material.dart';
+
 class Product {
   String categories;
-  String color;
+  String primaryColor;
+  String secondaryColor;
   String name;
   Map<String, dynamic> price;
   String quantity;
   String? description;
   String? logo;
   int status;
+  String? documentId;
 
   Product({
     required this.categories,
-    required this.color,
+    required this.primaryColor,
+    required this.secondaryColor,
     required this.name,
     required this.price,
     required this.quantity,
     this.description,
     this.logo,
     required this.status,
+    this.documentId,
   });
 
   Map<dynamic, dynamic> toMap() {
     return {
       'categories': categories,
-      'color': color,
+      'color': primaryColor,
+      'secondaryColor': secondaryColor,
       'name': name,
       'price': price,
       'quantity': quantity,
       'description': description,
       'photo_url': logo,
       'status': status,
+      'documentId': documentId,
     };
   }
 
   static Product fromDoc(dynamic doc) {
     return Product(
       categories: doc.data()['categories'],
-      color: doc.data()['color'],
+      primaryColor: doc.data()['color'],
+      secondaryColor: doc.data()['secondaryColor'],
       name: doc.data()['name'],
       price: doc.data()['price'],
       quantity: doc.data()['quantity'],
       description: doc.data()['description'],
       logo: doc.data()['photo_url'],
       status: doc.data()['status'],
+      documentId: doc.id,
     );
   }
 }
@@ -136,5 +146,15 @@ class UrlProduct {
     required this.title,
     required this.url,
     required this.category,
+  });
+}
+
+class OffsetProduct {
+  String documentId;
+  Offset offSet;
+
+  OffsetProduct({
+    required this.documentId,
+    required this.offSet,
   });
 }

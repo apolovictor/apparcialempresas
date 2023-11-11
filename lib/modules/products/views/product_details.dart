@@ -63,7 +63,7 @@ class ProductDetailScreen extends HookConsumerWidget {
                             padding: const EdgeInsets.all(8.0),
                             clipBehavior: Clip.antiAlias,
                             decoration: BoxDecoration(
-                                color: Color(int.parse(product.color)),
+                                color: Color(int.parse(product.primaryColor)),
                                 borderRadius: BorderRadius.circular(
                                     containerBorderRadiusAnimation.value)),
                             child: child,

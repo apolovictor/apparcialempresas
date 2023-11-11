@@ -1,5 +1,6 @@
 import 'package:cached_firestorage/lib.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' as cloudFirestore;
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -16,7 +17,7 @@ var filterNotifier = StateProvider((_) => <String, dynamic>{
     });
 
 var categoryNotifier = StateProvider((_) => "");
-var statusNotifier = StateProvider((_) => 0);
+var statusNotifier = StateProvider((_) => 1);
 
 class IdDocumentProvider extends StateNotifier<String> {
   IdDocumentProvider() : super(idDocument);
@@ -43,8 +44,34 @@ class FilteredProductProvider extends StateNotifier<List<Product>> {
   }
 }
 
+class GlobalKeyProductProvider extends StateNotifier<List<LabeledGlobalKey>> {
+  GlobalKeyProductProvider() : super([]);
+
+  fetchGlobalKeyList(List<LabeledGlobalKey> list) {
+    state = [...list];
+  }
+}
+
+class OffsetKeyProductProvider extends StateNotifier<List<OffsetProduct>> {
+  OffsetKeyProductProvider() : super([]);
+
+  fetchOffsetList(OffsetProduct item) {
+    state = [...state, item];
+  }
+
+  updateOffSetList(OffsetProduct item, int index) {
+    state[index] = item;
+  }
+}
+
 class PictureProductProvider extends StateNotifier<List<RemotePicture>> {
   PictureProductProvider() : super([]);
+
+  // static RemotePicture imgs = const RemotePicture(
+  //   imagePath: '',
+  //   mapKey: '',
+  //   fit: BoxFit.fill,
+  // );
 
   fetchPictureList(img) {
     state = [...state, img];
@@ -59,6 +86,12 @@ final pictureProductListProvider =
 final filteredProductListProvider =
     StateNotifierProvider<FilteredProductProvider, List<Product>>(
         (ref) => FilteredProductProvider());
+final globalKeyListProvider =
+    StateNotifierProvider<GlobalKeyProductProvider, List<LabeledGlobalKey>>(
+        (ref) => GlobalKeyProductProvider());
+final offsetListProvider =
+    StateNotifierProvider<OffsetKeyProductProvider, List<OffsetProduct>>(
+        (ref) => OffsetKeyProductProvider());
 
 final categoriesNotifier = StreamProvider<List<Categories>>((ref) {
   return _businessCollection
@@ -100,7 +133,7 @@ class ExampleNotifier extends AutoDisposeStreamNotifier<List<Product>> {
     return _businessCollection
         .doc(ref.watch(idDocumentNotifier))
         .collection("products")
-        .where("")
+        .where('status', isEqualTo: ref.watch(statusNotifier))
         .snapshots()
         .map((snapshot) {
       return snapshot.docs.map((doc) {
@@ -275,6 +308,22 @@ getCategoriesController(WidgetRef ref) {
 
   if (isOpened) {
     controller.forward();
+  } else {
+    controller.reverse();
+  }
+
+  return controller;
+}
+
+getQuickFieldsController(WidgetRef ref) {
+  final controller =
+      useAnimationController(duration: const Duration(milliseconds: 150));
+  final isOpened = ref.watch(isActiveEditNotifier);
+
+  if (isOpened) {
+    Future.delayed(const Duration(milliseconds: 400), () {
+      controller.forward();
+    });
   } else {
     controller.reverse();
   }

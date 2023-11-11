@@ -1,9 +1,14 @@
+import 'package:apparcialempresas/modules/products/widgets/quick_fields.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'dart:math' as math;
 
 import '../controller/product_list.notifier.dart';
 import '../controller/products_notifier.dart';
 import '../model/products_model.dart';
+import '../widgets/submit_button.dart';
 import 'categories_list.dart';
 import 'product_details_impl.dart';
 import 'product_list.dart';
@@ -18,6 +23,13 @@ class ProductScreen extends HookConsumerWidget {
     double height = MediaQuery.of(context).size.height;
     int productSelected = ref.watch(selectedProductNotifier);
     final filter = ref.watch(filterNotifier);
+    final TextEditingController productNameController = TextEditingController();
+    final TextEditingController productPriceController =
+        TextEditingController();
+    final TextEditingController productPromoController =
+        TextEditingController();
+    final TextEditingController productQuantityController =
+        TextEditingController();
 
     List<Product> filteredProducts = ref.watch(filteredProductListProvider);
     List<Product>? products = ref.watch(exampleProvider).value;
@@ -37,6 +49,10 @@ class ProductScreen extends HookConsumerWidget {
         Tween(begin: .0, end: MediaQuery.of(context).size.width * 0.3).animate(
             CurvedAnimation(
                 parent: getCategoriesController(ref), curve: Curves.ease));
+
+    final Animation<double> animation = Tween(begin: .0, end: 1.0).animate(
+        CurvedAnimation(
+            parent: getQuickFieldsController(ref), curve: Curves.ease));
 
     final Animation<double> containerAlignTweenAnimation =
         Tween(begin: 0.0, end: -1.0).animate(CurvedAnimation(
@@ -64,6 +80,25 @@ class ProductScreen extends HookConsumerWidget {
           );
         },
       );
+    }
+
+    get_chip(Product tagTable, int index) {
+      return Container(
+        // width: 200,
+        // height: 200,
+        child: productSelected > -1
+            ? ref.watch(pictureProductListProvider).firstWhere(
+                (element) => element.mapKey == products![productSelected].logo)
+            : SizedBox(),
+      );
+    }
+
+    generate_tags() {
+      return products!
+          .asMap()
+          .entries
+          .map((tag) => get_chip(tag.value, tag.key))
+          .toList();
     }
 
     return Scaffold(
@@ -251,99 +286,258 @@ class ProductScreen extends HookConsumerWidget {
                         width: (isActiveEdit && productSelected > -1)
                             ? width * 0.3
                             : 0,
-                        height: constraints.maxHeight,
+                        height: MediaQuery.of(context).size.height,
                         color: productSelected > -1
                             ? filter['category'].isNotEmpty &&
                                     filteredProducts.isNotEmpty
                                 ? Color(int.parse(
-                                    filteredProducts[productSelected].color))
+                                    filteredProducts[productSelected]
+                                        .primaryColor))
                                 : products!.isNotEmpty
                                     ? Color(int.parse(
-                                        products[productSelected].color))
+                                        products[productSelected].primaryColor))
                                     : Colors.transparent
                             : Colors.transparent,
                         child: LayoutBuilder(builder: (context, constraints) {
-                          return Hero(
-                            tag: 'detailProduct',
-                            flightShuttleBuilder: (_,
-                                Animation<double> animation, __, ___, ____) {
-                              final customAnimation = Tween<double>(
-                                      begin: 0, end: constraints.maxWidth * 0.3)
-                                  .animate(animation);
+                          return Stack(
+                            children: [
+                              Positioned(
+                                top: 0,
+                                right: 0,
+                                child: AnimatedContainer(
+                                    duration: const Duration(milliseconds: 700),
+                                    height: height * 0.4,
+                                    width:
+                                        (isActiveEdit && productSelected > -1)
+                                            ? width * 0.3
+                                            : 0,
+                                    child: productSelected > -1
+                                        ? filter['category'].isNotEmpty &&
+                                                filteredProducts.isNotEmpty
+                                            ? ref
+                                                .watch(
+                                                    pictureProductListProvider)
+                                                .firstWhere((element) =>
+                                                    element.mapKey ==
+                                                    filteredProducts[
+                                                            productSelected]
+                                                        .logo)
+                                            : ref
+                                                .watch(
+                                                    pictureProductListProvider)
+                                                .firstWhere((element) =>
+                                                    element.mapKey ==
+                                                    products![productSelected]
+                                                        .logo)
+                                        : SizedBox()
+                                    // Stack(
+                                    //   children: [
+                                    //     ListView(
+                                    //         scrollDirection: Axis.horizontal,
+                                    //         itemExtent: 300,
+                                    //         children: <Widget>[
+                                    //           ...generate_tags()
+                                    //         ])
+                                    //   ],
+                                    // ),
+                                    ),
+                              ),
+                              Positioned(
+                                  top: height * 0.55,
+                                  child: SizedBox(
+                                    width: width * 0.3,
+                                    height: height * 0.4,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 30.0),
+                                      child: Column(
+                                        children: [
+                                          ScaleTransition(
+                                            scale: animation,
+                                            child: fieldWidget(
+                                              productNameController,
+                                              "Nome",
+                                              context,
+                                              productSelected > -1
+                                                  ? filter['category']
+                                                              .isNotEmpty &&
+                                                          filteredProducts
+                                                              .isNotEmpty
+                                                      ? Color(int.parse(
+                                                          filteredProducts[
+                                                                  productSelected]
+                                                              .secondaryColor))
+                                                      : products!.isNotEmpty
+                                                          ? Color(int.parse(products[
+                                                                  productSelected]
+                                                              .secondaryColor))
+                                                          : Colors.transparent
+                                                  : Colors.transparent,
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            height: 20,
+                                          ),
+                                          ScaleTransition(
+                                            scale: animation,
+                                            child: fieldWidget(
+                                              productPriceController,
+                                              "Preço",
+                                              context,
+                                              productSelected > -1
+                                                  ? filter['category']
+                                                              .isNotEmpty &&
+                                                          filteredProducts
+                                                              .isNotEmpty
+                                                      ? Color(int.parse(
+                                                          filteredProducts[
+                                                                  productSelected]
+                                                              .secondaryColor))
+                                                      : products!.isNotEmpty
+                                                          ? Color(int.parse(products[
+                                                                  productSelected]
+                                                              .secondaryColor))
+                                                          : Colors.transparent
+                                                  : Colors.transparent,
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            height: 20,
+                                          ),
+                                          ScaleTransition(
+                                            scale: animation,
+                                            child: fieldWidget(
+                                              productPromoController,
+                                              "Promoção",
+                                              context,
+                                              productSelected > -1
+                                                  ? filter['category']
+                                                              .isNotEmpty &&
+                                                          filteredProducts
+                                                              .isNotEmpty
+                                                      ? Color(int.parse(
+                                                          filteredProducts[
+                                                                  productSelected]
+                                                              .secondaryColor))
+                                                      : products!.isNotEmpty
+                                                          ? Color(int.parse(products[
+                                                                  productSelected]
+                                                              .secondaryColor))
+                                                          : Colors.transparent
+                                                  : Colors.transparent,
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            height: 20,
+                                          ),
+                                          ScaleTransition(
+                                            scale: animation,
+                                            child: fieldWidget(
+                                              productQuantityController,
+                                              "Quantidade",
+                                              context,
+                                              productSelected > -1
+                                                  ? filter['category']
+                                                              .isNotEmpty &&
+                                                          filteredProducts
+                                                              .isNotEmpty
+                                                      ? Color(int.parse(
+                                                          filteredProducts[
+                                                                  productSelected]
+                                                              .secondaryColor))
+                                                      : products!.isNotEmpty
+                                                          ? Color(int.parse(products[
+                                                                  productSelected]
+                                                              .secondaryColor))
+                                                          : Colors.transparent
+                                                  : Colors.transparent,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  )),
+                              Container(
+                                alignment: Alignment.bottomCenter,
 
-                              return AnimatedBuilder(
-                                  animation: customAnimation,
-                                  builder: (context, child) {
-                                    return SizedBox();
-                                    // ProductDetails();
-                                  });
-                            },
-                            child: Stack(
-                              children: [
-                                SingleChildScrollView(
-                                  child: Stack(
-                                    children: [
-                                      Align(
-                                        alignment: const Alignment(-1.1, -1),
-                                        child: InkWell(
-                                          onTap: () {
-                                            ref
-                                                .read(isActiveEditNotifier
-                                                    .notifier)
-                                                .setIsActiveEdit(false);
-                                          },
-                                          child: Container(
-                                            height: 50.0,
-                                            width: 50.0,
-                                            decoration: BoxDecoration(
-                                                color: Colors.black87,
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        30.0)),
-                                            child: const Icon(
-                                              Icons.close,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: constraints.maxHeight,
-                                        child: AnimatedAlign(
-                                          duration:
-                                              const Duration(milliseconds: 375),
-                                          alignment: Alignment(
-                                              -1.2,
-                                              constraints.maxWidth ==
-                                                      width * 0.3
-                                                  ? 0
-                                                  : -1),
-                                          child: Container(
-                                            height: 75.0,
-                                            width: 75.0,
-                                            decoration: BoxDecoration(
-                                                color: Colors.black87,
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        50.0)),
-                                            child: InkWell(
-                                              onTap: () {
-                                                Navigator.of(context)
-                                                    .push(createRoute());
-                                              },
-                                              child: const Icon(
-                                                Icons.arrow_back,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                                child: SubmitButton(
+                                  buttonName: "Salvar",
+                                  animation: animation,
+                                ),
+                                // )
+                              ),
+                              Align(
+                                alignment: const Alignment(-1.1, -1),
+                                child: InkWell(
+                                  onTap: () {
+                                    ref
+                                        .read(isActiveEditNotifier.notifier)
+                                        .setIsActiveEdit(false);
+                                  },
+                                  child: Container(
+                                    height: 50.0,
+                                    width: 50.0,
+                                    decoration: BoxDecoration(
+                                        color: Colors.black87,
+                                        borderRadius:
+                                            BorderRadius.circular(30.0)),
+                                    child: const Icon(
+                                      Icons.close,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
-                              ],
-                            ),
+                              ),
+                              Hero(
+                                tag: 'detailProduct',
+                                flightShuttleBuilder: (_,
+                                    Animation<double> animation,
+                                    __,
+                                    ___,
+                                    ____) {
+                                  final customAnimation = Tween<double>(
+                                          begin: 0,
+                                          end: constraints.maxWidth * 0.3)
+                                      .animate(animation);
+
+                                  return AnimatedBuilder(
+                                      animation: customAnimation,
+                                      builder: (context, child) {
+                                        return const SizedBox();
+                                        // ProductDetails();
+                                      });
+                                },
+                                child: SizedBox(
+                                  height: height,
+                                  child: AnimatedAlign(
+                                    duration: const Duration(milliseconds: 375),
+                                    alignment: Alignment(
+                                        -1.2,
+                                        constraints.maxWidth == width * 0.3
+                                            ? 0
+                                            : -1),
+                                    child: Container(
+                                      height: 75.0,
+                                      width: 75.0,
+                                      decoration: BoxDecoration(
+                                          color: Colors.black87,
+                                          borderRadius:
+                                              BorderRadius.circular(50.0)),
+                                      child: InkWell(
+                                        onTap: () {
+                                          Navigator.of(context)
+                                              .push(createRoute());
+                                        },
+                                        child: const Icon(
+                                          Icons.arrow_back,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           );
                         }),
                       ),
@@ -389,9 +583,6 @@ class ProductScreen extends HookConsumerWidget {
                                 },
                               ),
                             ),
-                            // Row(
-                            //   children: [],
-                            // ),
                           ],
                         ),
                       ),

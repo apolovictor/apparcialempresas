@@ -17,6 +17,13 @@ class HomeProducts extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     List<Product> filteredProducts = ref.watch(filteredProductListProvider);
     List<Product>? products = ref.watch(exampleProvider).value;
+    // if (products != null) {
+    //   WidgetsBinding.instance.addPostFrameCallback((_) {
+    //     ref.read(globalKeyListProvider.notifier).fetchGlobalKeyList(
+    //         [...products.map((e) => LabeledGlobalKey(e.documentId!))]);
+    //   });
+    //   // print(products.length);
+    // }
 
     return AppScaffold(
       pageTitle: "Produtos",
