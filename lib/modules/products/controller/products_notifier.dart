@@ -317,13 +317,13 @@ getCategoriesController(WidgetRef ref) {
 
 getQuickFieldsController(WidgetRef ref) {
   final controller =
-      useAnimationController(duration: const Duration(milliseconds: 150));
+      useAnimationController(duration: const Duration(milliseconds: 500));
   final isOpened = ref.watch(isActiveEditNotifier);
 
   if (isOpened) {
-    Future.delayed(const Duration(milliseconds: 400), () {
-      controller.forward();
-    });
+    // Future.delayed(const Duration(milliseconds: 100), () {
+    controller.forward();
+    // });
   } else {
     controller.reverse();
   }
