@@ -67,14 +67,30 @@ class OffsetKeyProductProvider extends StateNotifier<List<OffsetProduct>> {
 class PictureProductProvider extends StateNotifier<List<RemotePicture>> {
   PictureProductProvider() : super([]);
 
-  // static RemotePicture imgs = const RemotePicture(
-  //   imagePath: '',
-  //   mapKey: '',
-  //   fit: BoxFit.fill,
-  // );
+  fetchPictureList(RemotePicture img, int length) {
+    if (state.length < length) {
+      state = [...state, img];
+    }
+    // print('length ======== $length');
+    // print('state.length ======== ${state.length}');
+    // state.forEach((e) {
+    //   print(e.mapKey);
+    // });
+  }
+}
 
-  fetchPictureList(img) {
-    state = [...state, img];
+class PictureCategoriesProvider extends StateNotifier<List<RemotePicture>> {
+  PictureCategoriesProvider() : super([]);
+
+  fetchCategoriesList(RemotePicture img, int length) {
+    if (state.length < length) {
+      state = [...state, img];
+    }
+    // print('length ======== $length');
+    // print('state.length ======== ${state.length}');
+    // state.forEach((e) {
+    //   print(e.mapKey);
+    // });
   }
 }
 
@@ -83,6 +99,9 @@ final idDocumentNotifier = StateNotifierProvider<IdDocumentProvider, String>(
 final pictureProductListProvider =
     StateNotifierProvider<PictureProductProvider, List<RemotePicture>>(
         (ref) => PictureProductProvider());
+final pictureCategoriesListProvider =
+    StateNotifierProvider<PictureCategoriesProvider, List<RemotePicture>>(
+        (ref) => PictureCategoriesProvider());
 final filteredProductListProvider =
     StateNotifierProvider<FilteredProductProvider, List<Product>>(
         (ref) => FilteredProductProvider());
@@ -369,7 +388,7 @@ final isProductDetailOpenedProvider =
     StateNotifierProvider<IsCategoriesOpeneNotifier, bool>(
         (ref) => IsCategoriesOpeneNotifier());
 
-getCategoriesController(WidgetRef ref) {
+AnimationController getCategoriesController(WidgetRef ref) {
   final isOpened = ref.watch(isCategoriesOpenedProvider);
 
   final controller =
@@ -384,7 +403,7 @@ getCategoriesController(WidgetRef ref) {
   return controller;
 }
 
-getQuickFieldsController(WidgetRef ref) {
+AnimationController getQuickFieldsController(WidgetRef ref) {
   final controller =
       useAnimationController(duration: const Duration(milliseconds: 500));
   final isOpened = ref.watch(isActiveEditNotifier);
@@ -400,7 +419,7 @@ getQuickFieldsController(WidgetRef ref) {
   return controller;
 }
 
-getProductAddController(WidgetRef ref) {
+AnimationController getProductAddController(WidgetRef ref) {
   final controller =
       useAnimationController(duration: const Duration(milliseconds: 500));
   final isOpened = ref.watch(isProductsOpenedProvider);

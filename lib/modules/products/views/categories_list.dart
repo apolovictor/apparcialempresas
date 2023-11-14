@@ -1,3 +1,5 @@
+import 'package:apparcialempresas/constants/colors.dart';
+import 'package:cached_firestorage/lib.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -8,6 +10,14 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../controller/product_list.notifier.dart';
 import '../controller/products_notifier.dart';
+import '../widgets/soft_control.dart';
+
+Future<String> downloadUrl(icon) async {
+  var downloadUrl =
+      storage.ref("categories_icons").child(icon).getDownloadURL();
+
+  return downloadUrl;
+}
 
 GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
 final storage = FirebaseStorage.instance;
@@ -43,11 +53,18 @@ class CategoriesList extends HookConsumerWidget {
         .animate(categoriesController);
     categoriesController.forward();
 
-    Future<String> downloadUrl(icon) async {
-      var downloadUrl =
-          storage.ref("categories_icons").child(icon).getDownloadURL();
-
-      return downloadUrl;
+    if (categories != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        for (var i = 0; i < categories.length; i++) {
+          ref.read(pictureCategoriesListProvider.notifier).fetchCategoriesList(
+              RemotePicture(
+                mapKey: categories[i].documentId,
+                imagePath:
+                    'gs://appparcial-123.appspot.com/categories_icons/${categories[i].documentId}.png',
+              ),
+              categories.length);
+        }
+      });
     }
 
     return Container(
@@ -55,13 +72,13 @@ class CategoriesList extends HookConsumerWidget {
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
-          child: categories?.length != null
+          child: categories != null
               ? AnimatedBuilder(
                   key: _listKey,
                   animation: categoriesController,
                   builder: (context, child) => AnimationLimiter(
                     child: Row(
-                      children: categories!
+                      children: categories
                           .map((category) =>
                               AnimationConfiguration.staggeredList(
                                 position: categories.indexWhere(
@@ -69,76 +86,148 @@ class CategoriesList extends HookConsumerWidget {
                                 child: SlideAnimation(
                                   horizontalOffset:
                                       MediaQuery.of(context).size.width,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(right: 50.0),
-                                    child: Column(
-                                      children: [
-                                        MaterialButton(
-                                          shape: CircleBorder(),
-                                          onPressed: () {
-                                            ref
-                                                .read(selectedProductNotifier
-                                                    .notifier)
-                                                .setSelected(0);
-                                            ref
-                                                .read(categoryNotifier.notifier)
-                                                .state = category.documentId;
-                                            ref
-                                                .read(filterNotifier.notifier)
-                                                .state = {
-                                              "category":
-                                                  ref.watch(categoryNotifier),
-                                              "status":
-                                                  ref.watch(statusNotifier),
-                                            };
-                                          },
-                                          child: CircleAvatar(
-                                              radius: sequenceAnimation[
-                                                      'avatarSize']
-                                                  .value,
-                                              backgroundColor: Color(int.parse(
-                                                  '${category.color != null ? category.color : 0xFFF4F4F6}')),
-                                              child: FutureBuilder<String>(
-                                                  future: downloadUrl(
-                                                      category.icon),
-                                                  builder: (context, snapshot) {
-                                                    if (snapshot
-                                                            .connectionState ==
-                                                        ConnectionState
-                                                            .waiting) {
-                                                      return const Center(
-                                                        child:
-                                                            CircularProgressIndicator(),
-                                                      );
-                                                    } else {
-                                                      if (snapshot.data !=
-                                                          null) {
-                                                        return SvgPicture
-                                                            .network(
-                                                          snapshot.data
-                                                              .toString(),
-                                                          color: Colors.black,
-                                                          height:
-                                                              sequenceAnimation[
-                                                                      'iconSize']
-                                                                  .value,
-                                                        );
-                                                      } else {
-                                                        return const SizedBox();
-                                                      }
-                                                    }
-                                                  })),
+                                  child: Column(
+                                    children: [
+                                      MaterialButton(
+                                        shape: const CircleBorder(),
+                                        onPressed: () {
+                                          ref
+                                              .read(selectedProductNotifier
+                                                  .notifier)
+                                              .setSelected(0);
+                                          ref
+                                              .read(categoryNotifier.notifier)
+                                              .state = category.documentId;
+                                          ref
+                                              .read(filterNotifier.notifier)
+                                              .state = {
+                                            "category":
+                                                ref.watch(categoryNotifier),
+                                            "status": ref.watch(statusNotifier),
+                                          };
+                                        },
+                                        child: CircularSoftButton(
+                                          radius:
+                                              sequenceAnimation['avatarSize']
+                                                      .value +
+                                                  60,
+                                          avatarSize:
+                                              sequenceAnimation['iconSize']
+                                                      .value +
+                                                  20,
+                                          category: category,
                                         ),
-                                        const SizedBox(height: 15),
-                                        Text(
-                                          category.name.toUpperCase(),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyLarge!
-                                              .apply(color: Colors.grey[500]),
-                                        ),
-                                      ],
-                                    ),
+
+                                        // CircularSoftButton(
+                                        //   radius:
+                                        //       sequenceAnimation['avatarSize']
+                                        //               .value +
+                                        //           50,
+                                        //   avatarSize:
+                                        //       sequenceAnimation['iconSize']
+                                        //               .value +
+                                        //           20,
+                                        //   icon: ref
+                                        //           .watch(
+                                        //               pictureCategoriesListProvider)
+                                        //           .isNotEmpty
+                                        //       ? CircleAvatar(
+                                        //           maxRadius:
+                                        //               sequenceAnimation[
+                                        //                       'iconSize']
+                                        //                   .value,
+                                        //           child: RemotePicture(
+                                        //             imagePath: ref
+                                        //                 .watch(
+                                        //                     pictureCategoriesListProvider)
+                                        //                 .firstWhere((element) =>
+                                        //                     element.mapKey ==
+                                        //                     category
+                                        //                         .documentId)
+                                        //                 .imagePath,
+                                        //             mapKey: ref
+                                        //                 .watch(
+                                        //                     pictureCategoriesListProvider)
+                                        //                 .firstWhere((element) =>
+                                        //                     element.mapKey ==
+                                        //                     category
+                                        //                         .documentId)
+                                        //                 .mapKey,
+                                        //             // fit: BoxFit.cover,
+                                        //             avatarViewRadius:
+                                        //                 sequenceAnimation[
+                                        //                             'iconSize']
+                                        //                         .value -
+                                        //                     25,
+                                        //           ),
+                                        //         )
+                                        //       : const SizedBox(),
+                                        // )
+
+                                        // ClipRRect(
+                                        //   borderRadius: BorderRadius.circular(
+                                        //       sequenceAnimation['avatarSize']
+                                        //           .value),
+
+                                        //   child:
+                                        //       //  SizedBox()
+                                        //       Container(
+                                        //     color: Color(int.parse(
+                                        //         '${category.color != null ? category.color : 0xFFF4F4F6}')),
+                                        //     child: ref
+                                        //             .watch(
+                                        //                 pictureCategoriesListProvider)
+                                        //             .isNotEmpty
+                                        //         ? ref
+                                        //             .watch(
+                                        //                 pictureCategoriesListProvider)
+                                        //             .firstWhere((element) =>
+                                        //                 element.mapKey ==
+                                        //                 category.documentId)
+                                        //         : const SizedBox(),
+                                        //   ),
+
+                                        //   // FutureBuilder<String>(
+                                        //   //     future: downloadUrl(
+                                        //   //         category.icon),
+                                        //   //     builder: (context, snapshot) {
+                                        //   //       if (snapshot
+                                        //   //               .connectionState ==
+                                        //   //           ConnectionState
+                                        //   //               .waiting) {
+                                        //   //         return const Center(
+                                        //   //           child:
+                                        //   //               CircularProgressIndicator(),
+                                        //   //         );
+                                        //   //       } else {
+                                        //   //         if (snapshot.data !=
+                                        //   //             null) {
+                                        //   //           return SvgPicture
+                                        //   //               .network(
+                                        //   //             snapshot.data
+                                        //   //                 .toString(),
+                                        //   //             color: Colors.black,
+                                        //   //             height:
+                                        //   //                 sequenceAnimation[
+                                        //   //                         'iconSize']
+                                        //   //                     .value,
+                                        //   //           );
+                                        //   //         } else {
+                                        //   //           return const SizedBox();
+                                        //   //         }
+                                        //   //       }
+                                        //   //     })
+                                        // ),
+                                      ),
+                                      const SizedBox(height: 15),
+                                      Text(
+                                        category.name.toUpperCase(),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyLarge!
+                                            .apply(color: Colors.grey[500]),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ))

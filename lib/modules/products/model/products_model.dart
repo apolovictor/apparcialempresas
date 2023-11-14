@@ -59,8 +59,9 @@ class Product {
 class Categories {
   int? index;
   String name;
-  String? color;
   String? icon;
+  String? color;
+  String? secondaryColor;
   bool? isSelected = false;
   String documentId;
 
@@ -69,6 +70,7 @@ class Categories {
     required this.name,
     this.icon,
     this.color,
+    this.secondaryColor,
     required this.documentId,
     this.isSelected,
   });
@@ -79,6 +81,7 @@ class Categories {
       'name': name,
       'icon': icon,
       'color': color,
+      'secondaryColor': secondaryColor,
       'isSelected': isSelected,
       'documentId': documentId,
     };
@@ -90,6 +93,7 @@ class Categories {
       name: doc.data()['name'],
       icon: doc.data()['icon'],
       color: doc.data()['color'],
+      secondaryColor: doc.data()['secondaryColor'],
       documentId: doc.id,
     );
   }

@@ -35,8 +35,6 @@ class ProductCard extends HookConsumerWidget {
 
     double height = MediaQuery.of(context).size.height;
 
-    print(product.status);
-
     return categories != null
         ? Stack(
             children: [

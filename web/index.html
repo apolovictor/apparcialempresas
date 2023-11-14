@@ -57,9 +57,9 @@
           serviceWorkerVersion: serviceWorkerVersion,
         },
         onEntrypointLoaded: function(engineInitializer) {
-          // let config = {
-          //   renderer: "canvaskit",
-          // };
+          let config = {
+            renderer: "canvaskit",
+          };
           engineInitializer.initializeEngine().then(function(appRunner) {
             appRunner.runApp();
           });

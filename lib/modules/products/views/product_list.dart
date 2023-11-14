@@ -33,7 +33,6 @@ class ProductsList extends HookConsumerWidget {
       });
     });
     useValueChanged(products, (_, __) async {
-      print("hereee");
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (filter['category'].isNotEmpty) {
           ref.read(filteredProductListProvider.notifier).fetchFilteredList(
@@ -51,13 +50,13 @@ class ProductsList extends HookConsumerWidget {
         ? LayoutBuilder(builder: (context, constraints) {
             for (var i = 0; i < products!.length; i++) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                ref
-                    .read(pictureProductListProvider.notifier)
-                    .fetchPictureList(RemotePicture(
+                ref.read(pictureProductListProvider.notifier).fetchPictureList(
+                    RemotePicture(
                       mapKey: products[i].logo!,
                       imagePath:
                           'gs://appparcial-123.appspot.com/products/${products[i].logo!}',
-                    ));
+                    ),
+                    products.length);
               });
             }
             return SingleChildScrollView(

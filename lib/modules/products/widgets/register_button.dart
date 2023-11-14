@@ -26,14 +26,14 @@ class RegisterButton extends HookConsumerWidget {
       padding: const EdgeInsets.only(left: 25.0, right: 25.0, bottom: 25.0),
       child: ScaleTransition(
         scale: animation,
-        child: ElevatedButton.icon(
+        child: ElevatedButton(
             style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12.0)),
                 backgroundColor: Colors.black87,
                 minimumSize: const Size.fromHeight(60)),
-            icon: const Icon(Icons.done_outline, color: Colors.white, size: 32),
-            label: const Text(
+            // icon: const Icon(Icons.done_outline, color: Colors.white, size: 32),
+            child: const Text(
               'Enviar',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
