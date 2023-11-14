@@ -27,6 +27,25 @@ class UpdateProduct extends ChangeNotifier {
       return Future.error(e);
     }
   }
+
+  Future<bool> updateStatusProduct(
+    String productId,
+    int status,
+  ) async {
+    final businessCollection = _firestore.collection('business');
+
+    try {
+      await businessCollection
+          .doc(idDocument)
+          .collection("products")
+          .doc(productId)
+          .update({'status': status});
+      return true;
+    } catch (e) {
+      // print(e.message);
+      return Future.error(e);
+    }
+  }
 }
 
 final updateProductProvider = Provider((ref) => UpdateProduct());

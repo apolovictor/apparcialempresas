@@ -1,12 +1,12 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../controller/product_list.notifier.dart';
 import '../controller/products_notifier.dart';
 import '../model/products_model.dart';
-import '../widgets/submit_button.dart';
 import 'categories_list.dart';
-import 'product_details_impl.dart';
 import 'product_list.dart';
 import 'product_quick_edit.dart';
 
@@ -224,33 +224,81 @@ class ProductScreen extends HookConsumerWidget {
                               ]),
                         ),
                       ),
+
+                      /// Add Product Widget
                       AnimatedContainer(
                         duration: const Duration(milliseconds: 375),
                         width: isActiveProductRegister ? width * 0.3 : 0,
                         height:
                             isActiveProductRegister ? constraints.maxHeight : 0,
-                        color: Colors.black12,
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.vertical,
-                          child: Column(
-                            children: [
-                              Align(
-                                alignment: Alignment.topLeft,
-                                child: IconButton(
-                                  icon: const Icon(
-                                    Icons.close,
+                        decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                                colors: [
+                              Colors.grey[400]!,
+                              Colors.grey[700]!,
+                            ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight)),
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(25.0),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: BackdropFilter(
+                                filter:
+                                    ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                                child: AnimatedContainer(
+                                  duration: const Duration(milliseconds: 375),
+                                  height: height,
+                                  decoration: BoxDecoration(
+                                      color: Colors.white.withOpacity(0.3),
+                                      gradient: LinearGradient(
+                                          colors: [
+                                            Colors.white.withOpacity(0.2),
+                                            Colors.white.withOpacity(0.05)
+                                          ],
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight),
+                                      border: Border.all(
+                                          width: 2, color: Colors.white12),
+                                      borderRadius: BorderRadius.circular(10),
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color:
+                                                Colors.black.withOpacity(0.1),
+                                            blurRadius: 25,
+                                            spreadRadius: -5)
+                                      ]),
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.vertical,
+                                    child: Column(
+                                      children: [
+                                        Align(
+                                          alignment: Alignment.topLeft,
+                                          child: IconButton(
+                                            icon: const Icon(
+                                              Icons.close,
+                                              color: Colors.white,
+                                            ),
+                                            onPressed: () {
+                                              ref
+                                                  .read(isProductsOpenedProvider
+                                                      .notifier)
+                                                  .fetch(false);
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  onPressed: () {
-                                    ref
-                                        .read(isProductsOpenedProvider.notifier)
-                                        .fetch(false);
-                                  },
                                 ),
                               ),
-                            ],
+                            ),
                           ),
                         ),
                       ),
+
+                      /// Edit Product Widget
                       AnimatedContainer(
                         duration: const Duration(milliseconds: 375),
                         width: (isActiveEdit && productSelected > -1)
@@ -279,6 +327,8 @@ class ProductScreen extends HookConsumerWidget {
                       ),
                     ],
                   ),
+
+                  /// Add Category Widget
                   Positioned(
                     right: 0,
                     bottom: 0,

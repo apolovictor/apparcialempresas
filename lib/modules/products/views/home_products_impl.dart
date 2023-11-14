@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../widgets/app_scaffold.dart';
-import '../controller/product_list.notifier.dart';
 import '../controller/products_notifier.dart';
 import '../model/products_model.dart';
 import 'home_products.dart';

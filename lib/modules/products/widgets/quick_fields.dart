@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-
-import '../controller/products_notifier.dart';
 
 Widget fieldWidget(TextEditingController controller, String fieldName,
     BuildContext context, Color secondaryColor) {

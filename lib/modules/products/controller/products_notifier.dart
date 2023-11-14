@@ -133,7 +133,8 @@ class ExampleNotifier extends AutoDisposeStreamNotifier<List<Product>> {
     return _businessCollection
         .doc(ref.watch(idDocumentNotifier))
         .collection("products")
-        .where('status', isEqualTo: ref.watch(statusNotifier))
+
+        // .where('status', isEqualTo: ref.watch(statusNotifier))
         .snapshots()
         .map((snapshot) {
       return snapshot.docs.map((doc) {

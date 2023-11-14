@@ -32,6 +32,17 @@ class ProductsList extends HookConsumerWidget {
                 .toList());
       });
     });
+    useValueChanged(products, (_, __) async {
+      print("hereee");
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (filter['category'].isNotEmpty) {
+          ref.read(filteredProductListProvider.notifier).fetchFilteredList(
+              products!
+                  .where((product) => product.categories == filter['category'])
+                  .toList());
+        }
+      });
+    });
 
     FixedExtentScrollController scrollController =
         ref.watch(scrollListNotifier(selected));

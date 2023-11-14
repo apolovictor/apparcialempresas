@@ -1,8 +1,6 @@
-import 'package:apparcialempresas/modules/products/model/products_model.dart';
 import 'package:flutter/material.dart';
 
 import '../../../widgets/app_scaffold.dart';
-import 'home_products.dart';
 import 'product_details.dart';
 
 class ProductDetails extends StatelessWidget {

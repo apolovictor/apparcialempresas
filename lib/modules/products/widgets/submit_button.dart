@@ -79,7 +79,7 @@ class SubmitButton extends HookConsumerWidget {
                     timeInSecForIosWeb: 3,
                     webBgColor: '#151515',
                     textColor: Colors.white,
-                    fontSize: 16.0);
+                    fontSize: 18.0);
               } else {
                 Fluttertoast.showToast(
                   msg: result.toString(),
@@ -88,23 +88,10 @@ class SubmitButton extends HookConsumerWidget {
                   timeInSecForIosWeb: 3,
                   webBgColor: '#151515',
                   textColor: Colors.white,
-                  fontSize: 16.0,
+                  fontSize: 18.0,
                 );
               }
-              print(ref.watch(productNameProvider).text);
-
-              // print(productPrice);
-              // print(productPromo);
-              // print(productQuantity);
-              // final isValid = formKey.currentState!.validate();
-              // if (!isValid) return;
-
-              // Utils.showSnackBar(getErrorCode(e.message.toString()))
-              // print("errorCode $errorCode");
-            }
-
-            // signUp
-            ),
+            }),
       ),
     );
   }
