@@ -21,7 +21,6 @@ class UpdateButton extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    //  register button
     return Padding(
       padding: const EdgeInsets.only(left: 25.0, right: 25.0, bottom: 25.0),
       child: ScaleTransition(

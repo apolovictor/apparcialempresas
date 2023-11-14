@@ -1,5 +1,4 @@
 import 'package:apparcialempresas/modules/products/model/products_model.dart';
-import 'package:cached_firestorage/lib.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -20,7 +19,7 @@ class CircularSoftButton extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    print(ref.watch(filterNotifier));
+    // print(ref.watch(filterNotifier));
     return Stack(
       children: [
         Container(
