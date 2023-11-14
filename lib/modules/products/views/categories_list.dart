@@ -1,11 +1,9 @@
-import 'package:apparcialempresas/constants/colors.dart';
 import 'package:cached_firestorage/lib.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_sequence_animation/flutter_sequence_animation.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../controller/product_list.notifier.dart';
@@ -116,108 +114,8 @@ class CategoriesList extends HookConsumerWidget {
                                                       .value +
                                                   20,
                                           category: category,
+                                          padding: 28.0,
                                         ),
-
-                                        // CircularSoftButton(
-                                        //   radius:
-                                        //       sequenceAnimation['avatarSize']
-                                        //               .value +
-                                        //           50,
-                                        //   avatarSize:
-                                        //       sequenceAnimation['iconSize']
-                                        //               .value +
-                                        //           20,
-                                        //   icon: ref
-                                        //           .watch(
-                                        //               pictureCategoriesListProvider)
-                                        //           .isNotEmpty
-                                        //       ? CircleAvatar(
-                                        //           maxRadius:
-                                        //               sequenceAnimation[
-                                        //                       'iconSize']
-                                        //                   .value,
-                                        //           child: RemotePicture(
-                                        //             imagePath: ref
-                                        //                 .watch(
-                                        //                     pictureCategoriesListProvider)
-                                        //                 .firstWhere((element) =>
-                                        //                     element.mapKey ==
-                                        //                     category
-                                        //                         .documentId)
-                                        //                 .imagePath,
-                                        //             mapKey: ref
-                                        //                 .watch(
-                                        //                     pictureCategoriesListProvider)
-                                        //                 .firstWhere((element) =>
-                                        //                     element.mapKey ==
-                                        //                     category
-                                        //                         .documentId)
-                                        //                 .mapKey,
-                                        //             // fit: BoxFit.cover,
-                                        //             avatarViewRadius:
-                                        //                 sequenceAnimation[
-                                        //                             'iconSize']
-                                        //                         .value -
-                                        //                     25,
-                                        //           ),
-                                        //         )
-                                        //       : const SizedBox(),
-                                        // )
-
-                                        // ClipRRect(
-                                        //   borderRadius: BorderRadius.circular(
-                                        //       sequenceAnimation['avatarSize']
-                                        //           .value),
-
-                                        //   child:
-                                        //       //  SizedBox()
-                                        //       Container(
-                                        //     color: Color(int.parse(
-                                        //         '${category.color != null ? category.color : 0xFFF4F4F6}')),
-                                        //     child: ref
-                                        //             .watch(
-                                        //                 pictureCategoriesListProvider)
-                                        //             .isNotEmpty
-                                        //         ? ref
-                                        //             .watch(
-                                        //                 pictureCategoriesListProvider)
-                                        //             .firstWhere((element) =>
-                                        //                 element.mapKey ==
-                                        //                 category.documentId)
-                                        //         : const SizedBox(),
-                                        //   ),
-
-                                        //   // FutureBuilder<String>(
-                                        //   //     future: downloadUrl(
-                                        //   //         category.icon),
-                                        //   //     builder: (context, snapshot) {
-                                        //   //       if (snapshot
-                                        //   //               .connectionState ==
-                                        //   //           ConnectionState
-                                        //   //               .waiting) {
-                                        //   //         return const Center(
-                                        //   //           child:
-                                        //   //               CircularProgressIndicator(),
-                                        //   //         );
-                                        //   //       } else {
-                                        //   //         if (snapshot.data !=
-                                        //   //             null) {
-                                        //   //           return SvgPicture
-                                        //   //               .network(
-                                        //   //             snapshot.data
-                                        //   //                 .toString(),
-                                        //   //             color: Colors.black,
-                                        //   //             height:
-                                        //   //                 sequenceAnimation[
-                                        //   //                         'iconSize']
-                                        //   //                     .value,
-                                        //   //           );
-                                        //   //         } else {
-                                        //   //           return const SizedBox();
-                                        //   //         }
-                                        //   //       }
-                                        //   //     })
-                                        // ),
                                       ),
                                       const SizedBox(height: 15),
                                       Text(

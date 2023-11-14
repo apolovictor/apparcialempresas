@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../../main.dart';
 import '../controller/product_list.notifier.dart';
 import '../controller/product_update.dart';
 import '../controller/products_notifier.dart';

@@ -13,6 +13,7 @@ import '../controller/products_notifier.dart';
 import '../model/products_model.dart';
 import '../widgets/register_button.dart';
 import '../widgets/register_fields.dart';
+import '../widgets/soft_control.dart';
 
 class ProductAdd extends HookConsumerWidget {
   const ProductAdd({
@@ -36,13 +37,13 @@ class ProductAdd extends HookConsumerWidget {
         useAnimationController(duration: const Duration(milliseconds: 0));
     SequenceAnimation sequenceAnimation = SequenceAnimationBuilder()
         .addAnimatable(
-            animatable: Tween(begin: 0.0, end: 35.0),
+            animatable: Tween(begin: 0.0, end: 50.0),
             curve: Curves.easeOut,
             from: const Duration(milliseconds: 450),
             to: const Duration(milliseconds: 650),
             tag: 'avatarSize')
         .addAnimatable(
-            animatable: Tween(begin: 0.0, end: 25.0),
+            animatable: Tween(begin: 0.0, end: 40.0),
             curve: Curves.easeOut,
             from: const Duration(milliseconds: 500),
             to: const Duration(milliseconds: 750),
@@ -59,7 +60,6 @@ class ProductAdd extends HookConsumerWidget {
         .animate(CurvedAnimation(
             parent: getProductAddController(ref), curve: Curves.ease));
 
-            
     useValueChanged(ref.watch(isProductsOpenedProvider), (_, __) async {
       registerController.forward();
     });
@@ -138,108 +138,109 @@ class ProductAdd extends HookConsumerWidget {
                                       fontSize: 20,
                                       fontWeight: FontWeight.w700),
                                 ),
-                                const SizedBox(height: 50),
+                                const SizedBox(height: 40),
                                 categories != null
                                     ? SizedBox(
                                         width: width * 0.3,
-                                        child: LayoutBuilder(
-                                            builder: (context, constraints) {
-                                          return ConstrainedBox(
-                                              constraints: BoxConstraints(
-                                                minWidth: constraints.maxWidth,
-                                              ),
-                                              child: IntrinsicWidth(
-                                                child: Container(
-                                                    width: width * 0.3,
-                                                    child:
-                                                        SingleChildScrollView(
-                                                      scrollDirection:
-                                                          Axis.horizontal,
-                                                      child: AnimatedBuilder(
-                                                          animation:
-                                                              registerController,
-                                                          builder:
-                                                              (context,
-                                                                      child) =>
-                                                                  Wrap(
-                                                                    direction: Axis
-                                                                        .horizontal,
-                                                                    spacing: 10,
-                                                                    children: [
-                                                                      for (var i =
-                                                                              0;
-                                                                          i < categories.length;
-                                                                          i++)
-                                                                        AnimationLimiter(
-                                                                          key: GlobalKey<AnimatedListState>(
-                                                                              debugLabel: i.toString()),
-                                                                          child: AnimationConfiguration.staggeredList(
-                                                                              position: i,
-                                                                              child: SlideAnimation(
-                                                                                  horizontalOffset: width * 0.3,
-                                                                                  child: FadeTransition(
-                                                                                    opacity: registerController,
-                                                                                    child: SizeTransition(
-                                                                                      sizeFactor: registerController,
-                                                                                      child: Column(
-                                                                                        children: [
-                                                                                          MaterialButton(
-                                                                                            shape: CircleBorder(),
-                                                                                            onPressed: () {
-                                                                                              ref.read(selectedProductNotifier.notifier).setSelected(0);
-                                                                                              ref.read(categoryNotifier.notifier).state = categories[i].documentId;
-                                                                                              ref.read(filterNotifier.notifier).state = {
-                                                                                                "category": ref.watch(categoryNotifier),
-                                                                                                "status": ref.watch(statusNotifier),
-                                                                                              };
-                                                                                            },
-                                                                                            child: CircleAvatar(
-                                                                                                radius: sequenceAnimation['avatarSize'].value,
-                                                                                                backgroundColor: Color(int.parse('${categories[i].color != null ? categories[i].color : 0xFFF4F4F6}')),
-                                                                                                child: FutureBuilder<String>(
-                                                                                                    future: downloadUrl(categories[i].icon),
-                                                                                                    builder: (context, snapshot) {
-                                                                                                      if (snapshot.connectionState == ConnectionState.waiting) {
-                                                                                                        return const Center(
-                                                                                                          child: CircularProgressIndicator(),
-                                                                                                        );
-                                                                                                      } else {
-                                                                                                        if (snapshot.data != null) {
-                                                                                                          return SvgPicture.network(
-                                                                                                            snapshot.data.toString(),
-                                                                                                            color: Colors.black,
-                                                                                                            height: sequenceAnimation['iconSize'].value,
-                                                                                                          );
-                                                                                                        } else {
-                                                                                                          return const SizedBox();
-                                                                                                        }
-                                                                                                      }
-                                                                                                    })),
-                                                                                          ),
-                                                                                          const SizedBox(height: 15),
-                                                                                          Text(
-                                                                                            categories[i].name.toUpperCase(),
-                                                                                            style: Theme.of(context).textTheme.bodyLarge!.apply(color: Colors.white),
-                                                                                          ),
-                                                                                        ],
-                                                                                      ),
+                                        child:
+                                            // print(constraints.maxHeight);
+                                            SingleChildScrollView(
+                                          scrollDirection: Axis.horizontal,
+                                          child: AnimatedBuilder(
+                                              animation: registerController,
+                                              builder: (context, child) => Wrap(
+                                                    direction: Axis.horizontal,
+                                                    spacing: 10,
+                                                    children: [
+                                                      for (var i = 0;
+                                                          i < categories.length;
+                                                          i++)
+                                                        AnimationLimiter(
+                                                          key: GlobalKey<
+                                                                  AnimatedListState>(
+                                                              debugLabel:
+                                                                  i.toString()),
+                                                          child: AnimationConfiguration
+                                                              .staggeredList(
+                                                                  position: i,
+                                                                  child:
+                                                                      SlideAnimation(
+                                                                          horizontalOffset: width *
+                                                                              0.3,
+                                                                          child:
+                                                                              FadeTransition(
+                                                                            opacity:
+                                                                                registerController,
+                                                                            child:
+                                                                                SizeTransition(
+                                                                              sizeFactor: registerController,
+                                                                              child: Column(
+                                                                                children: [
+                                                                                  MaterialButton(
+                                                                                    shape: CircleBorder(),
+                                                                                    height: 100,
+                                                                                    onPressed: () {
+                                                                                      print(categories[i].documentId);
+                                                                                      // ref.read(selectedProductNotifier.notifier).setSelected(0);
+                                                                                      // ref.read(categoryNotifier.notifier).state = categories[i].documentId;
+                                                                                      // ref.read(filterNotifier.notifier).state = {
+                                                                                      //   "category": ref.watch(categoryNotifier),
+                                                                                      //   "status": ref.watch(statusNotifier),
+                                                                                      // };
+                                                                                    },
+                                                                                    child: CircularSoftButton(
+                                                                                      radius: sequenceAnimation['avatarSize'].value + 20,
+                                                                                      avatarSize: sequenceAnimation['iconSize'].value + 10,
+                                                                                      category: categories[i],
+                                                                                      padding: 15,
                                                                                     ),
-                                                                                  ))),
-                                                                        )
-                                                                    ],
-                                                                  )),
-                                                    )),
-                                              ));
-                                        }),
+                                                                                    //  CircleAvatar(
+                                                                                    //     radius: sequenceAnimation['avatarSize'].value,
+                                                                                    //     backgroundColor: Color(int.parse('${categories[i].color != null ? categories[i].color : 0xFFF4F4F6}')),
+                                                                                    //     child: FutureBuilder<String>(
+                                                                                    //         future: downloadUrl(categories[i].icon),
+                                                                                    //         builder: (context, snapshot) {
+                                                                                    //           if (snapshot.connectionState == ConnectionState.waiting) {
+                                                                                    //             return const Center(
+                                                                                    //               child: CircularProgressIndicator(),
+                                                                                    //             );
+                                                                                    //           } else {
+                                                                                    //             if (snapshot.data != null) {
+                                                                                    //               return SvgPicture.network(
+                                                                                    //                 snapshot.data.toString(),
+                                                                                    //                 color: Colors.black,
+                                                                                    //                 height: sequenceAnimation['iconSize'].value,
+                                                                                    //               );
+                                                                                    //             } else {
+                                                                                    //               return const SizedBox();
+                                                                                    //             }
+                                                                                    //           }
+                                                                                    //         })),
+                                                                                  ),
+                                                                                  const SizedBox(height: 15),
+                                                                                  Text(
+                                                                                    categories[i].name.toUpperCase(),
+                                                                                    style: Theme.of(context).textTheme.bodyLarge!.apply(
+                                                                                          color: Colors.white,
+                                                                                        ),
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                            ),
+                                                                          ))),
+                                                        )
+                                                    ],
+                                                  )),
+                                        ),
                                       )
-                                    : SizedBox(),
-                                SizedBox(height: 50),
+                                    : const SizedBox(),
+                                const SizedBox(height: 50),
                                 registerFieldWidget(
                                     productNameController, "Nome", context),
-                                SizedBox(height: 50),
+                                const SizedBox(height: 50),
                                 registerFieldWidget(
                                     productNameController, "Preço", context),
-                                SizedBox(height: 50),
+                                const SizedBox(height: 50),
                                 registerFieldWidget(productNameController,
                                     "Quantidade", context),
                               ],

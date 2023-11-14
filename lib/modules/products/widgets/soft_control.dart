@@ -11,11 +11,13 @@ class CircularSoftButton extends HookConsumerWidget {
     required this.radius,
     required this.avatarSize,
     required this.category,
+    required this.padding,
   });
 
   final double radius;
   final double avatarSize;
   final Categories category;
+  final double padding;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -56,7 +58,7 @@ class CircularSoftButton extends HookConsumerWidget {
           right: 2,
           bottom: 2,
           child: Padding(
-            padding: const EdgeInsets.all(28.0),
+            padding: EdgeInsets.all(padding),
             child: ClipRRect(
                 borderRadius: BorderRadius.circular(15.0),
                 child: ref

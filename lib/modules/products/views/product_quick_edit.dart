@@ -114,7 +114,7 @@ class ProducQuickEdit extends HookConsumerWidget {
                       productSelected > -1
                           ? products![productSelected].name
                           : "",
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontWeight: FontWeight.w900,
                           fontSize: 125,
                           color: Colors.black54
@@ -220,29 +220,15 @@ class ProducQuickEdit extends HookConsumerWidget {
                                                         products![
                                                                 productSelected]
                                                             .logo)
-                                            : SizedBox()
-                                        // Stack(
-                                        //   children: [
-                                        //     ListView(
-                                        //         scrollDirection: Axis.horizontal,
-                                        //         itemExtent: 300,
-                                        //         children: <Widget>[
-                                        //           ...generate_tags()
-                                        //         ])
-                                        //   ],
-                                        // ),
-                                        ),
+                                            : const SizedBox()),
                                   ),
-                                  // Positioned(
-                                  //     top: height * 0.55,
-                                  //     child: ),
                                 ],
                               ),
                             ),
                           ),
                         ),
                         Align(
-                          alignment: Alignment(1, 1),
+                          alignment: const Alignment(1, 1),
                           child: SizedBox(
                             width: width * 0.3,
                             height: height * 0.4,
@@ -482,6 +468,6 @@ class ProducQuickEdit extends HookConsumerWidget {
               ),
             ],
           )
-        : SizedBox();
+        : const SizedBox();
   }
 }
