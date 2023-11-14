@@ -6,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../controller/product_list.notifier.dart';
 import '../controller/products_notifier.dart';
 import '../model/products_model.dart';
+import '../widgets/register_button.dart';
 import 'categories_list.dart';
 import 'product_list.dart';
 import 'product_quick_edit.dart';
@@ -43,6 +44,9 @@ class ProductScreen extends HookConsumerWidget {
     final Animation<double> animation = Tween(begin: .0, end: 1.0).animate(
         CurvedAnimation(
             parent: getQuickFieldsController(ref), curve: Curves.ease));
+    final Animation<double> addProductAnimation = Tween(begin: .0, end: 1.0)
+        .animate(CurvedAnimation(
+            parent: getProductAddController(ref), curve: Curves.ease));
 
     final Animation<double> containerAlignTweenAnimation =
         Tween(begin: 0.0, end: -1.0).animate(CurvedAnimation(
@@ -234,65 +238,93 @@ class ProductScreen extends HookConsumerWidget {
                         decoration: BoxDecoration(
                             gradient: LinearGradient(
                                 colors: [
-                              Colors.grey[400]!,
-                              Colors.grey[700]!,
+                              Colors.grey[300]!,
+                              Colors.grey[600]!,
                             ],
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight)),
                         child: Center(
                           child: Padding(
-                            padding: const EdgeInsets.all(25.0),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: BackdropFilter(
-                                filter:
-                                    ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-                                child: AnimatedContainer(
-                                  duration: const Duration(milliseconds: 375),
-                                  height: height,
-                                  decoration: BoxDecoration(
-                                      color: Colors.white.withOpacity(0.3),
-                                      gradient: LinearGradient(
-                                          colors: [
-                                            Colors.white.withOpacity(0.2),
-                                            Colors.white.withOpacity(0.05)
-                                          ],
-                                          begin: Alignment.topLeft,
-                                          end: Alignment.bottomRight),
-                                      border: Border.all(
-                                          width: 2, color: Colors.white12),
-                                      borderRadius: BorderRadius.circular(10),
-                                      boxShadow: [
-                                        BoxShadow(
-                                            color:
-                                                Colors.black.withOpacity(0.1),
-                                            blurRadius: 25,
-                                            spreadRadius: -5)
-                                      ]),
-                                  child: SingleChildScrollView(
-                                    scrollDirection: Axis.vertical,
-                                    child: Column(
-                                      children: [
-                                        Align(
-                                          alignment: Alignment.topLeft,
-                                          child: IconButton(
-                                            icon: const Icon(
-                                              Icons.close,
-                                              color: Colors.white,
+                            padding: const EdgeInsets.all(18.0),
+                            child: Stack(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: BackdropFilter(
+                                    filter: ImageFilter.blur(
+                                        sigmaX: 15, sigmaY: 15),
+                                    child: AnimatedContainer(
+                                      duration:
+                                          const Duration(milliseconds: 375),
+                                      height: height,
+                                      decoration: BoxDecoration(
+                                          color: Colors.white.withOpacity(0.3),
+                                          gradient: LinearGradient(
+                                              colors: [
+                                                Colors.white.withOpacity(0.2),
+                                                Colors.white.withOpacity(0.05)
+                                              ],
+                                              begin: Alignment.topLeft,
+                                              end: Alignment.bottomRight),
+                                          border: Border.all(
+                                              width: 2, color: Colors.white12),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color: Colors.black
+                                                    .withOpacity(0.1),
+                                                blurRadius: 25,
+                                                spreadRadius: -5)
+                                          ]),
+                                      child: SingleChildScrollView(
+                                        scrollDirection: Axis.vertical,
+                                        child: Column(
+                                          children: [
+                                            Align(
+                                              alignment: Alignment.topLeft,
+                                              child: IconButton(
+                                                icon: const Icon(
+                                                  Icons.close,
+                                                  color: Colors.white,
+                                                ),
+                                                onPressed: () {
+                                                  ref
+                                                      .read(
+                                                          isProductsOpenedProvider
+                                                              .notifier)
+                                                      .fetch(false);
+                                                },
+                                              ),
                                             ),
-                                            onPressed: () {
-                                              ref
-                                                  .read(isProductsOpenedProvider
-                                                      .notifier)
-                                                  .fetch(false);
-                                            },
-                                          ),
+                                            Text(
+                                              "Cadastrar Produto",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.w700),
+                                            )
+                                          ],
                                         ),
-                                      ],
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
+                                Container(
+                                  alignment: Alignment.bottomCenter,
+                                  child: RegisterButton(
+                                      buttonName: "Cadastrar",
+                                      animation: addProductAnimation,
+                                      product: Product(
+                                          categories: "categories",
+                                          primaryColor: "primaryColor",
+                                          secondaryColor: "secondaryColor",
+                                          name: "name",
+                                          price: {},
+                                          quantity: "quantity",
+                                          status: 1)),
+                                )
+                              ],
                             ),
                           ),
                         ),

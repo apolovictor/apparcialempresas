@@ -5,7 +5,7 @@ import '../controller/product_list.notifier.dart';
 import '../controller/products_notifier.dart';
 import '../model/products_model.dart';
 import '../widgets/quick_fields.dart';
-import '../widgets/submit_button.dart';
+import '../widgets/update_button.dart';
 import 'product_details_impl.dart';
 
 class ProducQuickEdit extends HookConsumerWidget {
@@ -247,7 +247,7 @@ class ProducQuickEdit extends HookConsumerWidget {
               Container(
                 alignment: Alignment.bottomCenter,
 
-                child: SubmitButton(
+                child: UpdateButton(
                   buttonName: "Salvar",
                   animation: animation,
                   product: filter['category'].isNotEmpty &&

@@ -399,3 +399,19 @@ getQuickFieldsController(WidgetRef ref) {
 
   return controller;
 }
+
+getProductAddController(WidgetRef ref) {
+  final controller =
+      useAnimationController(duration: const Duration(milliseconds: 500));
+  final isOpened = ref.watch(isProductsOpenedProvider);
+
+  if (isOpened) {
+    // Future.delayed(const Duration(milliseconds: 100), () {
+    controller.forward();
+    // });
+  } else {
+    controller.reverse();
+  }
+
+  return controller;
+}

@@ -7,8 +7,8 @@ import '../controller/product_list.notifier.dart';
 import '../controller/product_update.dart';
 import '../controller/products_notifier.dart';
 
-class SubmitButton extends HookConsumerWidget {
-  const SubmitButton({
+class UpdateButton extends HookConsumerWidget {
+  const UpdateButton({
     super.key,
     required this.buttonName,
     required this.animation,
