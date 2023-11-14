@@ -52,26 +52,6 @@ class ProductScreen extends HookConsumerWidget {
         Tween(begin: 100.0, end: 15.0).animate(CurvedAnimation(
             parent: getCategoriesController(ref), curve: Curves.ease));
 
-    Route createRoute() {
-      return PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            ProductDetails(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          const begin = Offset(1.0, 0.0);
-          const end = Offset.zero;
-          const curve = Curves.ease;
-
-          var tween =
-              Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
-          return SlideTransition(
-            position: animation.drive(tween),
-            child: child,
-          );
-        },
-      );
-    }
-
     get_chip(Product tagTable, int index) {
       return Container(
         // width: 200,
@@ -289,136 +269,12 @@ class ProductScreen extends HookConsumerWidget {
                                     : Colors.transparent
                             : Colors.transparent,
                         child: LayoutBuilder(builder: (context, constraints) {
-                          return Stack(
-                            children: [
-                              ProducQuickEdit(
-                                  key: key,
-                                  height: height,
-                                  width: width,
-                                  animation: animation),
-                              Positioned(
-                                top: 0,
-                                right: 0,
-                                child: AnimatedContainer(
-                                    duration: const Duration(milliseconds: 350),
-                                    height: height * 0.4,
-                                    width:
-                                        (isActiveEdit && productSelected > -1)
-                                            ? width * 0.3
-                                            : 0,
-                                    child: productSelected > -1
-                                        ? filter['category'].isNotEmpty &&
-                                                filteredProducts.isNotEmpty
-                                            ? ref
-                                                .watch(
-                                                    pictureProductListProvider)
-                                                .firstWhere((element) =>
-                                                    element.mapKey ==
-                                                    filteredProducts[
-                                                            productSelected]
-                                                        .logo)
-                                            : ref
-                                                .watch(
-                                                    pictureProductListProvider)
-                                                .firstWhere((element) =>
-                                                    element.mapKey ==
-                                                    products![productSelected]
-                                                        .logo)
-                                        : SizedBox()
-                                    // Stack(
-                                    //   children: [
-                                    //     ListView(
-                                    //         scrollDirection: Axis.horizontal,
-                                    //         itemExtent: 300,
-                                    //         children: <Widget>[
-                                    //           ...generate_tags()
-                                    //         ])
-                                    //   ],
-                                    // ),
-                                    ),
-                              ),
-                              Container(
-                                alignment: Alignment.bottomCenter,
-
-                                child: SubmitButton(
-                                  buttonName: "Salvar",
-                                  animation: animation,
-                                ),
-                                // )
-                              ),
-                              Align(
-                                alignment: const Alignment(-1.1, -1),
-                                child: InkWell(
-                                  onTap: () {
-                                    ref
-                                        .read(isActiveEditNotifier.notifier)
-                                        .setIsActiveEdit(false);
-                                  },
-                                  child: Container(
-                                    height: 50.0,
-                                    width: 50.0,
-                                    decoration: BoxDecoration(
-                                        color: Colors.black87,
-                                        borderRadius:
-                                            BorderRadius.circular(30.0)),
-                                    child: const Icon(
-                                      Icons.close,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Hero(
-                                tag: 'detailProduct',
-                                flightShuttleBuilder: (_,
-                                    Animation<double> animation,
-                                    __,
-                                    ___,
-                                    ____) {
-                                  final customAnimation = Tween<double>(
-                                          begin: 0,
-                                          end: constraints.maxWidth * 0.3)
-                                      .animate(animation);
-
-                                  return AnimatedBuilder(
-                                      animation: customAnimation,
-                                      builder: (context, child) {
-                                        return const SizedBox();
-                                        // ProductDetails();
-                                      });
-                                },
-                                child: SizedBox(
-                                  height: height,
-                                  child: AnimatedAlign(
-                                    duration: const Duration(milliseconds: 375),
-                                    alignment: Alignment(
-                                        -1.2,
-                                        constraints.maxWidth == width * 0.3
-                                            ? 0
-                                            : -1),
-                                    child: Container(
-                                      height: 75.0,
-                                      width: 75.0,
-                                      decoration: BoxDecoration(
-                                          color: Colors.black87,
-                                          borderRadius:
-                                              BorderRadius.circular(50.0)),
-                                      child: InkWell(
-                                        onTap: () {
-                                          Navigator.of(context)
-                                              .push(createRoute());
-                                        },
-                                        child: const Icon(
-                                          Icons.arrow_back,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          );
+                          return ProducQuickEdit(
+                              key: key,
+                              height: height,
+                              width: width,
+                              animation: animation,
+                              constraints: constraints);
                         }),
                       ),
                     ],

@@ -297,6 +297,10 @@ class ProductNameController extends StateNotifier<TextEditingController> {
     state = productName;
     return state;
   }
+
+  clear() {
+    state.clear();
+  }
 }
 
 class ProductPriceController extends StateNotifier<TextEditingController> {
@@ -306,6 +310,10 @@ class ProductPriceController extends StateNotifier<TextEditingController> {
   fetchProductPrice(TextEditingController productPrice) {
     state = productPrice;
     return state;
+  }
+
+  clear() {
+    state.clear();
   }
 }
 
@@ -317,6 +325,10 @@ class ProductPromoController extends StateNotifier<TextEditingController> {
     state = productPromo;
     return state;
   }
+
+  clear() {
+    state.clear();
+  }
 }
 
 class ProductQuantityController extends StateNotifier<TextEditingController> {
@@ -326,6 +338,10 @@ class ProductQuantityController extends StateNotifier<TextEditingController> {
   fetchProductQuantity(TextEditingController productQuantity) {
     state = productQuantity;
     return state;
+  }
+
+  clear() {
+    state.clear();
   }
 }
 
