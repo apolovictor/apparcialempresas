@@ -53,9 +53,7 @@ class ProductCard extends HookConsumerWidget {
                 child: Material(
                   color: Colors.transparent,
                   child: InkWell(
-                    onTap: () {
-                      print('Custom Card');
-                    },
+                    onTap: () {},
                     borderRadius: BorderRadius.circular(12.0),
                     splashColor: product.categories.isNotEmpty
                         ? Color(int.parse(product.secondaryColor))

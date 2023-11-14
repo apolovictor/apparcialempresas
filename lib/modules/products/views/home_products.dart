@@ -1,9 +1,5 @@
-import 'package:apparcialempresas/modules/products/widgets/quick_fields.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'dart:math' as math;
 
 import '../controller/product_list.notifier.dart';
 import '../controller/products_notifier.dart';
@@ -12,6 +8,7 @@ import '../widgets/submit_button.dart';
 import 'categories_list.dart';
 import 'product_details_impl.dart';
 import 'product_list.dart';
+import 'product_quick_edit.dart';
 
 class ProductScreen extends HookConsumerWidget {
   ProductScreen({Key? key}) : super(key: key);
@@ -23,13 +20,6 @@ class ProductScreen extends HookConsumerWidget {
     double height = MediaQuery.of(context).size.height;
     int productSelected = ref.watch(selectedProductNotifier);
     final filter = ref.watch(filterNotifier);
-    final TextEditingController productNameController = TextEditingController();
-    final TextEditingController productPriceController =
-        TextEditingController();
-    final TextEditingController productPromoController =
-        TextEditingController();
-    final TextEditingController productQuantityController =
-        TextEditingController();
 
     List<Product> filteredProducts = ref.watch(filteredProductListProvider);
     List<Product>? products = ref.watch(exampleProvider).value;
@@ -301,11 +291,16 @@ class ProductScreen extends HookConsumerWidget {
                         child: LayoutBuilder(builder: (context, constraints) {
                           return Stack(
                             children: [
+                              ProducQuickEdit(
+                                  key: key,
+                                  height: height,
+                                  width: width,
+                                  animation: animation),
                               Positioned(
                                 top: 0,
                                 right: 0,
                                 child: AnimatedContainer(
-                                    duration: const Duration(milliseconds: 700),
+                                    duration: const Duration(milliseconds: 350),
                                     height: height * 0.4,
                                     width:
                                         (isActiveEdit && productSelected > -1)
@@ -342,121 +337,6 @@ class ProductScreen extends HookConsumerWidget {
                                     // ),
                                     ),
                               ),
-                              Positioned(
-                                  top: height * 0.55,
-                                  child: SizedBox(
-                                    width: width * 0.3,
-                                    height: height * 0.4,
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 30.0),
-                                      child: Column(
-                                        children: [
-                                          ScaleTransition(
-                                            scale: animation,
-                                            child: fieldWidget(
-                                              productNameController,
-                                              "Nome",
-                                              context,
-                                              productSelected > -1
-                                                  ? filter['category']
-                                                              .isNotEmpty &&
-                                                          filteredProducts
-                                                              .isNotEmpty
-                                                      ? Color(int.parse(
-                                                          filteredProducts[
-                                                                  productSelected]
-                                                              .secondaryColor))
-                                                      : products!.isNotEmpty
-                                                          ? Color(int.parse(products[
-                                                                  productSelected]
-                                                              .secondaryColor))
-                                                          : Colors.transparent
-                                                  : Colors.transparent,
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            height: 20,
-                                          ),
-                                          ScaleTransition(
-                                            scale: animation,
-                                            child: fieldWidget(
-                                              productPriceController,
-                                              "Preço",
-                                              context,
-                                              productSelected > -1
-                                                  ? filter['category']
-                                                              .isNotEmpty &&
-                                                          filteredProducts
-                                                              .isNotEmpty
-                                                      ? Color(int.parse(
-                                                          filteredProducts[
-                                                                  productSelected]
-                                                              .secondaryColor))
-                                                      : products!.isNotEmpty
-                                                          ? Color(int.parse(products[
-                                                                  productSelected]
-                                                              .secondaryColor))
-                                                          : Colors.transparent
-                                                  : Colors.transparent,
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            height: 20,
-                                          ),
-                                          ScaleTransition(
-                                            scale: animation,
-                                            child: fieldWidget(
-                                              productPromoController,
-                                              "Promoção",
-                                              context,
-                                              productSelected > -1
-                                                  ? filter['category']
-                                                              .isNotEmpty &&
-                                                          filteredProducts
-                                                              .isNotEmpty
-                                                      ? Color(int.parse(
-                                                          filteredProducts[
-                                                                  productSelected]
-                                                              .secondaryColor))
-                                                      : products!.isNotEmpty
-                                                          ? Color(int.parse(products[
-                                                                  productSelected]
-                                                              .secondaryColor))
-                                                          : Colors.transparent
-                                                  : Colors.transparent,
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            height: 20,
-                                          ),
-                                          ScaleTransition(
-                                            scale: animation,
-                                            child: fieldWidget(
-                                              productQuantityController,
-                                              "Quantidade",
-                                              context,
-                                              productSelected > -1
-                                                  ? filter['category']
-                                                              .isNotEmpty &&
-                                                          filteredProducts
-                                                              .isNotEmpty
-                                                      ? Color(int.parse(
-                                                          filteredProducts[
-                                                                  productSelected]
-                                                              .secondaryColor))
-                                                      : products!.isNotEmpty
-                                                          ? Color(int.parse(products[
-                                                                  productSelected]
-                                                              .secondaryColor))
-                                                          : Colors.transparent
-                                                  : Colors.transparent,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  )),
                               Container(
                                 alignment: Alignment.bottomCenter,
 

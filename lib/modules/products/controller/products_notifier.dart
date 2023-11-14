@@ -289,6 +289,58 @@ class IsCProductDetailOpeneNotifier extends StateNotifier<bool> {
   }
 }
 
+class ProductNameController extends StateNotifier<TextEditingController> {
+  ProductNameController() : super(productName);
+  static TextEditingController productName = TextEditingController();
+
+  fetchProductName(TextEditingController productName) {
+    state = productName;
+    return state;
+  }
+}
+
+class ProductPriceController extends StateNotifier<TextEditingController> {
+  ProductPriceController() : super(productPrice);
+  static TextEditingController productPrice = TextEditingController();
+
+  fetchProductPrice(TextEditingController productPrice) {
+    state = productPrice;
+    return state;
+  }
+}
+
+class ProductPromoController extends StateNotifier<TextEditingController> {
+  ProductPromoController() : super(productPromo);
+  static TextEditingController productPromo = TextEditingController();
+
+  fetchProductPromo(TextEditingController productPromo) {
+    state = productPromo;
+    return state;
+  }
+}
+
+class ProductQuantityController extends StateNotifier<TextEditingController> {
+  ProductQuantityController() : super(productQuantity);
+  static TextEditingController productQuantity = TextEditingController();
+
+  fetchProductQuantity(TextEditingController productQuantity) {
+    state = productQuantity;
+    return state;
+  }
+}
+
+final productNameProvider =
+    StateNotifierProvider<ProductNameController, TextEditingController>(
+        (ref) => ProductNameController());
+final productPriceProvider =
+    StateNotifierProvider<ProductPriceController, TextEditingController>(
+        (ref) => ProductPriceController());
+final productPromoProvider =
+    StateNotifierProvider<ProductPromoController, TextEditingController>(
+        (ref) => ProductPromoController());
+final productQuantityProvider =
+    StateNotifierProvider<ProductQuantityController, TextEditingController>(
+        (ref) => ProductQuantityController());
 final isProductsOpenedProvider =
     StateNotifierProvider<IsCProductDetailOpeneNotifier, bool>(
         (ref) => IsCProductDetailOpeneNotifier());
