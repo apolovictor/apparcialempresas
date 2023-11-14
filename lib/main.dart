@@ -29,6 +29,8 @@ Future main() async {
   runApp(const ProviderScope(child: MyApp()));
 }
 
+final navigatorKey = GlobalKey<NavigatorState>();
+
 class MyApp extends HookConsumerWidget {
   const MyApp({super.key});
 

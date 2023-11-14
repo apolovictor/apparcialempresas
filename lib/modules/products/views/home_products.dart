@@ -235,37 +235,42 @@ class ProductScreen extends HookConsumerWidget {
                       ),
 
                       /// Edit Product Widget
-                      AnimatedContainer(
-                        duration: const Duration(milliseconds: 375),
-                        width: (isActiveEdit && productSelected > -1)
-                            ? width * 0.3
-                            : 0,
-                        height: MediaQuery.of(context).size.height,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(10),
-                              bottomLeft: Radius.circular(10)),
-                          color: productSelected > -1
-                              ? filter['category'].isNotEmpty &&
-                                      filteredProducts.isNotEmpty
-                                  ? Color(int.parse(
-                                      filteredProducts[productSelected]
-                                          .secondaryColor))
-                                  : products!.isNotEmpty
+                      Stack(
+                        children: [
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 375),
+                            width: (isActiveEdit && productSelected > -1)
+                                ? width * 0.3
+                                : 0,
+                            height: MediaQuery.of(context).size.height,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(10),
+                                  bottomLeft: Radius.circular(10)),
+                              color: productSelected > -1
+                                  ? filter['category'].isNotEmpty &&
+                                          filteredProducts.isNotEmpty
                                       ? Color(int.parse(
-                                          products[productSelected]
+                                          filteredProducts[productSelected]
                                               .secondaryColor))
-                                      : Colors.transparent
-                              : Colors.transparent,
-                        ),
-                        child: LayoutBuilder(builder: (context, constraints) {
-                          return ProducQuickEdit(
-                              key: key,
-                              height: height,
-                              width: width,
-                              animation: animation,
-                              constraints: constraints);
-                        }),
+                                      : products!.isNotEmpty
+                                          ? Color(int.parse(
+                                              products[productSelected]
+                                                  .secondaryColor))
+                                          : Colors.transparent
+                                  : Colors.transparent,
+                            ),
+                            child:
+                                LayoutBuilder(builder: (context, constraints) {
+                              return ProducQuickEdit(
+                                  key: key,
+                                  height: height,
+                                  width: width,
+                                  animation: animation,
+                                  constraints: constraints);
+                            }),
+                          ),
+                        ],
                       ),
                     ],
                   ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../main.dart';
 import '../controller/product_list.notifier.dart';
 import '../controller/product_update.dart';
 import '../controller/products_notifier.dart';
@@ -23,28 +24,33 @@ class UpdateButton extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: const EdgeInsets.only(left: 25.0, right: 25.0, bottom: 25.0),
-      child: ScaleTransition(
-        scale: animation,
-        child: ElevatedButton.icon(
-            style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.0)),
-                backgroundColor: Colors.black87,
-                minimumSize: const Size.fromHeight(60)),
-            icon: const Icon(Icons.done_outline, color: Colors.white, size: 32),
-            label: const Text(
-              'Enviar',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-                color: Colors.white,
-              ),
+      child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.0)),
+              backgroundColor: Colors.black87,
+              minimumSize: const Size.fromHeight(60)),
+          // icon: const Icon(Icons.done_outline, color: Colors.white, size: 32),
+          child: const Text(
+            'Enviar',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+              color: Colors.white,
             ),
-            onPressed: () async {
-              if (ref.watch(productNameProvider).text.isEmpty &&
-                  ref.watch(productPriceProvider).text.isEmpty &&
-                  ref.watch(productPromoProvider).text.isEmpty &&
-                  ref.watch(productQuantityProvider).text.isEmpty) return;
+          ),
+          onPressed: () async {
+            if (ref.watch(productNameProvider).text.isEmpty &&
+                ref.watch(productPriceProvider).text.isEmpty &&
+                ref.watch(productPromoProvider).text.isEmpty &&
+                ref.watch(productQuantityProvider).text.isEmpty) {
+              return;
+            } else {
+              // showDialog(
+              //     context: context,
+              //     barrierDismissible: false,
+              //     builder: (context) =>
+              //         Center(child: CircularProgressIndicator()));
 
               final result =
                   await ref.read(updateProductProvider).updateQuickProduct(
@@ -90,8 +96,13 @@ class UpdateButton extends HookConsumerWidget {
                   fontSize: 18.0,
                 );
               }
-            }),
-      ),
+              // Navigator.of(context).pop();
+              // if (navigatorKey.currentState != null) {
+              // navigatorKey.currentState!
+              //     .popUntil((route) => route.didPop(result));
+              // }
+            }
+          }),
     );
   }
 }
