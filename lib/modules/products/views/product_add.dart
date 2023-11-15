@@ -1,18 +1,24 @@
 import 'dart:ui';
 
+import 'package:apparcialempresas/constants/colors.dart';
 import 'package:apparcialempresas/modules/products/views/categories_list.dart';
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_sequence_animation/flutter_sequence_animation.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../controller/product_list.notifier.dart';
+import '../controller/product_register.dart';
 import '../controller/products_notifier.dart';
 import '../model/products_model.dart';
+import '../services/services.dart';
 import '../widgets/register_button.dart';
 import '../widgets/register_fields.dart';
+import '../widgets/register_soft_control.dart';
 import '../widgets/soft_control.dart';
 
 class ProductAdd extends HookConsumerWidget {
@@ -32,6 +38,11 @@ class ProductAdd extends HookConsumerWidget {
     bool isActiveProductRegister = ref.watch(isProductsOpenedProvider);
     final categories = ref.watch(categoriesNotifier).value;
     final TextEditingController productNameController = TextEditingController();
+    final TextEditingController productPriceController =
+        TextEditingController();
+    final TextEditingController productQuantityController =
+        TextEditingController();
+    final imgConverted = ref.watch(imgConvertedProvider);
 
     AnimationController registerController =
         useAnimationController(duration: const Duration(milliseconds: 0));
@@ -63,6 +74,22 @@ class ProductAdd extends HookConsumerWidget {
     useValueChanged(ref.watch(isProductsOpenedProvider), (_, __) async {
       registerController.forward();
     });
+
+    Future getGalleryImage(
+        double maxWidth, double maxHeight, WidgetRef ref) async {
+      final ImagePicker picker = ImagePicker();
+
+      final XFile? pickedFile = await picker.pickImage(
+          source: ImageSource.gallery,
+          maxWidth: maxWidth,
+          maxHeight: maxHeight);
+      if (pickedFile != null) {
+        ref.read(imgFileProvider.notifier).setImgFile(pickedFile);
+        ref
+            .read(imgConvertedProvider.notifier)
+            .setImgFile(await convertXFileToMemoryImage(pickedFile));
+      }
+    }
 
     return Stack(
       children: [
@@ -115,30 +142,96 @@ class ProductAdd extends HookConsumerWidget {
                               children: [
                                 Align(
                                   alignment: Alignment.topLeft,
-                                  child: IconButton(
-                                    icon: const Icon(
-                                      Icons.close,
-                                      color: Colors.white,
-                                    ),
-                                    onPressed: () {
-                                      // registerController
-                                      //     .reverse();
+                                  child: Row(
+                                    children: [
+                                      IconButton(
+                                        icon: const Icon(
+                                          Icons.close,
+                                          color: Colors.white,
+                                        ),
+                                        onPressed: () {
+                                          // registerController
+                                          //     .reverse();
 
-                                      ref
-                                          .read(
-                                              isProductsOpenedProvider.notifier)
-                                          .fetch(false);
-                                    },
+                                          ref
+                                              .read(isProductsOpenedProvider
+                                                  .notifier)
+                                              .fetch(false);
+                                        },
+                                      ),
+                                      const Center(
+                                        child: Text(
+                                          "Cadastrar Produto",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.w700),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                const Text(
-                                  "Cadastrar Produto",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w700),
+                                const SizedBox(height: 25),
+                                Container(
+                                  height: isActiveProductRegister
+                                      ? width * 0.3 - 75
+                                      : 0,
+                                  width: isActiveProductRegister
+                                      ? width * 0.3 - 75
+                                      : 0,
+                                  decoration: BoxDecoration(
+                                      // gradient: LinearGradient(
+                                      //     colors: [Colors.white, Colors.grey],
+                                      //     begin: Alignment.topLeft,
+                                      //     end: Alignment.bottomRight),
+                                      color: Colors.grey,
+                                      borderRadius:
+                                          BorderRadius.circular(width * 0.3),
+                                      boxShadow: const [
+                                        BoxShadow(
+                                            color: AppColors.shadowGreyColor,
+                                            offset: Offset(4, 4),
+                                            blurRadius: 2),
+                                        BoxShadow(
+                                            color: Colors.white,
+                                            offset: Offset(-4, -4),
+                                            blurRadius: 2)
+                                      ]),
+                                  child: MaterialButton(
+                                    shape: CircleBorder(),
+                                    onPressed: () async {
+                                      await getGalleryImage(
+                                        200,
+                                        200,
+                                        ref,
+                                      );
+                                    },
+                                    child: Center(
+                                      child: imgConverted.bytes.isNotEmpty
+                                          ? Container(
+                                              decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  image: DecorationImage(
+                                                      image: imgConverted,
+                                                      fit: BoxFit.fill)),
+                                            )
+
+                                          //  ClipRRect(
+                                          //     clipBehavior: C,
+                                          //     child: CircleAvatar(
+                                          //         radius: width * 0.3 - 75,
+                                          //         backgroundImage:
+                                          //             imgConverted),
+                                          //   )
+                                          : Icon(
+                                              Icons.add,
+                                              color: Colors.white,
+                                              size: width * 0.3 / 4,
+                                            ),
+                                    ),
+                                  ),
                                 ),
-                                const SizedBox(height: 40),
+                                const SizedBox(height: 25),
                                 categories != null
                                     ? SizedBox(
                                         width: width * 0.3,
@@ -180,7 +273,8 @@ class ProductAdd extends HookConsumerWidget {
                                                                                     shape: CircleBorder(),
                                                                                     height: 100,
                                                                                     onPressed: () {
-                                                                                      print(categories[i].documentId);
+                                                                                      // print(categories[i].documentId);
+                                                                                      ref.read(categoryProductNotifier.notifier).fetchCategoryProduct(categories[i].documentId);
                                                                                       // ref.read(selectedProductNotifier.notifier).setSelected(0);
                                                                                       // ref.read(categoryNotifier.notifier).state = categories[i].documentId;
                                                                                       // ref.read(filterNotifier.notifier).state = {
@@ -188,11 +282,12 @@ class ProductAdd extends HookConsumerWidget {
                                                                                       //   "status": ref.watch(statusNotifier),
                                                                                       // };
                                                                                     },
-                                                                                    child: CircularSoftButton(
+                                                                                    child: RegisterCircularSoftButton(
                                                                                       radius: sequenceAnimation['avatarSize'].value + 20,
                                                                                       avatarSize: sequenceAnimation['iconSize'].value + 10,
                                                                                       category: categories[i],
                                                                                       padding: 15,
+                                                                                      // color: ,
                                                                                     ),
                                                                                     //  CircleAvatar(
                                                                                     //     radius: sequenceAnimation['avatarSize'].value,
@@ -239,9 +334,9 @@ class ProductAdd extends HookConsumerWidget {
                                     productNameController, "Nome", context),
                                 const SizedBox(height: 50),
                                 registerFieldWidget(
-                                    productNameController, "Preço", context),
+                                    productPriceController, "Preço", context),
                                 const SizedBox(height: 50),
-                                registerFieldWidget(productNameController,
+                                registerFieldWidget(productQuantityController,
                                     "Quantidade", context),
                               ],
                             ),
@@ -262,16 +357,22 @@ class ProductAdd extends HookConsumerWidget {
             height: 80,
             width: isActiveProductRegister ? width * 0.3 : 0,
             child: RegisterButton(
-                buttonName: "Cadastrar",
-                animation: addProductAnimation,
-                product: Product(
-                    categories: "categories",
-                    primaryColor: "primaryColor",
-                    secondaryColor: "secondaryColor",
-                    name: "name",
-                    price: {},
-                    quantity: "quantity",
-                    status: 1)),
+              buttonName: "Cadastrar",
+              animation: addProductAnimation,
+              productName: productNameController.text,
+              productPrice: {
+                "price": productPriceController.text,
+                "promo": "0,00"
+              },
+              productQuantity: productQuantityController.text,
+              // product: Product(
+              //     categories: "categories",
+              //     primaryColor: "primaryColor",
+              //     secondaryColor: "secondaryColor",
+              //     price: {},
+              //     quantity: "quantity",
+              //     status: 1)
+            ),
           ),
         ),
       ],

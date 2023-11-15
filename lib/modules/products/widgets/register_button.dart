@@ -12,12 +12,16 @@ class RegisterButton extends HookConsumerWidget {
     super.key,
     required this.buttonName,
     required this.animation,
-    required this.product,
+    required this.productName,
+    required this.productPrice,
+    required this.productQuantity,
   });
 
   final String buttonName;
   final Animation<double> animation;
-  final Product product;
+  final String productName;
+  final Map<String, String> productPrice;
+  final String productQuantity;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -34,7 +38,7 @@ class RegisterButton extends HookConsumerWidget {
                 minimumSize: const Size.fromHeight(60)),
             // icon: const Icon(Icons.done_outline, color: Colors.white, size: 32),
             child: const Text(
-              'Enviar',
+              'Cadastrar',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 20,

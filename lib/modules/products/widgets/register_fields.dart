@@ -13,6 +13,7 @@ Widget registerFieldWidget(
       hintText: fieldName,
       fillColor: Colors.white.withOpacity(0.4),
       // fillColor: const Color(0xFFD7D7F4),
+      hintStyle: TextStyle(color: Colors.white),
       filled: true,
     ),
   );
