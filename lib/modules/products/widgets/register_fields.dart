@@ -1,3 +1,4 @@
+import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
 
 Widget registerFieldWidget(
@@ -5,16 +6,37 @@ Widget registerFieldWidget(
   String fieldName,
   BuildContext context,
 ) {
-  return TextFormField(
-    controller: controller,
-    decoration: InputDecoration(
-      enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide.none, borderRadius: BorderRadius.circular(12)),
-      hintText: fieldName,
-      fillColor: Colors.white.withOpacity(0.4),
-      // fillColor: const Color(0xFFD7D7F4),
-      hintStyle: TextStyle(color: Colors.white),
-      filled: true,
-    ),
-  );
+  return fieldName == "Preço"
+      ? TextFormField(
+          inputFormatters: [
+              CurrencyTextInputFormatter(
+                  locale: 'pt_Br', symbol: 'R\$', decimalDigits: 2)
+            ],
+          controller: controller,
+          decoration: InputDecoration(
+            enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide.none,
+                borderRadius: BorderRadius.circular(12)),
+            hintText: fieldName,
+            fillColor: Colors.white.withOpacity(0.4),
+            // fillColor: const Color(0xFFD7D7F4),
+            hintStyle: const TextStyle(color: Colors.white),
+            filled: true,
+          ),
+          keyboardType:
+              fieldName == "Nome" ? TextInputType.none : TextInputType.number)
+      : TextFormField(
+          controller: controller,
+          decoration: InputDecoration(
+            enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide.none,
+                borderRadius: BorderRadius.circular(12)),
+            hintText: fieldName,
+            fillColor: Colors.white.withOpacity(0.4),
+            // fillColor: const Color(0xFFD7D7F4),
+            hintStyle: const TextStyle(color: Colors.white),
+            filled: true,
+          ),
+          keyboardType:
+              fieldName == "Nome" ? TextInputType.none : TextInputType.number);
 }

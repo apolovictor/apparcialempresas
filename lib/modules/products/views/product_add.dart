@@ -1,25 +1,19 @@
 import 'dart:ui';
 
 import 'package:apparcialempresas/constants/colors.dart';
-import 'package:apparcialempresas/modules/products/views/categories_list.dart';
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_sequence_animation/flutter_sequence_animation.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../controller/product_list.notifier.dart';
 import '../controller/product_register.dart';
 import '../controller/products_notifier.dart';
-import '../model/products_model.dart';
 import '../services/services.dart';
 import '../widgets/register_button.dart';
 import '../widgets/register_fields.dart';
 import '../widgets/register_soft_control.dart';
-import '../widgets/soft_control.dart';
 
 class ProductAdd extends HookConsumerWidget {
   const ProductAdd({
@@ -37,12 +31,30 @@ class ProductAdd extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     bool isActiveProductRegister = ref.watch(isProductsOpenedProvider);
     final categories = ref.watch(categoriesNotifier).value;
-    final TextEditingController productNameController = TextEditingController();
+    final TextEditingController productNameController =
+        ref.watch(productNameProvider);
+
     final TextEditingController productPriceController =
-        TextEditingController();
+        ref.watch(productPriceProvider);
     final TextEditingController productQuantityController =
-        TextEditingController();
+        ref.watch(productQuantityProvider);
     final imgConverted = ref.watch(imgConvertedProvider);
+
+    productNameController.addListener(() {
+      ref
+          .read(productNameProvider.notifier)
+          .fetchProductName(productNameController);
+    });
+    productPriceController.addListener(() {
+      ref
+          .read(productPriceProvider.notifier)
+          .fetchProductPrice(productPriceController);
+    });
+    productQuantityController.addListener(() {
+      ref
+          .read(productQuantityProvider.notifier)
+          .fetchProductQuantity(productQuantityController);
+    });
 
     AnimationController registerController =
         useAnimationController(duration: const Duration(milliseconds: 0));
@@ -359,12 +371,8 @@ class ProductAdd extends HookConsumerWidget {
             child: RegisterButton(
               buttonName: "Cadastrar",
               animation: addProductAnimation,
-              productName: productNameController.text,
-              productPrice: {
-                "price": productPriceController.text,
-                "promo": "0,00"
-              },
-              productQuantity: productQuantityController.text,
+
+              // productQuantity: productQuantityController.text,
               // product: Product(
               //     categories: "categories",
               //     primaryColor: "primaryColor",

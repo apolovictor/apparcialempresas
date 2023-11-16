@@ -3,6 +3,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'dart:html';
 
 import 'constants/route_names.dart';
 import 'modules/home/controller/home_notifier.dart';

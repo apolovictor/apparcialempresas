@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../controller/product_list.notifier.dart';
+import '../controller/product_register.dart';
 import '../controller/product_update.dart';
 import '../controller/products_notifier.dart';
 
@@ -12,20 +13,18 @@ class RegisterButton extends HookConsumerWidget {
     super.key,
     required this.buttonName,
     required this.animation,
-    required this.productName,
-    required this.productPrice,
-    required this.productQuantity,
   });
 
   final String buttonName;
   final Animation<double> animation;
-  final String productName;
-  final Map<String, String> productPrice;
-  final String productQuantity;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     //  register button
+    final String category = ref.watch(categoryProductNotifier);
+    final categories = ref.watch(categoriesNotifier).value;
+    final imgConverted = ref.watch(imgConvertedProvider);
+
     return Padding(
       padding: const EdgeInsets.only(left: 25.0, right: 25.0, bottom: 25.0),
       child: ScaleTransition(
@@ -46,55 +45,85 @@ class RegisterButton extends HookConsumerWidget {
               ),
             ),
             onPressed: () async {
-              // if (ref.watch(productNameProvider).text.isEmpty &&
-              //     ref.watch(productPriceProvider).text.isEmpty &&
-              //     ref.watch(productPromoProvider).text.isEmpty &&
-              //     ref.watch(productQuantityProvider).text.isEmpty) return;
+              // print(ref.watch(productNameProvider).text);
+              // print(ref.watch(productPriceProvider).text);
+              // print(ref.watch(productQuantityProvider).text);
+              // print(category);
+              // print(categories!
+              //     .firstWhere((e) => e.documentId == category)
+              //     .color);
+              // print(categories!
+              //     .firstWhere((e) => e.documentId == category)
+              //     .secondaryColor);
+              if (ref.watch(productNameProvider).text.isEmpty ||
+                  ref.watch(productPriceProvider).text.isEmpty ||
+                  ref.watch(productQuantityProvider).text.isEmpty ||
+                  category.isEmpty) {
+                Fluttertoast.showToast(
+                    msg: "Todos os campos devem ser preenchidos!",
+                    toastLength: Toast.LENGTH_LONG,
+                    gravity: ToastGravity.TOP,
+                    timeInSecForIosWeb: 3,
+                    webBgColor: '#151515',
+                    textColor: Colors.white,
+                    fontSize: 18.0);
 
-              // final result =
-              //     await ref.read(updateProductProvider).updateQuickProduct(
-              //           product.documentId!,
-              //           ref.watch(productNameProvider).text.isEmpty
-              //               ? product.name
-              //               : ref.watch(productNameProvider).text,
-              //           ref.watch(productPriceProvider).text.isEmpty
-              //               ? product.price['price']
-              //               : ref.watch(productPriceProvider).text,
-              //           ref.watch(productPromoProvider).text.isEmpty
-              //               ? product.price['promo']
-              //               : ref.watch(productPromoProvider).text,
-              //           ref.watch(productQuantityProvider).text.isEmpty
-              //               ? product.quantity
-              //               : ref.watch(productQuantityProvider).text,
-              //         );
+                return;
+              } else {
+                final result = await ref
+                    .read(registerProductProvider)
+                    .registerProduct(
+                        ref.watch(productNameProvider).text,
+                        {
+                          'price': ref.watch(productPriceProvider).text,
+                          'promo': '0.00'
+                        },
+                        ref.watch(productQuantityProvider).text,
+                        categories!
+                            .firstWhere((e) => e.documentId == category)
+                            .color!,
+                        categories
+                            .firstWhere((e) => e.documentId == category)
+                            .secondaryColor!,
+                        category,
+                        imgConverted,
+                        ref);
 
-              // if (result) {
-              //   ref.read(productNameProvider.notifier).clear();
-              //   ref.read(productPriceProvider.notifier).clear();
-              //   ref.read(productPromoProvider.notifier).clear();
-              //   ref.read(productQuantityProvider.notifier).clear();
+                if (result) {
+                  ref.read(productNameProvider.notifier).clear();
+                  ref.read(productPriceProvider.notifier).clear();
+                  ref.read(productPromoProvider.notifier).clear();
+                  ref.read(productQuantityProvider.notifier).clear();
 
-              //   ref.read(isActiveEditNotifier.notifier).setIsActiveEdit(false);
+                  ref.read(isProductsOpenedProvider.notifier).fetch(false);
+                  ref.read(categoryProductNotifier.notifier).clear();
+                  ref.read(imgFileProvider.notifier).clear();
+                  ref.read(imgConvertedProvider.notifier).clear();
 
-              //   Fluttertoast.showToast(
-              //       msg: "${product.name} atualizado(a) com sucesso!",
-              //       toastLength: Toast.LENGTH_LONG,
-              //       gravity: ToastGravity.TOP,
-              //       timeInSecForIosWeb: 3,
-              //       webBgColor: '#151515',
-              //       textColor: Colors.white,
-              //       fontSize: 18.0);
-              // } else {
-              //   Fluttertoast.showToast(
-              //     msg: result.toString(),
-              //     toastLength: Toast.LENGTH_LONG,
-              //     gravity: ToastGravity.TOP,
-              //     timeInSecForIosWeb: 3,
-              //     webBgColor: '#151515',
-              //     textColor: Colors.white,
-              //     fontSize: 18.0,
-              //   );
-              // }
+                  ref
+                      .read(isReloagingImgNotifier.notifier)
+                      .isReloadingImg(true);
+
+                  Fluttertoast.showToast(
+                      msg: "Produto cadastrado com sucesso!",
+                      toastLength: Toast.LENGTH_LONG,
+                      gravity: ToastGravity.TOP,
+                      timeInSecForIosWeb: 3,
+                      webBgColor: '#151515',
+                      textColor: Colors.white,
+                      fontSize: 18.0);
+                } else {
+                  Fluttertoast.showToast(
+                    msg: result.toString(),
+                    toastLength: Toast.LENGTH_LONG,
+                    gravity: ToastGravity.TOP,
+                    timeInSecForIosWeb: 3,
+                    webBgColor: '#151515',
+                    textColor: Colors.white,
+                    fontSize: 18.0,
+                  );
+                }
+              }
             }),
       ),
     );

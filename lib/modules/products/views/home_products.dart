@@ -155,15 +155,23 @@ class ProductScreen extends HookConsumerWidget {
                                                   MainAxisAlignment
                                                       .spaceBetween,
                                               children: [
-                                                Text(
-                                                  ' Meus Produtos',
-                                                  style: height < 800
-                                                      ? Theme.of(context)
-                                                          .textTheme
-                                                          .headlineMedium
-                                                      : Theme.of(context)
-                                                          .textTheme
-                                                          .headlineLarge,
+                                                Row(
+                                                  children: [
+                                                    Text(
+                                                      ' Meus Produtos',
+                                                      style: height < 800
+                                                          ? Theme.of(context)
+                                                              .textTheme
+                                                              .headlineMedium
+                                                          : Theme.of(context)
+                                                              .textTheme
+                                                              .headlineLarge,
+                                                    ),
+                                                    products != null
+                                                        ? Text(products.length
+                                                            .toString())
+                                                        : const SizedBox(),
+                                                  ],
                                                 ),
                                                 Row(
                                                   children: [
@@ -244,7 +252,7 @@ class ProductScreen extends HookConsumerWidget {
                                 : 0,
                             height: MediaQuery.of(context).size.height,
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(
+                              borderRadius: const BorderRadius.only(
                                   topLeft: Radius.circular(10),
                                   bottomLeft: Radius.circular(10)),
                               color: productSelected > -1

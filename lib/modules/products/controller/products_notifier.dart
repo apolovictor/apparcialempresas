@@ -71,11 +71,16 @@ class PictureProductProvider extends StateNotifier<List<RemotePicture>> {
     if (state.length < length) {
       state = [...state, img];
     }
+
     // print('length ======== $length');
     // print('state.length ======== ${state.length}');
     // state.forEach((e) {
     //   print(e.mapKey);
     // });
+  }
+
+  void clear() {
+    state.clear();
   }
 }
 
