@@ -111,9 +111,13 @@ class ProducQuickEdit extends HookConsumerWidget {
                   child: RotatedBox(
                     quarterTurns: 1,
                     child: Text(
-                      productSelected > -1
-                          ? products![productSelected].name
-                          : "",
+                      filter['category'].isEmpty
+                          ? products != null
+                              ? products[productSelected].name
+                              : ""
+                          : filteredProducts.isNotEmpty
+                              ? filteredProducts[productSelected].name
+                              : "",
                       style: const TextStyle(
                           fontWeight: FontWeight.w900,
                           fontSize: 125,

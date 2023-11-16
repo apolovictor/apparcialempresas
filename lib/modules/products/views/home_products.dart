@@ -1,18 +1,9 @@
-import 'dart:ui';
-
-import 'package:cached_firestorage/lib.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_sequence_animation/flutter_sequence_animation.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../controller/product_list.notifier.dart';
 import '../controller/products_notifier.dart';
 import '../model/products_model.dart';
-import '../widgets/register_button.dart';
-import '../widgets/register_fields.dart';
 import 'categories_list.dart';
 import 'product_add.dart';
 import 'product_list.dart';
@@ -37,14 +28,6 @@ class ProductScreen extends HookConsumerWidget {
     bool isActiveEdit = ref.watch(isActiveEditNotifier);
     bool isActiveProductRegister = ref.watch(isProductsOpenedProvider);
 
-    // if (filter['category'].isNotEmpty) {
-    //   print(filteredProducts.length);
-    // } else {
-    //   if (products != null) {
-    //     print("products ========== ${products.length}");
-    //   }
-    // }
-
     final Animation<double> containerScaleTweenAnimation =
         Tween(begin: .0, end: MediaQuery.of(context).size.width * 0.3).animate(
             CurvedAnimation(
@@ -61,17 +44,6 @@ class ProductScreen extends HookConsumerWidget {
     final Animation<double> containerBorderRadiusAnimation =
         Tween(begin: 100.0, end: 15.0).animate(CurvedAnimation(
             parent: getCategoriesController(ref), curve: Curves.ease));
-
-    // getProductAddController(ref).addStatusListener((status) {
-    //   // print(status);
-    //   // print(
-    //   //     "containerAddProductAnimation ===== ${containerAddProductAnimation.value}");
-
-    //   if (status == AnimationStatus.completed) {
-    //     // if (containerAddProductAnimation.value == (width * 0.3)) {
-    //     registerController.forward();
-    //   }
-    // });
 
     return Scaffold(
       backgroundColor: Colors.white,
