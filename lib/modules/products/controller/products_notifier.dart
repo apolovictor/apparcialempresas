@@ -44,14 +44,6 @@ class FilteredProductProvider extends StateNotifier<List<Product>> {
   }
 }
 
-class GlobalKeyProductProvider extends StateNotifier<List<LabeledGlobalKey>> {
-  GlobalKeyProductProvider() : super([]);
-
-  fetchGlobalKeyList(List<LabeledGlobalKey> list) {
-    state = [...list];
-  }
-}
-
 class OffsetKeyProductProvider extends StateNotifier<List<OffsetProduct>> {
   OffsetKeyProductProvider() : super([]);
 
@@ -110,9 +102,7 @@ final pictureCategoriesListProvider =
 final filteredProductListProvider =
     StateNotifierProvider<FilteredProductProvider, List<Product>>(
         (ref) => FilteredProductProvider());
-final globalKeyListProvider =
-    StateNotifierProvider<GlobalKeyProductProvider, List<LabeledGlobalKey>>(
-        (ref) => GlobalKeyProductProvider());
+
 final offsetListProvider =
     StateNotifierProvider<OffsetKeyProductProvider, List<OffsetProduct>>(
         (ref) => OffsetKeyProductProvider());

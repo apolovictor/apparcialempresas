@@ -99,7 +99,6 @@ class AppScaffold extends HookConsumerWidget {
             Positioned(
               top: height * 0.1,
               child: Container(
-                  color: Colors.amber,
                   height: height * 0.9,
                   width: width,
                   child: Padding(

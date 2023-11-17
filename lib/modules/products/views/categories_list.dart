@@ -17,7 +17,7 @@ Future<String> downloadUrl(icon) async {
   return downloadUrl;
 }
 
-GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
+// GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
 final storage = FirebaseStorage.instance;
 
 class CategoriesList extends HookConsumerWidget {
@@ -72,7 +72,7 @@ class CategoriesList extends HookConsumerWidget {
           scrollDirection: Axis.horizontal,
           child: categories != null
               ? AnimatedBuilder(
-                  key: _listKey,
+                  // key: _listKey,
                   animation: categoriesController,
                   builder: (context, child) => AnimationLimiter(
                     child: Row(
