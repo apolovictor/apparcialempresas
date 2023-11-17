@@ -91,16 +91,16 @@ class ProducQuickEdit extends HookConsumerWidget {
             to: const Duration(milliseconds: 750),
             tag: 'rightPositioned')
         .animate(editController);
-    useValueChanged(productSelected, (_, __) async {
-      editController.forward();
+    // useValueChanged(productSelected, (_, __) async {
+    //   editController.forward();
 
-      editController.addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
-          editController.reverse();
-        }
-      });
-      editController.forward();
-    });
+    //   editController.addStatusListener((status) {
+    //     if (status == AnimationStatus.completed) {
+    //       editController.reverse();
+    //     }
+    //   });
+    //   editController.forward();
+    // });
 
     return productSelected > -1 && isActiveEdit
         ? Stack(

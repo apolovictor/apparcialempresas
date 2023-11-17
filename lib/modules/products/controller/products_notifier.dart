@@ -44,18 +44,6 @@ class FilteredProductProvider extends StateNotifier<List<Product>> {
   }
 }
 
-class OffsetKeyProductProvider extends StateNotifier<List<OffsetProduct>> {
-  OffsetKeyProductProvider() : super([]);
-
-  fetchOffsetList(OffsetProduct item) {
-    state = [...state, item];
-  }
-
-  updateOffSetList(OffsetProduct item, int index) {
-    state[index] = item;
-  }
-}
-
 class PictureProductProvider extends StateNotifier<List<RemotePicture>> {
   PictureProductProvider() : super([]);
 
@@ -102,10 +90,6 @@ final pictureCategoriesListProvider =
 final filteredProductListProvider =
     StateNotifierProvider<FilteredProductProvider, List<Product>>(
         (ref) => FilteredProductProvider());
-
-final offsetListProvider =
-    StateNotifierProvider<OffsetKeyProductProvider, List<OffsetProduct>>(
-        (ref) => OffsetKeyProductProvider());
 
 final categoriesNotifier = StreamProvider<List<Categories>>((ref) {
   return _businessCollection
@@ -168,101 +152,6 @@ class ExampleNotifier extends AutoDisposeStreamNotifier<List<Product>> {
         loading: (e) {});
   }
 }
-
-// Add methods to mutate the state
-
-// final productsProvider =
-//     NotifierProvider.autoDispose<ExampleNotifier, List<Product>>(
-//   ExampleNotifier.new,
-// );
-
-// class ExampleNotifier extends AutoDisposeNotifier<List<Product>> {
-//   @override
-//   List<Product> build() async {
-//     return _businessCollection
-//         .doc(ref.watch(idDocumentNotifier))
-//         .collection("products")
-//         .where("")
-//         .snapshots()
-//         .map((snapshot) {
-//       return snapshot.docs.map((doc) {
-//         Product product = Product.fromDoc(doc);
-
-//         return product;
-//       }).toList();
-//     });
-//   }
-
-//   // Add methods to mutate the state
-// }
-
-// class FilteredProductList extends StateNotifier {
-//   FilteredProductList() : super([]);
-
-//   getFilteredProducts(WidgetRef ref) {
-//     final products = _businessCollection
-//         .doc(ref.watch(idDocumentNotifier))
-//         .collection("products")
-//         .where("")
-//         .snapshots()
-//         .map((snapshot) =>
-//             snapshot.docs.map((doc) => Product.fromDoc(doc)).toList());
-
-//     final productList = products
-//         .where((product) => product.where((element) =>
-//             element.categories == ref.watch(filterCategoryNotifier)))
-//         .toList();
-//   }
-// }
-
-// class TodoList extends StateNotifier<List<Product>> {
-//   TodoList() : super([]);
-
-//   void filterByStatus(int target) {
-//     state = target == 0
-//         ? initialTodos
-//         : initialTodos.where((element) => element.status == target).toList();
-//   }
-// }
-
-// final filteredProvider =
-//     StreamProvider.autoDispose<List<Product>>((ref) {
-
-//       Map<Filter, dynamic> filter = ref.watch(filteredProductListProvider);
-//     List<Product> products = ref.watch(productsNotifier).value!;
-
-//     print(products);
-//     print(filter.keys.first.categories);
-//     print(filter.keys.first.status);
-
-//     return products;
-//     });
-
-// class ProductProvider extends ChangeNotifier {
-//   filteredProductList(WidgetRef ref) {
-//     Map<String, dynamic> filter = ref.read(filteredProductListProvider);
-//     List<Product> products = ref.watch(productsNotifier).value!;
-
-//     print(filter.entries.length);
-
-//     print(products);
-//     // print(filter.keys.first.categories);
-//     // print(filter.keys.first.status);
-
-//     return products;
-//   }
-// }
-
-// final productsFilteredProvider = Provider((ref) => ProductProvider());
-
-// final filteredProductList =
-//     StateNotifierProvider<FilterProductProvider, Map>((ref) {
-//   return [];
-// });
-
-// final filteredProductList = StateNotifierProvider<List<Product>>((ref) {
-//   return [];
-// });
 
 class IsCategoriesOpeneNotifier extends StateNotifier<bool> {
   IsCategoriesOpeneNotifier() : super(isOpened);
