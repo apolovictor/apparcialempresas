@@ -169,7 +169,7 @@ class CategoriesList extends HookConsumerWidget {
                                     .apply(color: Colors.grey[500])),
                           ],
                         )
-                      : SizedBox(),
+                      : const SizedBox(),
                   Column(
                     children: [
                       MaterialButton(

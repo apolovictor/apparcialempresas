@@ -36,16 +36,7 @@ class AppScaffold extends HookConsumerWidget {
     final double height = MediaQuery.of(context).size.height;
     final routeListNotifier = ref.watch(routeListProvider);
     final isProductOpened = ref.watch(isProductsOpenedProvider);
-    int productSelected = ref.watch(selectedProductNotifier);
-    final filter = ref.watch(filterNotifier);
-
-    List<Product> filteredProducts = ref.watch(filteredProductListProvider);
-    List<Product>? products = ref.watch(exampleProvider).value;
-
-    bool isActiveEdit = ref.watch(isActiveEditNotifier);
-    final Animation<double> animation = Tween(begin: .0, end: 1.0).animate(
-        CurvedAnimation(
-            parent: getQuickFieldsController(ref), curve: Curves.ease));
+    final bool isActiveEdit = ref.watch(isActiveEditNotifier);
 
     return Scaffold(
       drawer: displayMobileLayout
@@ -62,7 +53,7 @@ class AppScaffold extends HookConsumerWidget {
           children: [
             AnimatedContainer(
               duration: const Duration(milliseconds: 375),
-              width: isProductOpened ? width * 0.7 : width,
+              width: isProductOpened || isActiveEdit ? width * 0.7 : width,
               height: height * 0.1,
               child: Row(
                 children: [
@@ -120,41 +111,13 @@ class AppScaffold extends HookConsumerWidget {
             /// Edit Product Widget
             Positioned(
               right: 0,
-              child: Stack(
-                children: [
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 375),
-                    width: (isActiveEdit && productSelected > -1)
-                        ? width * 0.3
-                        : 0,
-                    height: MediaQuery.of(context).size.height,
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(10),
-                          bottomLeft: Radius.circular(10)),
-                      color: productSelected > -1
-                          ? filter['category'].isNotEmpty &&
-                                  filteredProducts.isNotEmpty
-                              ? Color(int.parse(
-                                  filteredProducts[productSelected]
-                                      .secondaryColor))
-                              : products!.isNotEmpty
-                                  ? Color(int.parse(
-                                      products[productSelected].secondaryColor))
-                                  : Colors.transparent
-                          : Colors.transparent,
-                    ),
-                    child: LayoutBuilder(builder: (context, constraints) {
-                      return ProducQuickEdit(
-                          key: key,
-                          height: height,
-                          width: width,
-                          animation: animation,
-                          constraints: constraints);
-                    }),
-                  ),
-                ],
-              ),
+              child: LayoutBuilder(builder: (context, constraints) {
+                return ProducQuickEdit(
+                    key: key,
+                    height: height,
+                    width: width,
+                    constraints: constraints);
+              }),
             ),
           ],
         ),

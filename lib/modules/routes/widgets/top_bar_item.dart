@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../constants/colors.dart';
 import '../../../constants/route_names.dart';
+import '../../products/controller/product_list.notifier.dart';
 import '../../products/controller/products_notifier.dart';
 import '../controller/routes_controller.dart';
 
@@ -37,6 +38,21 @@ class TopBarItem extends HookConsumerWidget {
       child: MaterialButton(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         onPressed: () {
+          ref.read(categoryNotifier.notifier).state = "";
+          ref.read(filterNotifier.notifier).state = {
+            "category": ref.watch(categoryNotifier),
+            "status": ref.watch(statusNotifier)
+          };
+          ref.read(isProductsOpenedProvider.notifier).fetch(false);
+          ref.read(isActiveEditNotifier.notifier).setIsActiveEdit(false);
+          ref.read(filteredProductListProvider.notifier).clear();
+          ref
+              .read(selectedRouteNotifier.notifier)
+              .setSelected(route.title == '/'
+                  ? 0
+                  : route.title == '/produtos'
+                      ? 1
+                      : 2);
           ref
               .read(selectedRouteNotifier.notifier)
               .setSelected(route.title == '/'

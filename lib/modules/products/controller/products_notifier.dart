@@ -42,6 +42,10 @@ class FilteredProductProvider extends StateNotifier<List<Product>> {
   fetchFilteredList(list) {
     state = list;
   }
+
+  clear() {
+    state.clear();
+  }
 }
 
 class PictureProductProvider extends StateNotifier<List<RemotePicture>> {
@@ -266,9 +270,6 @@ final isProductsOpenedProvider =
         (ref) => IsCProductDetailOpeneNotifier());
 
 final isCategoriesOpenedProvider =
-    StateNotifierProvider<IsCategoriesOpeneNotifier, bool>(
-        (ref) => IsCategoriesOpeneNotifier());
-final isProductDetailOpenedProvider =
     StateNotifierProvider<IsCategoriesOpeneNotifier, bool>(
         (ref) => IsCategoriesOpeneNotifier());
 
