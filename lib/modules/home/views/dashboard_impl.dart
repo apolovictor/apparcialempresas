@@ -1,26 +1,23 @@
+import 'package:cached_firestorage/remote_picture.dart';
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../routes/widgets/app_scaffold.dart';
-import 'product_details.dart';
+import 'dashboard.dart';
 
-class ProductDetails extends StatelessWidget {
-  ProductDetails({Key? key}) : super(key: key);
+class HomeDashboard extends HookConsumerWidget {
+  const HomeDashboard({super.key});
 
   // final Key dataKey = new GlobalKey();
 
-  // final Product product;
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return AppScaffold(
-      pageTitle: "Detalhe do produto",
-
-      // orders: orders,
-
+      pageTitle: "Dashboard",
       body: MaterialApp(
         debugShowCheckedModeBanner: false,
         routes: {
-          '/': (context) => ProductDetailScreen(),
+          '/': (context) => Dashboard(),
         },
         theme: ThemeData(
           appBarTheme: const AppBarTheme(
@@ -79,7 +76,7 @@ class ProductDetails extends StatelessWidget {
                 headlineMedium: const TextStyle(
                     fontSize: 26,
                     fontFamily: 'HelveticaNeue',
-                    fontWeight: FontWeight.w400,
+                    fontWeight: FontWeight.w700,
                     color: Colors.black87),
                 headlineLarge: const TextStyle(
                     fontSize: 32,

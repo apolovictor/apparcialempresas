@@ -47,7 +47,6 @@ class RegisterProduct extends ChangeNotifier {
         // String imageUri = await result.ref.getDownloadURL();
         var imageProduct = await result.ref.getMetadata();
         if (imageProduct.name.isNotEmpty) {
-          print("hereee");
           ref
               .read(lastProductNotifier.notifier)
               .lastProductingImg(imageProduct.name);

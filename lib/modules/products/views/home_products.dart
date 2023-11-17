@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../routes/widgets/top_bar.dart';
 import '../controller/product_list.notifier.dart';
 import '../controller/products_notifier.dart';
 import '../model/products_model.dart';
@@ -9,16 +10,13 @@ import 'product_add.dart';
 import 'product_list.dart';
 import 'product_quick_edit.dart';
 
-GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
-
 class ProductScreen extends HookConsumerWidget {
   ProductScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final bool displayMobileLayout = MediaQuery.of(context).size.width < 600;
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
+
     int productSelected = ref.watch(selectedProductNotifier);
     final filter = ref.watch(filterNotifier);
 
@@ -33,10 +31,6 @@ class ProductScreen extends HookConsumerWidget {
             CurvedAnimation(
                 parent: getCategoriesController(ref), curve: Curves.ease));
 
-    final Animation<double> animation = Tween(begin: .0, end: 1.0).animate(
-        CurvedAnimation(
-            parent: getQuickFieldsController(ref), curve: Curves.ease));
-
     final Animation<double> containerAlignTweenAnimation =
         Tween(begin: 0.0, end: -1.0).animate(CurvedAnimation(
             parent: getCategoriesController(ref), curve: Curves.ease));
@@ -49,6 +43,8 @@ class ProductScreen extends HookConsumerWidget {
       backgroundColor: Colors.white,
       body: products != null || filteredProducts.isNotEmpty
           ? LayoutBuilder(builder: (context, constraints) {
+              double width = constraints.maxWidth;
+              double height = constraints.maxHeight;
               return Stack(
                 children: [
                   Row(
@@ -58,199 +54,133 @@ class ProductScreen extends HookConsumerWidget {
                         width: isActiveEdit || isActiveProductRegister
                             ? width * 0.7
                             : width,
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                              top: 0,
-                              left: !displayMobileLayout
-                                  ? MediaQuery.of(context).size.width * 0.05
-                                  : 15,
-                              right: !displayMobileLayout
-                                  ? MediaQuery.of(context).size.width * 0.05
-                                  : 15,
-                              bottom: 0),
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                Expanded(
-                                  flex: height < 806 ? 2 : 3,
-                                  child: Container(
-                                    color: Colors.black54,
-                                    child: Center(
-                                      child: Text(
-                                        "TOP",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headlineLarge!
-                                            .apply(color: Colors.white),
-                                      ),
-                                    ),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              // width > 1000
+                              //     ? Expanded(
+                              //         flex: height < 806 ? 1 : 2,
+                              //         child: const TopBar(),
+                              //       )
+                              //     : const SizedBox(),
+                              Expanded(
+                                flex: !displayMobileLayout && height > 805
+                                    ? 5
+                                    : height < 806 && !displayMobileLayout
+                                        ? 6
+                                        : 2,
+                                child: SizedBox(
+                                  width: double.infinity,
+                                  child: Column(
+                                    children: [
+                                      Row(children: [
+                                        Text(
+                                          ' Categorias ',
+                                          style: height < 806
+                                              ? Theme.of(context)
+                                                  .textTheme
+                                                  .headlineMedium
+                                              : Theme.of(context)
+                                                  .textTheme
+                                                  .headlineLarge,
+                                        ),
+                                      ]),
+                                      const SizedBox(height: 20),
+                                      const Expanded(child: CategoriesList()),
+                                    ],
                                   ),
                                 ),
-                                Expanded(
-                                  flex: !displayMobileLayout && height > 805
-                                      ? 5
-                                      : height < 806 && !displayMobileLayout
-                                          ? 6
-                                          : 2,
-                                  child: SizedBox(
+                              ),
+                              Expanded(
+                                flex: !displayMobileLayout ? 12 : 4,
+                                child: SizedBox(
                                     width: double.infinity,
                                     child: Column(
-                                      children: [
-                                        Row(children: [
-                                          Text(
-                                            ' Categorias ',
-                                            style: height < 806
-                                                ? Theme.of(context)
-                                                    .textTheme
-                                                    .headlineMedium
-                                                : Theme.of(context)
-                                                    .textTheme
-                                                    .headlineLarge,
-                                          ),
-                                        ]),
-                                        const SizedBox(height: 20),
-                                        const Expanded(child: CategoriesList()),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: !displayMobileLayout ? 12 : 4,
-                                  child: SizedBox(
-                                      width: double.infinity,
-                                      child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    Text(
-                                                      ' Meus Produtos',
-                                                      style: height < 800
-                                                          ? Theme.of(context)
-                                                              .textTheme
-                                                              .headlineMedium
-                                                          : Theme.of(context)
-                                                              .textTheme
-                                                              .headlineLarge,
-                                                    ),
-                                                    products != null
-                                                        ? Text(products.length
-                                                            .toString())
-                                                        : const SizedBox(),
-                                                  ],
-                                                ),
-                                                Row(
-                                                  children: [
-                                                    FilterChip(
-                                                      onSelected: (value) {
-                                                        if (isActiveEdit ==
-                                                            true) {
-                                                          ref
-                                                              .read(
-                                                                  isActiveEditNotifier
-                                                                      .notifier)
-                                                              .setIsActiveEdit(
-                                                                  false);
-                                                          Future.delayed(
-                                                              const Duration(
-                                                                  milliseconds:
-                                                                      400), () {
-                                                            ref
-                                                                .read(isProductsOpenedProvider
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    ' Meus Produtos',
+                                                    style: height < 800
+                                                        ? Theme.of(context)
+                                                            .textTheme
+                                                            .headlineMedium
+                                                        : Theme.of(context)
+                                                            .textTheme
+                                                            .headlineLarge,
+                                                  ),
+                                                  products != null
+                                                      ? Text(products.length
+                                                          .toString())
+                                                      : const SizedBox(),
+                                                ],
+                                              ),
+                                              Row(
+                                                children: [
+                                                  FilterChip(
+                                                    onSelected: (value) {
+                                                      if (isActiveEdit ==
+                                                          true) {
+                                                        ref
+                                                            .read(
+                                                                isActiveEditNotifier
                                                                     .notifier)
-                                                                .fetch(true);
-                                                          });
-                                                        } else {
+                                                            .setIsActiveEdit(
+                                                                false);
+                                                        Future.delayed(
+                                                            const Duration(
+                                                                milliseconds:
+                                                                    400), () {
                                                           ref
                                                               .read(
                                                                   isProductsOpenedProvider
                                                                       .notifier)
                                                               .fetch(true);
-                                                        }
-                                                      },
-                                                      side: const BorderSide(
-                                                          color: Colors
-                                                              .transparent),
-                                                      backgroundColor:
-                                                          Colors.grey[200],
-                                                      shape:
-                                                          RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10),
-                                                      ),
-                                                      label: SizedBox(
-                                                          child: Text(
-                                                              "Adicionar Produto",
-                                                              style: Theme.of(
-                                                                      context)
-                                                                  .textTheme
-                                                                  .bodyLarge!
-                                                                  .apply(
-                                                                      color: Colors
-                                                                          .black87))),
-                                                    )
-                                                  ],
-                                                )
-                                              ],
-                                            ),
-                                            ProductsList(),
-                                          ])),
-                                )
-                              ]),
-                        ),
-                      ),
-
-                      /// Add Product Widget
-                      ProductAdd(
-                        width: width,
-                        height: height,
-                        constraints: constraints,
-                      ),
-
-                      /// Edit Product Widget
-                      Stack(
-                        children: [
-                          AnimatedContainer(
-                            duration: const Duration(milliseconds: 375),
-                            width: (isActiveEdit && productSelected > -1)
-                                ? width * 0.3
-                                : 0,
-                            height: MediaQuery.of(context).size.height,
-                            decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.only(
-                                  topLeft: Radius.circular(10),
-                                  bottomLeft: Radius.circular(10)),
-                              color: productSelected > -1
-                                  ? filter['category'].isNotEmpty &&
-                                          filteredProducts.isNotEmpty
-                                      ? Color(int.parse(
-                                          filteredProducts[productSelected]
-                                              .secondaryColor))
-                                      : products!.isNotEmpty
-                                          ? Color(int.parse(
-                                              products[productSelected]
-                                                  .secondaryColor))
-                                          : Colors.transparent
-                                  : Colors.transparent,
-                            ),
-                            child:
-                                LayoutBuilder(builder: (context, constraints) {
-                              return ProducQuickEdit(
-                                  key: key,
-                                  height: height,
-                                  width: width,
-                                  animation: animation,
-                                  constraints: constraints);
-                            }),
-                          ),
-                        ],
+                                                        });
+                                                      } else {
+                                                        ref
+                                                            .read(
+                                                                isProductsOpenedProvider
+                                                                    .notifier)
+                                                            .fetch(true);
+                                                      }
+                                                    },
+                                                    side: const BorderSide(
+                                                        color:
+                                                            Colors.transparent),
+                                                    backgroundColor:
+                                                        Colors.grey[200],
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10),
+                                                    ),
+                                                    label: SizedBox(
+                                                        child: Text(
+                                                            "Adicionar Produto",
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .bodyLarge!
+                                                                .apply(
+                                                                    color: Colors
+                                                                        .black87))),
+                                                  )
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                          ProductsList(),
+                                        ])),
+                              )
+                            ]),
                       ),
                     ],
                   ),
@@ -304,7 +234,7 @@ class ProductScreen extends HookConsumerWidget {
                 ],
               );
             })
-          : SizedBox(),
+          : const SizedBox(),
     );
   }
 }

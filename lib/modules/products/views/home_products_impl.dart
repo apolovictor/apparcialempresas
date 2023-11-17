@@ -2,7 +2,7 @@ import 'package:cached_firestorage/remote_picture.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../../widgets/app_scaffold.dart';
+import '../../routes/widgets/app_scaffold.dart';
 import '../controller/products_notifier.dart';
 import '../model/products_model.dart';
 import 'home_products.dart';
@@ -26,7 +26,6 @@ class HomeProducts extends HookConsumerWidget {
 
     return AppScaffold(
       pageTitle: "Produtos",
-      loadingAppBar: true,
       body: products != null || filteredProducts.length > 0
           ? MaterialApp(
               debugShowCheckedModeBanner: false,

@@ -4,7 +4,7 @@ class RouteNames {
   static const String productDetails = '/productDetails';
   static const String reports = '/relatorios';
   static const String settings = '/configuracoes';
-  static const String tables = '/tabelas';
+  static const String tables = '/mesas';
 }
 
 class RouteListTile {
@@ -13,3 +13,14 @@ class RouteListTile {
   static const String listTile3 = 'Colors.green[50]';
   static const String listTile4 = 'Colors.green[50]';
 }
+
+class RouteNamesList {
+  String title;
+  RouteNamesList({required this.title});
+}
+
+List<RouteNamesList> topBarList = [
+  RouteNamesList(title: RouteNames.home),
+  RouteNamesList(title: RouteNames.products),
+  RouteNamesList(title: RouteNames.tables),
+];

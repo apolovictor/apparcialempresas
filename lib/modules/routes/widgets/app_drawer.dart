@@ -5,10 +5,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // import 'package:flutter_tags/flutter_tags.dart';
 
-import '../constants/page_titles.dart';
-import '../constants/route_names.dart';
-import '../modules/home/controller/home_notifier.dart';
-import '../modules/home/model/home_model.dart';
+import '../../../constants/page_titles.dart';
+import '../../../constants/route_names.dart';
+import '../../home/controller/home_notifier.dart';
+import '../../home/model/home_model.dart';
 import 'app_route_observer.dart';
 
 final storage = FirebaseStorage.instance;

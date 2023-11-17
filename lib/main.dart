@@ -7,12 +7,14 @@ import 'dart:html';
 
 import 'constants/route_names.dart';
 import 'modules/home/controller/home_notifier.dart';
+import 'modules/home/views/dashboard_impl.dart';
 import 'modules/products/controller/product_list.notifier.dart';
 import 'modules/products/controller/products_notifier.dart';
 import 'modules/products/views/home_products_impl.dart';
 import 'modules/products/views/product_details.dart';
 import 'modules/products/views/product_details_impl.dart';
-import 'widgets/app_route_observer.dart';
+import 'modules/routes/controller/routes_controller.dart';
+import 'modules/routes/widgets/app_route_observer.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,6 +40,11 @@ class MyApp extends HookConsumerWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   ref
+    //       .read(sizeLayoutNotifier.notifier)
+    //       .setSize(MediaQuery.of(context).size);
+    // });
     return MaterialApp(
       title: ref.watch(responseProvider("bandiis")).when(
           data: (dataResponse) => dataResponse.name,
@@ -79,7 +86,7 @@ class MyApp extends HookConsumerWidget {
       initialRoute: RouteNames.home,
       navigatorObservers: [AppRouteObserver()],
       routes: {
-        RouteNames.home: (_) => const HomeProducts(),
+        RouteNames.home: (_) => const HomeDashboard(),
         RouteNames.products: (_) => const HomeProducts(),
         RouteNames.productDetails: (_) => ProductDetails(),
       },

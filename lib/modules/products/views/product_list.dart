@@ -4,7 +4,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../controller/product_list.notifier.dart';
-import '../controller/product_register.dart';
 import '../controller/products_notifier.dart';
 import '../model/products_model.dart';
 import 'product_card.dart';
@@ -47,9 +46,8 @@ class ProductsList extends HookConsumerWidget {
     FixedExtentScrollController scrollController =
         ref.watch(scrollListNotifier(selected));
 
-    return products != null || filteredProducts.length > 0
+    return products != null || filteredProducts.isNotEmpty
         ? LayoutBuilder(builder: (context, constraints) {
-            print("Hereee");
             for (var i = 0; i < products!.length; i++) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 ref.read(pictureProductListProvider.notifier).fetchPictureList(

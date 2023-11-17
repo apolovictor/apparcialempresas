@@ -1,11 +1,8 @@
-import 'package:apparcialempresas/modules/products/model/products_model.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../controller/product_list.notifier.dart';
 import '../controller/product_register.dart';
-import '../controller/product_update.dart';
 import '../controller/products_notifier.dart';
 
 class RegisterButton extends HookConsumerWidget {
@@ -35,7 +32,6 @@ class RegisterButton extends HookConsumerWidget {
                     borderRadius: BorderRadius.circular(12.0)),
                 backgroundColor: Colors.black87,
                 minimumSize: const Size.fromHeight(60)),
-            // icon: const Icon(Icons.done_outline, color: Colors.white, size: 32),
             child: const Text(
               'Cadastrar',
               style: TextStyle(
@@ -45,16 +41,6 @@ class RegisterButton extends HookConsumerWidget {
               ),
             ),
             onPressed: () async {
-              // print(ref.watch(productNameProvider).text);
-              // print(ref.watch(productPriceProvider).text);
-              // print(ref.watch(productQuantityProvider).text);
-              // print(category);
-              // print(categories!
-              //     .firstWhere((e) => e.documentId == category)
-              //     .color);
-              // print(categories!
-              //     .firstWhere((e) => e.documentId == category)
-              //     .secondaryColor);
               if (ref.watch(productNameProvider).text.isEmpty ||
                   ref.watch(productPriceProvider).text.isEmpty ||
                   ref.watch(productQuantityProvider).text.isEmpty ||

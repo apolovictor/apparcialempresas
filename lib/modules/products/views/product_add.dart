@@ -8,6 +8,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../routes/controller/routes_controller.dart';
 import '../controller/product_register.dart';
 import '../controller/products_notifier.dart';
 import '../services/services.dart';
@@ -20,12 +21,10 @@ class ProductAdd extends HookConsumerWidget {
     super.key,
     required this.width,
     required this.height,
-    required this.constraints,
   });
 
   final double width;
   final double height;
-  final BoxConstraints constraints;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -104,11 +103,12 @@ class ProductAdd extends HookConsumerWidget {
     }
 
     return Stack(
+      clipBehavior: Clip.none,
       children: [
         AnimatedContainer(
           duration: const Duration(milliseconds: 375),
           width: isActiveProductRegister ? width * 0.3 : 0,
-          height: isActiveProductRegister ? constraints.maxHeight : 0,
+          height: isActiveProductRegister ? height : 0,
           decoration: const BoxDecoration(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(10), bottomLeft: Radius.circular(10)),
@@ -126,6 +126,7 @@ class ProductAdd extends HookConsumerWidget {
               padding: const EdgeInsets.only(
                   left: 18.0, right: 18.0, top: 18.0, bottom: 48),
               child: Stack(
+                clipBehavior: Clip.none,
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(10),
