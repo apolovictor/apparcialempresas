@@ -36,6 +36,7 @@ class TopBarItem extends HookConsumerWidget {
         ],
       ),
       child: MaterialButton(
+        key: LabeledGlobalKey(indexRoute.toString()),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         onPressed: () {
           ref.read(categoryNotifier.notifier).state = "";

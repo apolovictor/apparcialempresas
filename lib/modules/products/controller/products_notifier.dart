@@ -36,6 +36,11 @@ class FilterProductProvider extends StateNotifier<Map<String, dynamic>> {
   fetchFilter(Map<String, dynamic> filter) => state = filter;
 }
 
+final exampleProvider =
+    StreamNotifierProvider<ExampleNotifier, List<Product>>(() {
+  return ExampleNotifier();
+});
+
 class FilteredProductProvider extends StateNotifier<List<Product>> {
   FilteredProductProvider() : super([]);
 
@@ -48,6 +53,16 @@ class FilteredProductProvider extends StateNotifier<List<Product>> {
   }
 }
 
+final filteredProductsProvider =
+    FutureProvider.family<List<Product>, List<Product>>((ref, products) {
+  var filter = ref.watch(filterNotifier);
+  return filter['category'].isNotEmpty
+      ? products
+          .where((product) => product.categories == filter['category'])
+          .toList()
+      : products;
+});
+
 class PictureProductProvider extends StateNotifier<List<RemotePicture>> {
   PictureProductProvider() : super([]);
 
@@ -55,12 +70,6 @@ class PictureProductProvider extends StateNotifier<List<RemotePicture>> {
     if (state.length < length) {
       state = [...state, img];
     }
-
-    // print('length ======== $length');
-    // print('state.length ======== ${state.length}');
-    // state.forEach((e) {
-    //   print(e.mapKey);
-    // });
   }
 
   void clear() {
@@ -121,14 +130,9 @@ final categoriesNotifier = StreamProvider<List<Categories>>((ref) {
 //   return products;
 // });
 
-final exampleProvider =
-    StreamNotifierProvider.autoDispose<ExampleNotifier, List<Product>>(() {
-  return ExampleNotifier();
-});
-
-class ExampleNotifier extends AutoDisposeStreamNotifier<List<Product>> {
-  downloadUrl(product) async =>
-      await storage.ref("products").child(product).getDownloadURL();
+class ExampleNotifier extends StreamNotifier<List<Product>> {
+  // downloadUrl(product) async =>
+  //     await storage.ref("products").child(product).getDownloadURL();
 
   @override
   Stream<List<Product>> build() {
@@ -147,8 +151,8 @@ class ExampleNotifier extends AutoDisposeStreamNotifier<List<Product>> {
     });
   }
 
-  updateImageToProductList(String photo, int index) async {
-    return await state.map(
+  updateImageToProductList(String photo, int index) {
+    return state.map(
         data: (e) {
           e.value[index].logo = photo;
         },

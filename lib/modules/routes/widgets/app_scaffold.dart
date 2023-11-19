@@ -18,6 +18,7 @@ class AppScaffold extends HookConsumerWidget {
       {required this.body,
       this.pageTitle,
       // this.orderReceived,
+      // this.orderReceived,
       // this.orders,
       required Key? key})
       : super(key: key);
@@ -37,6 +38,11 @@ class AppScaffold extends HookConsumerWidget {
     final routeListNotifier = ref.watch(routeListProvider);
     final isProductOpened = ref.watch(isProductsOpenedProvider);
     final bool isActiveEdit = ref.watch(isActiveEditNotifier);
+    List<Product>? products = ref.watch(exampleProvider).value;
+    AsyncValue<List<Product>> filteredProducts =
+        ref.watch(filteredProductsProvider(products ?? []));
+
+    int selected = ref.watch(selectedProductNotifier);
 
     return Scaffold(
       drawer: displayMobileLayout
@@ -111,13 +117,29 @@ class AppScaffold extends HookConsumerWidget {
             /// Edit Product Widget
             Positioned(
               right: 0,
-              child: LayoutBuilder(builder: (context, constraints) {
-                return ProducQuickEdit(
-                    key: key,
-                    height: height,
-                    width: width,
-                    constraints: constraints);
-              }),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return products != null
+                      ? filteredProducts.when(
+                          data: (List<Product> data) {
+                            return
+                                //  filter['category'].isNotEmpty
+                                //     ?
+                                selected < data.length
+                                    ? ProducQuickEdit(
+                                        key: key,
+                                        height: height,
+                                        width: width,
+                                        constraints: constraints,
+                                        products: data)
+                                    : SizedBox();
+                          },
+                          error: (err, stack) => Text('Error: $err'),
+                          loading: () => CircularProgressIndicator(),
+                        )
+                      : SizedBox();
+                },
+              ),
             ),
           ],
         ),

@@ -144,7 +144,7 @@ class CategoriesList extends HookConsumerWidget {
                       ? Column(
                           children: [
                             MaterialButton(
-                              shape: CircleBorder(),
+                              shape: const CircleBorder(),
                               onPressed: () {
                                 ref.read(categoryNotifier.notifier).state = "";
                                 ref.read(filterNotifier.notifier).state = {
@@ -173,7 +173,7 @@ class CategoriesList extends HookConsumerWidget {
                   Column(
                     children: [
                       MaterialButton(
-                        shape: CircleBorder(),
+                        shape: const CircleBorder(),
                         onPressed: () {
                           // if (isActiveProductRegister ==
                           //     false) {

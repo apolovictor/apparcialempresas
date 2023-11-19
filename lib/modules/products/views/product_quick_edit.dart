@@ -18,11 +18,14 @@ class ProducQuickEdit extends HookConsumerWidget {
     required this.height,
     required this.width,
     required this.constraints,
+    required this.products,
   });
 
   final double height;
   final double width;
   final BoxConstraints constraints;
+  final List<Product> products;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final TextEditingController productNameController =
@@ -35,11 +38,8 @@ class ProducQuickEdit extends HookConsumerWidget {
         ref.watch(productQuantityProvider);
 
     int productSelected = ref.watch(selectedProductNotifier);
-    final filter = ref.watch(filterNotifier);
-    final bool isActiveEdit = ref.watch(isActiveEditNotifier);
 
-    List<Product> filteredProducts = ref.watch(filteredProductListProvider);
-    List<Product>? products = ref.watch(exampleProvider).value;
+    final bool isActiveEdit = ref.watch(isActiveEditNotifier);
 
     Route createRoute() {
       return PageRouteBuilder(
@@ -103,6 +103,8 @@ class ProducQuickEdit extends HookConsumerWidget {
     //   });
     // });
     editController.forward();
+    AsyncValue<List<Product>> filteredProducts =
+        ref.watch(filteredProductsProvider(products!));
 
     return productSelected > -1 && isActiveEdit
         ? AnimatedContainer(
@@ -110,19 +112,19 @@ class ProducQuickEdit extends HookConsumerWidget {
             width: (isActiveEdit && productSelected > -1) ? width * 0.3 : 0,
             height: MediaQuery.of(context).size.height,
             decoration: BoxDecoration(
-              borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(10),
-                  bottomLeft: Radius.circular(10)),
-              color: productSelected > -1
-                  ? filter['category'].isNotEmpty && filteredProducts.isNotEmpty 
-                      ? Color(int.parse(
-                          filteredProducts[productSelected].secondaryColor))
-                      : products!.isNotEmpty
-                          ? Color(int.parse(
-                              products[productSelected].secondaryColor))
-                          : Colors.transparent
-                  : Colors.transparent,
-            ),
+                borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(10),
+                    bottomLeft: Radius.circular(10)),
+                color: productSelected > -1
+                    ? filteredProducts.when(
+                        data: (List<Product> data) {
+                          return Color(
+                              int.parse(data[productSelected].primaryColor));
+                        },
+                        error: (err, stack) => Colors.transparent,
+                        loading: () => Colors.transparent,
+                      )
+                    : Colors.transparent),
             child: Stack(
               children: [
                 Positioned(
@@ -130,18 +132,19 @@ class ProducQuickEdit extends HookConsumerWidget {
                     top: height * 0.20,
                     child: RotatedBox(
                       quarterTurns: 1,
-                      child: Text(
-                        filter['category'].isEmpty
-                            ? products != null
-                                ? products[productSelected].name
-                                : ""
-                            : filteredProducts.isNotEmpty
-                                ? filteredProducts[productSelected].name
-                                : "",
-                        style: const TextStyle(
-                            fontWeight: FontWeight.w900,
-                            fontSize: 125,
-                            color: Colors.black54),
+                      child: filteredProducts.when(
+                        data: (List<Product> data) {
+                          return Text(data[productSelected].name,
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: 125,
+                                  color: Colors.black54));
+                        },
+                        error: (err, stack) {
+                          print(err);
+                          return const Text('');
+                        },
+                        loading: () => const Text(''),
                       ),
                     )),
                 AnimatedBuilder(
@@ -184,7 +187,7 @@ class ProducQuickEdit extends HookConsumerWidget {
                           ClipRRect(
                             borderRadius: BorderRadius.circular(10),
                             child: BackdropFilter(
-                              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                              filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
                               child: Container(
                                 decoration: BoxDecoration(
                                   color: Colors.white.withOpacity(0.5),
@@ -213,25 +216,20 @@ class ProducQuickEdit extends HookConsumerWidget {
                                               ? width * 0.3
                                               : 0,
                                           child: productSelected > -1
-                                              ? filter['category'].isNotEmpty &&
-                                                      filteredProducts
-                                                          .isNotEmpty
-                                                  ? ref
-                                                      .watch(
-                                                          pictureProductListProvider)
-                                                      .firstWhere((element) =>
-                                                          element.mapKey ==
-                                                          filteredProducts[
-                                                                  productSelected]
-                                                              .logo)
-                                                  : ref
-                                                      .watch(
-                                                          pictureProductListProvider)
-                                                      .firstWhere((element) =>
-                                                          element.mapKey ==
-                                                          products![
-                                                                  productSelected]
-                                                              .logo)
+                                              ? filteredProducts.when(
+                                                  data: (List<Product> data) {
+                                                    return ref
+                                                        .watch(
+                                                            pictureProductListProvider)
+                                                        .firstWhere((element) =>
+                                                            element.mapKey ==
+                                                            data[productSelected]
+                                                                .logo);
+                                                  },
+                                                  error: (err, stack) =>
+                                                      const Text(''),
+                                                  loading: () => const Text(''),
+                                                )
                                               : const SizedBox()),
                                     ),
                                   ],
@@ -239,6 +237,7 @@ class ProducQuickEdit extends HookConsumerWidget {
                               ),
                             ),
                           ),
+                          //  Fields
                           Align(
                             alignment: const Alignment(1, 1),
                             child: SizedBox(
@@ -250,148 +249,97 @@ class ProducQuickEdit extends HookConsumerWidget {
                                 child: Column(
                                   children: [
                                     ScaleTransition(
-                                      scale: animation,
-                                      child: fieldWidget(
-                                        productNameController,
-                                        productSelected > -1
-                                            ? filter['category'].isNotEmpty &&
-                                                    filteredProducts.isNotEmpty
-                                                ? filteredProducts[
-                                                        productSelected]
-                                                    .name
-                                                : products!.isNotEmpty
-                                                    ? products[productSelected]
-                                                        .name
-                                                    : "Nome"
-                                            : "Nome",
-                                        context,
-                                        productSelected > -1
-                                            ? filter['category'].isNotEmpty &&
-                                                    filteredProducts.isNotEmpty
-                                                ? Color(int.parse(
-                                                    filteredProducts[
-                                                            productSelected]
-                                                        .secondaryColor))
-                                                : products!.isNotEmpty
-                                                    ? Color(int.parse(products[
-                                                            productSelected]
-                                                        .secondaryColor))
-                                                    : Colors.transparent
-                                            : Colors.transparent,
-                                      ),
-                                    ),
+                                        scale: animation,
+                                        child: filteredProducts.when(
+                                          data: (List<Product> data) {
+                                            return fieldWidget(
+                                              productNameController,
+                                              productSelected > -1
+                                                  ? data[productSelected].name
+                                                  : "Nome",
+                                              context,
+                                              productSelected > -1
+                                                  ? Color(int.parse(
+                                                      data[productSelected]
+                                                          .secondaryColor))
+                                                  : Colors.transparent,
+                                            );
+                                          },
+                                          error: (err, stack) => const Text(''),
+                                          loading: () => const Text(''),
+                                        )),
                                     const SizedBox(
                                       height: 20,
                                     ),
                                     ScaleTransition(
-                                      scale: animation,
-                                      child: fieldWidget(
-                                        productPriceController,
-                                        productSelected > -1
-                                            ? filter['category'].isNotEmpty &&
-                                                    filteredProducts.isNotEmpty
-                                                ? filteredProducts[
-                                                        productSelected]
-                                                    .price['price']
-                                                : products!.isNotEmpty
-                                                    ? products[productSelected]
-                                                        .price['price']
-                                                    : "Preço"
-                                            : "Preço",
-                                        context,
-                                        productSelected > -1
-                                            ? filter['category'].isNotEmpty &&
-                                                    filteredProducts.isNotEmpty
-                                                ? Color(int.parse(
-                                                    filteredProducts[
-                                                            productSelected]
-                                                        .secondaryColor))
-                                                : products!.isNotEmpty
-                                                    ? Color(int.parse(products[
-                                                            productSelected]
-                                                        .secondaryColor))
-                                                    : Colors.transparent
-                                            : Colors.transparent,
-                                      ),
-                                    ),
+                                        scale: animation,
+                                        child: filteredProducts.when(
+                                          data: (List<Product> data) {
+                                            return fieldWidget(
+                                              productPriceController,
+                                              productSelected > -1
+                                                  ? data[productSelected]
+                                                      .price['price']
+                                                  : "Preço",
+                                              context,
+                                              productSelected > -1
+                                                  ? Color(int.parse(
+                                                      data[productSelected]
+                                                          .secondaryColor))
+                                                  : Colors.transparent,
+                                            );
+                                          },
+                                          error: (err, stack) => const Text(''),
+                                          loading: () => const Text(''),
+                                        )),
                                     const SizedBox(
                                       height: 20,
                                     ),
                                     ScaleTransition(
-                                      scale: animation,
-                                      child: fieldWidget(
-                                        productPromoController,
-                                        productSelected > -1
-                                            ? filter['category'].isNotEmpty &&
-                                                    filteredProducts.isNotEmpty
-                                                ? filteredProducts[
-                                                            productSelected]
-                                                        .price['promo']
-                                                        .isNotEmpty
-                                                    ? filteredProducts[
-                                                            productSelected]
-                                                        .price['promo']
-                                                    : "Promoção"
-                                                : products!.isNotEmpty
-                                                    ? products[productSelected]
-                                                            .price['promo']
-                                                            .isNotEmpty
-                                                        ? products[
-                                                                productSelected]
-                                                            .price['promo']
-                                                        : "Promoção"
-                                                    : "Promoção"
-                                            : "Promoção",
-                                        context,
-                                        productSelected > -1
-                                            ? filter['category'].isNotEmpty &&
-                                                    filteredProducts.isNotEmpty
-                                                ? Color(int.parse(
-                                                    filteredProducts[
-                                                            productSelected]
-                                                        .secondaryColor))
-                                                : products!.isNotEmpty
-                                                    ? Color(int.parse(products[
-                                                            productSelected]
-                                                        .secondaryColor))
-                                                    : Colors.transparent
-                                            : Colors.transparent,
-                                      ),
-                                    ),
+                                        scale: animation,
+                                        child: filteredProducts.when(
+                                          data: (List<Product> data) {
+                                            return fieldWidget(
+                                              productPromoController,
+                                              productSelected > -1
+                                                  ? data[productSelected]
+                                                      .price['promo']
+                                                  : "Promoção",
+                                              context,
+                                              productSelected > -1
+                                                  ? Color(int.parse(
+                                                      data[productSelected]
+                                                          .secondaryColor))
+                                                  : Colors.transparent,
+                                            );
+                                          },
+                                          error: (err, stack) => const Text(''),
+                                          loading: () => const Text(''),
+                                        )),
                                     const SizedBox(
                                       height: 20,
                                     ),
                                     ScaleTransition(
-                                      scale: animation,
-                                      child: fieldWidget(
-                                        productQuantityController,
-                                        productSelected > -1
-                                            ? filter['category'].isNotEmpty &&
-                                                    filteredProducts.isNotEmpty
-                                                ? filteredProducts[
-                                                        productSelected]
-                                                    .quantity
-                                                : products!.isNotEmpty
-                                                    ? products[productSelected]
-                                                        .quantity
-                                                    : "Quantidade"
-                                            : "Quantidade",
-                                        context,
-                                        productSelected > -1
-                                            ? filter['category'].isNotEmpty &&
-                                                    filteredProducts.isNotEmpty
-                                                ? Color(int.parse(
-                                                    filteredProducts[
-                                                            productSelected]
-                                                        .secondaryColor))
-                                                : products!.isNotEmpty
-                                                    ? Color(int.parse(products[
-                                                            productSelected]
-                                                        .secondaryColor))
-                                                    : Colors.transparent
-                                            : Colors.transparent,
-                                      ),
-                                    ),
+                                        scale: animation,
+                                        child: filteredProducts.when(
+                                          data: (List<Product> data) {
+                                            return fieldWidget(
+                                              productQuantityController,
+                                              productSelected > -1
+                                                  ? data[productSelected]
+                                                      .quantity
+                                                  : "Nome",
+                                              context,
+                                              productSelected > -1
+                                                  ? Color(int.parse(
+                                                      data[productSelected]
+                                                          .secondaryColor))
+                                                  : Colors.transparent,
+                                            );
+                                          },
+                                          error: (err, stack) => const Text(''),
+                                          loading: () => const Text(''),
+                                        )),
                                   ],
                                 ),
                               ),
@@ -400,18 +348,58 @@ class ProducQuickEdit extends HookConsumerWidget {
                           Align(
                             alignment: const Alignment(-1.1, 1.1),
                             child: Container(
-                              height: 80,
-                              width: width * 0.3,
-                              child: UpdateButton(
-                                buttonName: "Salvar",
-                                animation: animation,
-                                product: filter['category'].isNotEmpty &&
-                                        filteredProducts.isNotEmpty
-                                    ? filteredProducts[productSelected]
-                                    : products![productSelected],
+                                height: 80,
+                                width: width * 0.3,
+                                child: filteredProducts.when(
+                                  data: (List<Product> data) {
+                                    UpdateButton(
+                                        buttonName: "Salvar",
+                                        animation: animation,
+                                        product: data[productSelected]);
+                                  },
+                                  error: (err, stack) => const Text(''),
+                                  loading: () => const Text(''),
+                                )),
+                          ),
+                          Align(
+                            alignment: const Alignment(-1.1, -1),
+                            child: InkWell(
+                              onTap: () {
+                                ref
+                                    .read(isActiveEditNotifier.notifier)
+                                    .setIsActiveEdit(false);
+                              },
+                              child: Container(
+                                height: 50.0,
+                                width: 50.0,
+                                decoration: BoxDecoration(
+                                    color: Colors.black87,
+                                    borderRadius: BorderRadius.circular(30.0)),
+                                child: const Icon(
+                                  Icons.close,
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                           ),
+
+                          Align(
+                            alignment: const Alignment(-1.1, 1.1),
+                            child: Container(
+                                height: 80,
+                                width: width * 0.3,
+                                child: filteredProducts.when(
+                                  data: (List<Product> data) {
+                                    UpdateButton(
+                                        buttonName: "Salvar",
+                                        animation: animation,
+                                        product: data[productSelected]);
+                                  },
+                                  error: (err, stack) => const Text(''),
+                                  loading: () => const Text(''),
+                                )),
+                          ),
+
                           Align(
                             alignment: const Alignment(-1.1, -1),
                             child: InkWell(
@@ -457,8 +445,7 @@ class ProducQuickEdit extends HookConsumerWidget {
                     height: height,
                     child: AnimatedAlign(
                       duration: const Duration(milliseconds: 375),
-                      alignment: Alignment(
-                          -1.0, constraints.maxWidth == width * 0.3 ? 0 : -1),
+                      alignment: Alignment(-1.0, isActiveEdit ? 0 : -1),
                       child: Container(
                         height: 75.0,
                         width: 75.0,
