@@ -8,7 +8,6 @@ import '../../products/views/product_add.dart';
 import '../../products/views/product_quick_edit.dart';
 import '../controller/routes_controller.dart';
 import 'app_drawer.dart';
-import 'top_bar.dart';
 import 'top_bar_item.dart';
 
 /// A responsive scaffold for our application.

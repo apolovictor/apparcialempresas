@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../constants/colors.dart';
-import '../controller/product_register.dart';
-import '../controller/products_notifier.dart';
+import '../../products/controller/product_register.dart';
+import '../../products/controller/products_notifier.dart';
 
-class RegisterCircularSoftButton extends HookConsumerWidget {
-  const RegisterCircularSoftButton({
+class DashboardSoftButton extends HookConsumerWidget {
+  const DashboardSoftButton({
     super.key,
     required this.radius,
     required this.avatarSize,
@@ -36,7 +36,7 @@ class RegisterCircularSoftButton extends HookConsumerWidget {
             color: ref.watch(categoryProductNotifier).isNotEmpty &&
                     ref.watch(categoryProductNotifier) == category.documentId
                 ? Color(int.parse(category.secondaryColor!))
-                : Colors.grey,
+                : AppColors.lightShadowColor,
             boxShadow: const [
               BoxShadow(
                   color: AppColors.shadowGreyColor,

@@ -1,5 +1,8 @@
+import 'package:apparcialempresas/modules/home/views/overview.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+import 'product.dart';
 
 class Dashboard extends HookConsumerWidget {
   const Dashboard({super.key});
@@ -17,6 +20,7 @@ class Dashboard extends HookConsumerWidget {
               color: Colors.grey[100],
               height: height * 0.27,
               width: width * 0.42,
+              child: const Overview(),
             ),
           ),
           Align(
@@ -41,6 +45,7 @@ class Dashboard extends HookConsumerWidget {
               color: Colors.grey[100],
               height: height * 0.70,
               width: width * 0.42,
+              child: const DashboardProduct(),
             ),
           ),
           Align(

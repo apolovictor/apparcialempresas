@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../routes/widgets/top_bar.dart';
 import '../controller/product_list.notifier.dart';
 import '../controller/products_notifier.dart';
 import '../model/products_model.dart';
 import 'categories_list.dart';
-import 'product_add.dart';
 import 'product_list.dart';
-import 'product_quick_edit.dart';
 
 class ProductScreen extends HookConsumerWidget {
   ProductScreen({Key? key}) : super(key: key);
