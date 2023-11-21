@@ -21,9 +21,9 @@ class ProductsList extends HookConsumerWidget {
     // final filter = ref.watch(filterNotifier);
 
     // List<Product> filteredProducts = ref.watch(filteredProductListProvider);
-    List<Product>? products = ref.watch(exampleProvider).value;
+    List<Product>? products = ref.watch(productProvider).value;
     AsyncValue<List<Product>> filteredProducts =
-        ref.watch(filteredProductsProvider(products!));
+        ref.watch(filteredProductsProvider(products ?? []));
 
     // useValueChanged(filter, (_, __) async {
     //   // WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -49,16 +49,18 @@ class ProductsList extends HookConsumerWidget {
         ref.watch(scrollListNotifier(selected));
 
     return LayoutBuilder(builder: (context, constraints) {
-      for (var i = 0; i < products.length; i++) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          ref.read(pictureProductListProvider.notifier).fetchPictureList(
-              RemotePicture(
-                mapKey: products[i].logo!,
-                imagePath:
-                    'gs://appparcial-123.appspot.com/products/${products[i].logo!}',
-              ),
-              products.length);
-        });
+      if (products != null) {
+        for (var i = 0; i < products.length; i++) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ref.read(pictureProductListProvider.notifier).fetchPictureList(
+                RemotePicture(
+                  mapKey: products[i].logo!,
+                  imagePath:
+                      'gs://appparcial-123.appspot.com/products/${products[i].logo!}',
+                ),
+                products.length);
+          });
+        }
       }
       return SingleChildScrollView(
         scrollDirection: Axis.horizontal,

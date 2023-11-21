@@ -37,7 +37,7 @@ class AppScaffold extends HookConsumerWidget {
     final routeListNotifier = ref.watch(routeListProvider);
     final isProductOpened = ref.watch(isProductsOpenedProvider);
     final bool isActiveEdit = ref.watch(isActiveEditNotifier);
-    List<Product>? products = ref.watch(exampleProvider).value;
+    List<Product>? products = ref.watch(productProvider).value;
     AsyncValue<List<Product>> filteredProducts =
         ref.watch(filteredProductsProvider(products ?? []));
 

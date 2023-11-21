@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../constants/colors.dart';
-import '../../products/controller/product_register.dart';
-import '../../products/controller/products_notifier.dart';
+import '../controller/product_notifier.dart';
 
 class DashboardSoftButton extends HookConsumerWidget {
   const DashboardSoftButton({
@@ -24,8 +23,6 @@ class DashboardSoftButton extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // print(ref.watch(filterNotifier));
-
     return Stack(
       children: [
         Container(
@@ -33,8 +30,9 @@ class DashboardSoftButton extends HookConsumerWidget {
           width: radius,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(avatarSize),
-            color: ref.watch(categoryProductNotifier).isNotEmpty &&
-                    ref.watch(categoryProductNotifier) == category.documentId
+            color: ref.watch(categoryProductDashboardNotifier).isNotEmpty &&
+                    ref.watch(categoryProductDashboardNotifier) ==
+                        category.documentId
                 ? Color(int.parse(category.secondaryColor!))
                 : AppColors.lightShadowColor,
             boxShadow: const [
@@ -62,7 +60,7 @@ class DashboardSoftButton extends HookConsumerWidget {
                         .contains(category.documentId)
                     ? ref.watch(pictureCategoriesListProvider).firstWhere(
                         (element) => element.mapKey == category.documentId)
-                    : SizedBox()),
+                    : const SizedBox()),
           ),
         )
       ],

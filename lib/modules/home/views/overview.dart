@@ -190,7 +190,7 @@ class CategoriesScroller extends StatelessWidget {
                               fontWeight: FontWeight.w500),
                         ),
                         Text(
-                          "Espetos\nR\$750,00",
+                          "Espetos\nR\$ 750,00",
                           style: TextStyle(
                               fontSize: 14,
                               color: Colors.white,

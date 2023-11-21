@@ -29,7 +29,7 @@ class ProductScreen extends HookConsumerWidget {
     final Animation<double> containerBorderRadiusAnimation =
         Tween(begin: 100.0, end: 15.0).animate(CurvedAnimation(
             parent: getCategoriesController(ref), curve: Curves.ease));
-    List<Product>? products = ref.watch(exampleProvider).value;
+    List<Product>? products = ref.watch(productProvider).value;
 
     AsyncValue<List<Product>> filteredProducts =
         ref.watch(filteredProductsProvider(products!));

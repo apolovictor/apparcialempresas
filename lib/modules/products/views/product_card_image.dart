@@ -21,7 +21,7 @@ class ProductCardImg extends HookConsumerWidget {
     useValueChanged(ref.watch(isReloagingImgNotifier), (_, __) async {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         // if (filter['category'].isEmpty) {
-        List<Product>? products = ref.watch(exampleProvider).value;
+        List<Product>? products = ref.watch(productProvider).value;
         if (products != null) {
           ref.read(pictureProductListProvider.notifier).clear();
           for (var i = 0; i < products.length; i++) {

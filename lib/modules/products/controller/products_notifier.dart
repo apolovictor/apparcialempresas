@@ -36,9 +36,9 @@ class FilterProductProvider extends StateNotifier<Map<String, dynamic>> {
   fetchFilter(Map<String, dynamic> filter) => state = filter;
 }
 
-final exampleProvider =
-    StreamNotifierProvider<ExampleNotifier, List<Product>>(() {
-  return ExampleNotifier();
+final productProvider =
+    StreamNotifierProvider<ProductNotifier, List<Product>>(() {
+  return ProductNotifier();
 });
 
 class FilteredProductProvider extends StateNotifier<List<Product>> {
@@ -84,11 +84,6 @@ class PictureCategoriesProvider extends StateNotifier<List<RemotePicture>> {
     if (state.length < length) {
       state = [...state, img];
     }
-    // print('length ======== $length');
-    // print('state.length ======== ${state.length}');
-    // state.forEach((e) {
-    //   print(e.mapKey);
-    // });
   }
 }
 
@@ -130,7 +125,7 @@ final categoriesNotifier = StreamProvider<List<Categories>>((ref) {
 //   return products;
 // });
 
-class ExampleNotifier extends StreamNotifier<List<Product>> {
+class ProductNotifier extends StreamNotifier<List<Product>> {
   // downloadUrl(product) async =>
   //     await storage.ref("products").child(product).getDownloadURL();
 

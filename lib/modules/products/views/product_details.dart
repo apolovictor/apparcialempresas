@@ -34,7 +34,7 @@ class ProductDetailScreen extends HookConsumerWidget {
 
     controller.forward();
 
-    List<Product>? products = ref.watch(exampleProvider).value;
+    List<Product>? products = ref.watch(productProvider).value;
 
     AsyncValue<List<Product>> filteredProducts =
         ref.watch(filteredProductsProvider(products!));
