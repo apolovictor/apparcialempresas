@@ -131,10 +131,12 @@ class CategoriesScroller extends HookConsumerWidget {
                                                           categories[i]
                                                               .documentId);
                                                   ref
-                                                          .read(filterNotifier
+                                                      .read(
+                                                          filterDashboardNotifier
                                                               .notifier)
-                                                          .state =
-                                                      categories[i].documentId;
+                                                      .state = categories[
+                                                          i]
+                                                      .documentId;
                                                   ref
                                                       .read(
                                                           filteredProductDashboardProvider

@@ -9,7 +9,7 @@ cloudFirestore.FirebaseFirestore _firestore =
     cloudFirestore.FirebaseFirestore.instance;
 
 final _businessCollection = _firestore.collection('business');
-var filterNotifier = StateProvider((_) => "");
+var filterDashboardNotifier = StateProvider((_) => "");
 
 class IdDocumentProvider extends StateNotifier<String> {
   IdDocumentProvider() : super(idDocument);

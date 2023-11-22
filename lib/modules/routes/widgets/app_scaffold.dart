@@ -72,16 +72,16 @@ class AppScaffold extends HookConsumerWidget {
                       children: routeListNotifier
                           .map(
                             (e) => TopBarItem(
-                              route: e,
-                              indexRoute: routeListNotifier.indexWhere(
-                                  (element) => element.title == e.title),
-                              icon: e.title == '/'
-                                  ? const Icon(Icons.home, size: 40)
-                                  : e.title == '/produtos'
-                                      ? const Icon(Icons.restaurant_menu,
-                                          size: 40)
-                                      : const Icon(Icons.table_bar, size: 40),
-                            ),
+                                route: e,
+                                indexRoute: routeListNotifier.indexWhere(
+                                    (element) => element.title == e.title),
+                                icon: e.title == '/'
+                                    ? const Icon(Icons.home, size: 40)
+                                    : e.title == '/produtos'
+                                        ? const Icon(Icons.restaurant_menu,
+                                            size: 40)
+                                        : const Icon(Icons.table_bar, size: 40),
+                                products: products),
                           )
                           .toList(),
                     ),

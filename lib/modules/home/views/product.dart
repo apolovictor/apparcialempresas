@@ -113,7 +113,7 @@ class BusinessListView extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     const double dotSize = 12.0;
     // final bool stateHover = ref.watch(stateHoverRow);
-    final scrollController = ref.watch(scrollControllerProvider);
+    final scrollController = ScrollController();
     final _controller =
         useAnimationController(duration: const Duration(milliseconds: 500));
     _controller.addStatusListener((status) {

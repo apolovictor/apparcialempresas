@@ -1,4 +1,5 @@
 import 'package:apparcialempresas/modules/home/views/overview.dart';
+import 'package:apparcialempresas/modules/home/views/tables.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -72,9 +73,9 @@ class Dashboard extends HookConsumerWidget {
           Align(
             alignment: const Alignment(1, 1),
             child: Container(
-              color: Colors.grey[100],
               height: height * 0.70,
               width: width * 0.564,
+              child: TablesDashboard(),
             ),
           ),
         ],
