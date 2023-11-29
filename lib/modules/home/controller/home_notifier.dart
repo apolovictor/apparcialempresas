@@ -6,7 +6,6 @@ import '../model/home_model.dart';
 
 FirebaseFirestore _firestore = FirebaseFirestore.instance;
 final _businessCollection = _firestore.collection('business');
-final _categoriesCollection = _firestore.collection('categories');
 
 class BusinessProvider extends ChangeNotifier {
   Future<Business> getBusiness(String documentId) async {
