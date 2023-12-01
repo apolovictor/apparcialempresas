@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../orders/views/add_order.dart';
 import '../../products/controller/product_list.notifier.dart';
 import '../../products/controller/products_notifier.dart';
 import '../../products/model/products_model.dart';
@@ -38,6 +39,8 @@ class AppScaffold extends HookConsumerWidget {
     final isProductOpened = ref.watch(isProductsOpenedProvider);
     final bool isActiveEdit = ref.watch(isActiveEditNotifier);
     List<Product>? products = ref.watch(productProvider).value;
+    final double minHeight = height * 0.1;
+
     AsyncValue<List<Product>> filteredProducts =
         ref.watch(filteredProductsProvider(products ?? []));
 
@@ -131,15 +134,21 @@ class AppScaffold extends HookConsumerWidget {
                                         width: width,
                                         constraints: constraints,
                                         products: data)
-                                    : SizedBox();
+                                    : const SizedBox();
                           },
                           error: (err, stack) => Text('Error: $err'),
                           loading: () => CircularProgressIndicator(),
                         )
-                      : SizedBox();
+                      : const SizedBox();
                 },
               ),
             ),
+
+            ///Add Order Widget
+            AddOrderWidget(
+              minHeight: minHeight,
+              minWidth: width,
+            )
           ],
         ),
       ),

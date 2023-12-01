@@ -9,21 +9,6 @@ class TablesDashboard extends HookConsumerWidget {
   const TablesDashboard({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tables = ref.read(tablesNotifierProvider);
-
-    print(tables.tableChangeNotifier.name);
-
-    ref.watch(tables.tableChangeNotifier).when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, stack) => Center(child: Text(err.toString())),
-        data: (data) {
-          if (data != null) {
-            data.forEach((e) {
-              print(e!.idTable);
-            });
-          }
-        });
-
     return Scaffold(
       body: LayoutBuilder(builder: (context, constraints) {
         return SizedBox(
@@ -50,10 +35,12 @@ class TablesDashboard extends HookConsumerWidget {
                   children: [
                     Expanded(
                         child: Container(
-                      color: Colors.grey[100],
-                      child: TablesListActive(),
+                      decoration: BoxDecoration(
+                          color: Colors.grey[100],
+                          borderRadius: BorderRadius.circular(20)),
+                      child: const TablesListActive(),
                     )),
-                    Expanded(child: TablesList())
+                    const Expanded(child: TablesList())
                   ],
                 ),
               )
