@@ -5,16 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class AddOrderWidget extends StatefulHookConsumerWidget {
-  AddOrderWidget({super.key, required this.minHeight, required this.minWidth});
+import '../controller/orders_notifier.dart';
 
-  double minHeight;
-  double minWidth;
-
-  @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _AddOrderWidgetState();
-}
-
+const double minHeight = 120;
 const double iconStartSize = 44; //<-- add edge values
 const double iconEndSize = 120; //<-- add edge values
 const double iconStartMarginTop = 36; //<-- add edge values
@@ -22,63 +15,118 @@ const double iconEndMarginTop = 80; //<-- add edge values
 const double iconsVerticalSpacing = 24; //<-- add edge values
 const double iconsHorizontalSpacing = 16; //<-- add edge values
 
-class _AddOrderWidgetState extends ConsumerState<AddOrderWidget>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller; //<-- Create a controller
+class AddOrderWidget extends HookConsumerWidget {
+  AddOrderWidget(
+      {super.key,
+      required this.minHeight,
+      required this.minWidth,
+      required this.height});
+
+  double minHeight;
+  double minWidth;
+  double height;
 
   @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      //<-- initialize a controller
-      vsync: this,
-      duration: Duration(milliseconds: 600),
+  Widget build(BuildContext context, WidgetRef ref) {
+    // AnimationController _controller = ref.watch(animationItemsProvider);
+    AnimationController _controller = useAnimationController(
+      duration: const Duration(milliseconds: 600),
     );
-  }
 
-  @override
-  void dispose() {
-    _controller.dispose(); //<-- and remember to dispose it!
-    super.dispose();
-  }
+    final isOpen = ref.watch(isOpenProvider);
 
-  double get maxHeight =>
-      MediaQuery.of(context).size.height; //<-- Get max height of the screen
+    double maxHeight =
+        MediaQuery.of(context).size.height; //<-- Get max height of the screen
+    double lerp(double min, double max) => ref.watch(lerpProvider(
+        MyParameter(min: min, max: max, value: _controller.value)));
 
-  double lerp(double min, double max) => lerpDouble(min, max,
-      _controller.value)!; //<-- lerp any value based on the controller
+    // lerpDouble(min, max,
+    //     _controller.value)!; //<-- lerp any value based on the controller
 
-  double get headerTopMargin =>
-      lerp(20, 20 + MediaQuery.of(context).padding.top); //<-- Add new property
+    // double headerTopMargin = lerp(
+    //     20, 20 + MediaQuery.of(context).padding.top); //<-- Add new property
 
-  double get headerFontSize => lerp(14, 24); //<-- Add new property
+    // double headerFontSize = lerp(14, 24); //<-- Add new property
 
-  double get itemBorderRadius => lerp(8, 24); //<-- increase item border radius
+    // double itemBorderRadius = lerp(8, 24); //<-- increase item border radius
 
-  double get verticalPadding => lerp(6, 32);
+    double verticalPadding = ref.watch(
+        lerpProvider(MyParameter(min: 6, max: 32, value: _controller.value)));
 
-  double get iconSize =>
-      lerp(iconStartSize, iconEndSize); //<-- increase icon size
+    // lerp(6, 32);
 
-  double iconTopMargin(int index) => lerp(
-      iconStartMarginTop,
-      iconEndMarginTop +
-          index *
-              (iconsVerticalSpacing +
-                  iconEndSize)); //<-- calculate top margin based on header margin, and size of all of icons above (from small to big)
+    // double iconSize = lerp(iconStartSize, iconEndSize); //<-- increase icon size
 
-  double iconLeftMargin(int index) => lerp(
-      index * (iconsHorizontalSpacing + iconStartSize),
-      0); //<-- calculate left margin (from big to small)
+    // double iconTopMargin(int index) => lerp(
+    //     iconStartMarginTop,
+    //     iconEndMarginTop * 2 +
+    //         index *
+    //             (iconsVerticalSpacing +
+    //                 iconEndSize)); //<-- calculate top margin based on header margin, and size of all of icons above (from small to big)
 
-  @override
-  Widget build(BuildContext context) {
+    // double iconLeftMargin(int index) => lerp(
+    //     index * (iconsHorizontalSpacing + iconStartSize),
+    //     0); //<-- calculate left margin (from big to small)
+
+    Widget spaceHeight = SizedBox(height: height * 0.05);
+
+    // Widget _buildFullItem(Event event) {
+    //   int index = events.indexOf(event);
+    //   return ExpandedEventItem(
+    //     topMargin: iconTopMargin(
+    //         index), //<--provide margins and height same as for icon
+    //     leftMargin: iconLeftMargin(index),
+    //     height: iconSize,
+    //     isVisible:
+    //         _controller.status == AnimationStatus.completed, //<--set visibility
+    //     borderRadius: itemBorderRadius, //<-- pass border radius
+    //     title: event.title, //<-- data to be displayed
+    //     date: event.date, //<-- data to be displayed
+    //   );
+    // }
+
+    void _toggle() {
+      // notifier.toogle(isOpen);
+      // ref.read(isOpenProvider.notifier).toogle(isOpen);
+      final bool isOpen = _controller.status == AnimationStatus.completed;
+      _controller.fling(
+          velocity:
+              isOpen ? -2 : 2); //<-- ...snap the sheet in proper direction
+    }
+
+    void _handleDragUpdate(DragUpdateDetails details) {
+      _controller.value -= details.primaryDelta! /
+          maxHeight; //<-- Update the _controller.value by the movement done by user.
+    }
+
+    void _handleDragEnd(DragEndDetails details) {
+      if (_controller.isAnimating ||
+          _controller.status == AnimationStatus.completed) return;
+
+      final double flingVelocity = details.velocity.pixelsPerSecond.dy /
+          maxHeight; //<-- calculate the velocity of the gesture
+      if (flingVelocity < 0.0) {
+        _controller.fling(
+            velocity:
+                math.max(2.0, -flingVelocity)); //<-- either continue it upwards
+      } else if (flingVelocity > 0.0) {
+        _controller.fling(
+            velocity:
+                math.min(-2.0, -flingVelocity)); //<-- or continue it downwards
+      } else {
+        _controller.fling(
+            velocity: _controller.value < 0.5
+                ? -2.0
+                : 2.0); //<-- or just continue to whichever edge is closer
+      }
+    }
+
     return AnimatedBuilder(
         animation: _controller,
         builder: (context, child) {
           return Positioned(
-            height: lerp(widget.minHeight, maxHeight),
-            left: widget.minWidth * 0.7,
+            height: lerp(minHeight, maxHeight),
+            left: minWidth * 0.7,
             right: 0,
             bottom: 0,
             child: GestureDetector(
@@ -87,155 +135,178 @@ class _AddOrderWidgetState extends ConsumerState<AddOrderWidget>
                   _handleDragUpdate, //<-- Add verticalDragUpdate callback
               onVerticalDragEnd: _handleDragEnd,
               child: ClipPath(
-                clipper: ZigZagClipper(),
-                child: Container(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: 32, vertical: verticalPadding),
-                  height: 600,
-                  width: 500,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[700],
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                    ),
-                  ),
-                  child: Stack(
-                    //<-- Add a stack
-                    children: <Widget>[
-                      // MenuButton(), //<-- With a menu button
-
-                      SheetHeader(
-                        //<-- Add a header with params
-                        fontSize: headerFontSize,
-                        topMargin: headerTopMargin,
-                        minWidth: widget.minWidth,
-                        isVisible:
-                            _controller.status == AnimationStatus.completed,
+                  clipper: ZigZagClipper(),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: 18, vertical: verticalPadding),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[700],
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(20),
                       ),
-                      for (Event event in events)
-                        _buildIcon(event), //<-- Add icons to the stack
-                      for (Event event in events)
-                        _buildFullItem(event), //<-- Add icons to the stack
+                    ),
+                    child: Stack(
+                      //<-- Add a stack
+                      children: <Widget>[
+                        // MenuButton(), //<-- With a menu button
 
-                      AnimatedOpacity(
-                          duration: const Duration(milliseconds: 200),
-                          opacity:
-                              _controller.status == AnimationStatus.completed
-                                  ? 1
-                                  : 0,
-                          child: const Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.shopping_cart,
-                                        color: Colors.white,
-                                      ),
-                                      Text(
-                                        'Conta',
-                                        style: TextStyle(
+                        Positioned(
+                          top:
+                              lerp(10, 20 + MediaQuery.of(context).padding.top),
+                          right: 0,
+                          child: LayoutBuilder(builder: (context, constraints) {
+                            print(
+                                " maxHeight =========== ${constraints.maxHeight}");
+                            print(
+                                " maxWidth =========== ${constraints.maxWidth}");
+                            print(minWidth);
+                            return SheetHeader(
+                              //<-- Add a header with params
+                              width: minWidth * 0.3,
+                              height: height,
+                              fontSize: lerp(14, 24),
+
+                              isVisible: _controller.status ==
+                                  AnimationStatus.completed,
+                              // _controller.status == AnimationStatus.completed,
+                            );
+                          }),
+                        ),
+                        _controller.status == AnimationStatus.completed
+                            ? spaceHeight
+                            : const SizedBox(),
+
+                        Positioned(
+                          top: lerp(0, height * 0.1),
+                          child: AnimatedOpacity(
+                            duration: const Duration(milliseconds: 600),
+                            opacity:
+                                _controller.status == AnimationStatus.completed
+                                    ? 1
+                                    : 0,
+                            child: Column(
+                              children: [
+                                const Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.shopping_cart,
                                           color: Colors.white,
                                         ),
-                                      )
-                                    ],
-                                  ),
-                                  Text(
-                                    'Ordem ID: 236Wo0KaJduh6vw3OZW0',
-                                    style: TextStyle(
-                                      color: Colors.white,
+                                        Text(
+                                          'Conta',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        )
+                                      ],
                                     ),
-                                  )
+                                    Text(
+                                      'Ordem ID: 236Wo0KaJduh6vw3OZW0',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                _controller.status == AnimationStatus.completed
+                                    ? spaceHeight
+                                    : const SizedBox(),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          top: lerp(0, height * 0.2),
+                          child: Container(
+                            color: Colors.transparent,
+                            height: lerp(minHeight, height * 0.45),
+                            width: minWidth * 0.3,
+                            child: DefaultTabController(
+                              length: 3,
+                              child: Column(
+                                children: [
+                                  _controller.status ==
+                                          AnimationStatus.completed
+                                      ? TabBar(
+                                          isScrollable: true,
+                                          labelColor: Colors.white,
+                                          indicatorColor: Colors.white,
+                                          labelStyle: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 15,
+                                          ),
+                                          unselectedLabelColor:
+                                              Color(0xFFF00695c),
+                                          tabs: <Widget>[
+                                            Tab(
+                                              text: 'Carrinho',
+                                            ),
+                                            Tab(
+                                              text: 'Resumo',
+                                            ),
+                                            Tab(
+                                              text: 'Detalhado',
+                                            ),
+                                          ],
+                                          // : <Widget>[
+                                          //     Tab(
+                                          //       icon: Icon(Icons.add_circle),
+                                          //     ),
+                                          //     Tab(
+                                          //       icon: Icon(Icons.check_circle),
+                                          //     ),
+                                          //     Tab(
+                                          //       icon: Icon(Icons.cancel_rounded),
+                                          //     ),
+                                          //   ],
+                                          indicator: ShapeDecoration(
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                Radius.circular(10),
+                                              )),
+                                              color: Color(0xFFF00695c)),
+                                        )
+                                      : const SizedBox(),
+
+                                  // SizedBox(height: 150),
+                                  Expanded(
+                                    child: TabBarView(
+                                      children: [
+                                        OrderDetails(
+                                          controller: _controller,
+                                          height: height,
+                                        ),
+                                        // SizedBox(
+                                        //   height: 100,
+                                        //   width: 100,
+                                        // ),
+                                        SizedBox(
+                                          height: 100,
+                                          width: 100,
+                                        ),
+                                        SizedBox(
+                                          height: 100,
+                                          width: 100,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ],
-                              )
-                            ],
-                          )),
-                      // OrderDetails(
-                      //   isVisible:
-                      //       _controller.status == AnimationStatus.completed,
-                      //   topMargin: headerTopMargin
-                      //   //  _buildFullItem( events), //<-- Add FullItems
-                      //   ,
-                      // ),
-                    ],
-                  ),
-                ),
-              ),
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  )),
             ),
           );
         });
-  }
-
-  Widget _buildIcon(Event event) {
-    int index = events.indexOf(event); //<-- Get index of the event
-    return Positioned(
-      height: iconSize, //<-- Specify icon's size
-      width: iconSize, //<-- Specify icon's size
-      top: iconTopMargin(index), //<-- Specify icon's top margin
-      left: iconLeftMargin(index), //<-- Specify icon's left margin
-      child: ClipRRect(
-        borderRadius: BorderRadius.horizontal(
-          left: Radius.circular(itemBorderRadius), //<-- Set the rounded corners
-          right: Radius.circular(itemBorderRadius),
-        ),
-        child: Image.asset(
-          'assets/${event.assetName}',
-          fit: BoxFit.cover,
-          alignment: Alignment(
-              lerp(1, 0), 0), //<-- Play with alignment for extra style points
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFullItem(Event event) {
-    int index = events.indexOf(event);
-    return ExpandedEventItem(
-      topMargin:
-          iconTopMargin(index), //<--provide margins and height same as for icon
-      leftMargin: iconLeftMargin(index),
-      height: iconSize,
-      isVisible:
-          _controller.status == AnimationStatus.completed, //<--set visibility
-      borderRadius: itemBorderRadius, //<-- pass border radius
-      title: event.title, //<-- data to be displayed
-      date: event.date, //<-- data to be displayed
-    );
-  }
-
-  void _toggle() {
-    final bool isOpen = _controller.status == AnimationStatus.completed;
-    _controller.fling(
-        velocity: isOpen ? -2 : 2); //<-- ...snap the sheet in proper direction
-  }
-
-  void _handleDragUpdate(DragUpdateDetails details) {
-    _controller.value -= details.primaryDelta! /
-        maxHeight; //<-- Update the _controller.value by the movement done by user.
-  }
-
-  void _handleDragEnd(DragEndDetails details) {
-    if (_controller.isAnimating ||
-        _controller.status == AnimationStatus.completed) return;
-
-    final double flingVelocity = details.velocity.pixelsPerSecond.dy /
-        maxHeight; //<-- calculate the velocity of the gesture
-    if (flingVelocity < 0.0)
-      _controller.fling(
-          velocity:
-              math.max(2.0, -flingVelocity)); //<-- either continue it upwards
-    else if (flingVelocity > 0.0)
-      _controller.fling(
-          velocity:
-              math.min(-2.0, -flingVelocity)); //<-- or continue it downwards
-    else
-      _controller.fling(
-          velocity: _controller.value < 0.5
-              ? -2.0
-              : 2.0); //<-- or just continue to whichever edge is closer
   }
 }
 
@@ -257,60 +328,75 @@ class MenuButton extends StatelessWidget {
 
 class SheetHeader extends StatelessWidget {
   final double fontSize;
-  final double topMargin;
-  final double minWidth;
+  final double height;
+  final double width;
   final bool isVisible;
 
   const SheetHeader(
       {super.key,
       required this.fontSize,
-      required this.topMargin,
-      required this.minWidth,
-      required this.isVisible});
+      required this.isVisible,
+      required this.height,
+      required this.width});
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "Sr. Apolo",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            isVisible
-                ? const Text(
-                    "Mesa",
-                    style: TextStyle(
-                      fontSize: 17,
-                      color: Colors.white,
+    return LayoutBuilder(builder: (context, constraints) {
+      return SizedBox(
+        height: height,
+        width: width,
+        child: Padding(
+          padding: const EdgeInsets.only(left: 40.0),
+          child: Stack(
+            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            // crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Positioned(
+                left: 0,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Sr. Apolo",
+                      style: TextStyle(
+                        fontSize: fontSize,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
-                  )
-                : const SizedBox(),
-          ],
-        ),
-        const CircleAvatar(
-          maxRadius: 30,
-          backgroundColor: Colors.black54,
-          child: Center(
-            child: Text(
-              '1',
-              style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w900,
-                  fontSize: 20),
-            ),
+                    // isVisible
+                    //     ? const Text(
+                    //         "Mesa",
+                    //         style: TextStyle(
+                    //           fontSize: 17,
+                    //           color: Colors.white,
+                    //         ),
+                    //       )
+                    //     : const SizedBox(),
+                  ],
+                ),
+              ),
+              Positioned(
+                right: 0,
+                child: const CircleAvatar(
+                  maxRadius: 30,
+                  backgroundColor: Colors.black54,
+                  child: Center(
+                    child: Text(
+                      '1',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w900,
+                          fontSize: 20),
+                    ),
+                  ),
+                ),
+              )
+            ],
           ),
-        )
-      ],
-    );
+        ),
+      );
+    });
   }
 }
 
@@ -419,47 +505,80 @@ class ExpandedEventItem extends StatelessWidget {
 }
 
 class OrderDetails extends HookConsumerWidget {
-  OrderDetails({super.key, required this.isVisible, required this.topMargin});
-  bool isVisible;
-  double topMargin;
-  // Widget widget;
+  OrderDetails({super.key, required this.controller, required this.height});
+  final AnimationController controller;
+  final double height;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    print(topMargin);
-    return Positioned(
-      top: topMargin * 4,
-      child: AnimatedOpacity(
-          duration: const Duration(milliseconds: 200),
-          opacity: isVisible ? 1 : 0,
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.shopping_cart,
-                        color: Colors.white,
-                      ),
-                      Text(
-                        'Conta',
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
-                      )
-                    ],
-                  ),
-                  Text(
-                    'Ordem ID: 236Wo0KaJduh6vw3OZW0',
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  )
-                ],
-              )
-            ],
-          )),
+    double lerp(double min, double max) => ref.watch(
+        lerpProvider(MyParameter(min: min, max: max, value: controller.value)));
+
+    double itemBorderRadius = lerp(8, 24); //<-- increase item border radius
+
+    double headerTopMargin = lerp(
+        20, 20 + MediaQuery.of(context).padding.top); //<-- Add new property
+
+    Widget _buildIcon(Event event) {
+      int index = events.indexOf(event); //<-- Get index of the event
+      return Positioned(
+        height: lerp(iconStartSize, iconEndSize), //<-- Specify icon's size
+        width: lerp(iconStartSize, iconEndSize), //<-- Specify icon's size
+        top: lerp(iconStartMarginTop,
+            height * 0.2 * (index / 1.5)), //<-- Specify icon's top margin
+        left: lerp(index * (iconsHorizontalSpacing + iconStartSize),
+            0), //<-- Specify icon's left margin
+        child: ClipRRect(
+          borderRadius: BorderRadius.horizontal(
+            left:
+                Radius.circular(itemBorderRadius), //<-- Set the rounded corners
+            right: Radius.circular(itemBorderRadius),
+          ),
+          child: Image.asset(
+            'assets/${event.assetName}',
+            fit: BoxFit.cover,
+            alignment: Alignment(
+                lerp(1, 0), 0), //<-- Play with alignment for extra style points
+          ),
+        ),
+      );
+    }
+
+    return Stack(
+      children: [
+        for (Event event in events)
+          _buildIcon(event), //<-- Add icons to the stack
+
+        // Row(
+        // children: buildIconsbuildItems,
+        // )
+      ],
+      // Row(
+      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //   children: [
+      //     Row(
+      //       children: [
+      //         Icon(
+      //           Icons.shopping_cart,
+      //           color: Colors.white,
+      //         ),
+      //         Text(
+      //           'Conta',
+      //           style: TextStyle(
+      //             color: Colors.white,
+      //           ),
+      //         )
+      //       ],
+      //     ),
+      //     Text(
+      //       'Ordem ID: 236Wo0KaJduh6vw3OZW0',
+      //       style: TextStyle(
+      //         color: Colors.white,
+      //       ),
+      //     )
+      //   ],
+      // )
+      // ],
     );
   }
 }

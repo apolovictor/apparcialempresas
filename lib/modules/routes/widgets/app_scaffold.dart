@@ -146,9 +146,7 @@ class AppScaffold extends HookConsumerWidget {
 
             ///Add Order Widget
             AddOrderWidget(
-              minHeight: minHeight,
-              minWidth: width,
-            )
+                minHeight: minHeight, minWidth: width, height: height)
           ],
         ),
       ),
