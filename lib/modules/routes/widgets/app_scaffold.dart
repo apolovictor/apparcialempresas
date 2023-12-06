@@ -1,4 +1,6 @@
+import 'package:apparcialempresas/modules/orders/controller/orders_notifier.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../orders/views/add_order.dart';
@@ -45,6 +47,16 @@ class AppScaffold extends HookConsumerWidget {
         ref.watch(filteredProductsProvider(products ?? []));
 
     int selected = ref.watch(selectedProductNotifier);
+    AnimationController _controller = useAnimationController(
+      duration: const Duration(milliseconds: 600),
+    );
+
+    // _controller.forward();
+    // });
+    // _controller.addStatusListener((status) {
+    //   if (_controller.status == AnimationStatus.dismissed) {}
+    //   print(status);
+    // });
 
     return Scaffold(
       drawer: displayMobileLayout
@@ -146,7 +158,10 @@ class AppScaffold extends HookConsumerWidget {
 
             ///Add Order Widget
             AddOrderWidget(
-                minHeight: minHeight, minWidth: width, height: height)
+              minHeight: minHeight,
+              minWidth: width,
+              height: height,
+            )
           ],
         ),
       ),

@@ -12,7 +12,6 @@ class Overview extends HookConsumerWidget {
       body: LayoutBuilder(builder: (context, constraints) {
         double height = constraints.maxHeight;
         double width = constraints.maxWidth;
-        print(width);
         return Container(
           height: double.infinity,
           child: Column(

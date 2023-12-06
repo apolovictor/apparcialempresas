@@ -5,6 +5,7 @@ import 'package:flutter_sequence_animation/flutter_sequence_animation.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../orders/controller/orders_notifier.dart';
 import '../controller/tables_notifier.dart';
 import '../widgets/tables.dart';
 
@@ -14,6 +15,8 @@ class TablesListActive extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tables = ref.read(tablesNotifierProvider);
+    // final isOpen = ref.watch(isOpenProvider);
+    final addOrder = ref.watch(addOrderProvider);
 
     AnimationController tablesController =
         useAnimationController(duration: const Duration(milliseconds: 0));
@@ -104,7 +107,23 @@ class TablesListActive extends HookConsumerWidget {
                                                                         const CircleBorder(),
                                                                     height: 75,
                                                                     onPressed:
-                                                                        () {},
+                                                                        () async {
+                                                                      // if (activeData[i]!
+                                                                      //         .idTable
+                                                                      //         .toString() ==
+                                                                      //     addOrder
+                                                                      //         .idTable) {}
+                                                                      print(
+                                                                          'here');
+                                                                      ref.read(currentOrderStateProvider.notifier).state =
+                                                                          OrderStateWidget
+                                                                              .open;
+                                                                      // ref
+                                                                      //     .read(isOpenProvider
+                                                                      //         .notifier)
+                                                                      //     .toogle(
+                                                                      //         true);
+                                                                    },
                                                                     child:
                                                                         NeumorphismTable(
                                                                       radius:
