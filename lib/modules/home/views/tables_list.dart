@@ -94,16 +94,9 @@ class TablesList extends HookConsumerWidget {
                                                                             .notifier)
                                                                         .fetchdragTable(
                                                                             data[i]!);
-                                                                    // print(data[
-                                                                    //         i]!
-                                                                    //     .idTable);
-                                                                    print(
-                                                                        'onDragStarted');
                                                                   },
                                                                   onDragCompleted:
                                                                       () {
-                                                                    print(
-                                                                        'onDragCompleted');
                                                                     showDialog(
                                                                       context:
                                                                           context,
@@ -114,8 +107,9 @@ class TablesList extends HookConsumerWidget {
                                                                               Dialog(
                                                                         backgroundColor:
                                                                             Colors.transparent,
-                                                                        insetPadding:
-                                                                            EdgeInsets.all(10),
+                                                                        insetPadding: const EdgeInsets
+                                                                            .all(
+                                                                            10),
                                                                         child:
                                                                             Stack(
                                                                           clipBehavior:
@@ -127,11 +121,11 @@ class TablesList extends HookConsumerWidget {
                                                                               width: MediaQuery.of(context).size.width / 2,
                                                                               height: 200,
                                                                               decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.white),
-                                                                              padding: EdgeInsets.fromLTRB(20, 50, 20, 20),
+                                                                              padding: const EdgeInsets.fromLTRB(20, 50, 20, 20),
                                                                               child: Center(
                                                                                 child: Column(
                                                                                   children: [
-                                                                                    Text("Adicione o nome do cliente da mesa", style: TextStyle(fontSize: 22, color: Colors.black54), textAlign: TextAlign.center),
+                                                                                    const Text("Adicione o nome do cliente da mesa", style: TextStyle(fontSize: 22, color: Colors.black54), textAlign: TextAlign.center),
                                                                                     TextFormField(
                                                                                         controller: clientName,
                                                                                         decoration: InputDecoration(
@@ -155,14 +149,14 @@ class TablesList extends HookConsumerWidget {
                                                                                 children: [
                                                                                   TextButton(
                                                                                       onPressed: () {
-                                                                                        ref.read(addOrderProvider.notifier).addOrder(AddOrder('', clientName.text, data[i]!.idTable.toString(), [], 0, Timestamp(0, 0)));
+                                                                                        // ref.read(addOrderProvider.notifier).addOrder(AddOrder('', clientName.text, data[i]!.idTable.toString(), [], 0, Timestamp(0, 0)));
                                                                                         ref.read(isOpenProvider.notifier).toogle(ref.watch(isOpenProvider));
                                                                                         Navigator.pop(context);
                                                                                       },
-                                                                                      child: const Text('Não', style: TextStyle(color: Color(0xFFF00796b), fontWeight: FontWeight.bold))),
+                                                                                      child: const Text('Não', style: TextStyle(color: Color(0xFF00796b), fontWeight: FontWeight.bold))),
                                                                                   TextButton(
                                                                                       onPressed: () async {
-                                                                                        ref.read(addOrderProvider.notifier).addOrder(AddOrder('', clientName.text, data[i]!.idTable.toString(), [], 0, Timestamp(0, 0)));
+                                                                                        // ref.read(addOrderProvider.notifier).addOrder(AddOrder('', clientName.text, data[i]!.idTable.toString(), [], 0, Timestamp(0, 0)));
                                                                                         ref.read(isOpenProvider.notifier).toogle(ref.watch(isOpenProvider));
                                                                                         if (clientName.text.isEmpty) {
                                                                                           Fluttertoast.showToast(
@@ -174,11 +168,16 @@ class TablesList extends HookConsumerWidget {
                                                                                             gravity: ToastGravity.SNACKBAR,
                                                                                           );
                                                                                         }
+
+                                                                                        ref.read(registerOrderProvider).registerOrder(data[i]!.idTable, clientName.text);
+
+                                                                                        Fluttertoast.showToast(msg: "Conta aberta com sucesso!", toastLength: Toast.LENGTH_LONG, gravity: ToastGravity.TOP, timeInSecForIosWeb: 3, webBgColor: '#151515', textColor: Colors.white, fontSize: 18.0);
+
                                                                                         Navigator.pop(context);
                                                                                       },
                                                                                       child: const Text(
                                                                                         'Sim',
-                                                                                        style: TextStyle(color: Color(0xFFF00796b), fontWeight: FontWeight.bold),
+                                                                                        style: TextStyle(color: Color(0xFF00796b), fontWeight: FontWeight.bold),
                                                                                       )),
                                                                                 ],
                                                                               ),
@@ -244,7 +243,7 @@ class TablesList extends HookConsumerWidget {
                                                               ),
                                                             ))),
                                           )
-                                        : SizedBox(),
+                                        : const SizedBox(),
                                 ],
                               )),
                     ),

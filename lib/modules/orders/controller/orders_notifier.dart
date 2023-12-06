@@ -9,6 +9,82 @@ import 'package:equatable/equatable.dart';
 
 import '../model/order_model.dart';
 
+var tableIdDocumentNotifier = StateProvider((_) => '');
+
+FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+class RegisterOrder extends ChangeNotifier {
+  static String idDocument = "bandiis";
+
+  Future<bool> registerOrder(int idTable, String clientName) async {
+    final businessCollection = _firestore.collection('business');
+
+    final date = DateTime.now();
+
+    final order = AddOrder(
+        '', clientName, idTable, '0', FieldValue.serverTimestamp(), '');
+
+    try {
+      await businessCollection.doc(idDocument).collection("orders").add({
+        'idTable': idTable,
+        'clientName': clientName,
+        'createdAt': FieldValue.serverTimestamp(),
+        'status': 1
+      }).then((value) {
+        print(value.id);
+        businessCollection
+            .doc(idDocument)
+            .collection("orders")
+            .doc(value.id)
+            .update({'idDocument': value.id});
+
+        businessCollection
+            .doc(idDocument)
+            .collection("tables")
+            .doc(idTable.toString())
+            .update({'idDocument': value.id});
+      });
+
+      return true;
+    } catch (e) {
+      // print(e.message);
+      return Future.error(e);
+    }
+  }
+}
+
+final registerOrderProvider = Provider((ref) => RegisterOrder());
+
+class OrdersNotifier extends ChangeNotifier {
+  final businessCollection = _firestore.collection('business');
+
+  // final orderNotifier = StreamProvider.autoDispose<ActiveOrder>((ref) {
+  //   var idDocument = ref.watch(tableIdDocumentNotifier);
+  //   print(idDocument);
+  //   var result = _firestore
+  //       .collection('business')
+  //       .doc('bandiis')
+  //       .collection('orders')
+  //       .where('idDocument', isEqualTo: idDocument)
+  //       .snapshots()
+  //       .map((doc) => ActiveOrder.fromDoc(doc));
+
+  //   // print(result.map((e) => e.clientName));
+  //   print(result.first);
+  //   print('result ========= $result');
+  //   return result;
+  // });
+
+  Stream<QuerySnapshot> getOrderByIdDocument(idDocument) => businessCollection
+      .doc('bandiis')
+      .collection('orders')
+      // .doc(idDocument)
+      .where('idDocument', isEqualTo: idDocument)
+      .snapshots();
+}
+
+final ordersNotifierProvider = Provider((ref) => OrdersNotifier());
+
 class MyParameter extends Equatable {
   MyParameter({
     required this.min,
@@ -78,7 +154,8 @@ class DragUpdate extends StateNotifier<double> {
 
 class AddOrderController extends StateNotifier<AddOrder> {
   AddOrderController() : super(order);
-  static AddOrder order = AddOrder('', '', '', [], 0, Timestamp(0, 0));
+  static AddOrder order =
+      AddOrder('', '', 0, '', FieldValue.serverTimestamp(), Timestamp(0, 0));
 
   addOrder(AddOrder order) {
     state = order;

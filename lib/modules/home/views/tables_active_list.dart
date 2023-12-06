@@ -16,7 +16,9 @@ class TablesListActive extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tables = ref.read(tablesNotifierProvider);
     // final isOpen = ref.watch(isOpenProvider);
-    final addOrder = ref.watch(addOrderProvider);
+    // final clientName = ref.watch(clientNameProvider);
+
+    // ref.read(ordersNotifierProvider).getOrderByIdDocument(table!.documentId);
 
     AnimationController tablesController =
         useAnimationController(duration: const Duration(milliseconds: 0));
@@ -59,7 +61,6 @@ class TablesListActive extends HookConsumerWidget {
                             ref
                                 .read(dragTableNotifier.notifier)
                                 .bookingOrderedByDraggable(data);
-                            print('onAccept');
                           },
                           builder: (BuildContext context,
                               List<DashboardTables?> candidateData,
@@ -113,11 +114,19 @@ class TablesListActive extends HookConsumerWidget {
                                                                       //         .toString() ==
                                                                       //     addOrder
                                                                       //         .idTable) {}
-                                                                      print(
-                                                                          'here');
+                                                                      // print(
+                                                                      //     'here');
                                                                       ref.read(currentOrderStateProvider.notifier).state =
                                                                           OrderStateWidget
                                                                               .open;
+
+                                                                      ref
+                                                                          .read(tableIdDocumentNotifier
+                                                                              .notifier)
+                                                                          .state = activeData[
+                                                                              i]!
+                                                                          .documentId!;
+
                                                                       // ref
                                                                       //     .read(isOpenProvider
                                                                       //         .notifier)

@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -29,6 +30,7 @@ class AddOrderWidget extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final idDocument = ref.watch(tableIdDocumentNotifier);
     // AnimationController controller = ref.watch(animationItemsProvider);
     final isOpen = ref.watch(isOpenProvider);
 
@@ -57,7 +59,7 @@ class AddOrderWidget extends HookConsumerWidget {
         MediaQuery.of(context).size.height; //<-- Get max height of the screen
     double lerp(double min, double max) => ref.watch(
         lerpProvider(MyParameter(min: min, max: max, value: animation.value)));
-    print(animation.status);
+    // print(animation.status);
     // lerpDouble(min, max,
     //     controller.value)!; //<-- lerp any value based on the controller
 
@@ -171,200 +173,244 @@ class AddOrderWidget extends HookConsumerWidget {
       // }
     }
 
-    return AnimatedBuilder(
-        animation: animation,
-        builder: (context, child) {
-          return Positioned(
-            height: lerp(minHeight, maxHeight),
-            left: minWidth * 0.7,
-            right: 0,
-            bottom: 0,
-            child: GestureDetector(
-              onTap: _toggle,
-              onVerticalDragUpdate:
-                  _handleDragUpdate, //<-- Add verticalDragUpdate callback
-              onVerticalDragEnd: _handleDragEnd,
-              child: ClipPath(
-                  clipper: ZigZagClipper(),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: 18, vertical: verticalPadding),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[700],
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                      ),
-                    ),
-                    child: Stack(
-                      //<-- Add a stack
-                      children: <Widget>[
-                        // MenuButton(), //<-- With a menu button
+    final order =
+        ref.read(ordersNotifierProvider).getOrderByIdDocument(idDocument);
 
-                        Positioned(
-                          top: lerp(5, 20 + MediaQuery.of(context).padding.top),
-                          right: 0,
-                          child: SheetHeader(
-                            //<-- Add a header with params
-                            width: minWidth * 0.3,
-                            height: height,
-                            fontSize: lerp(14, 24),
-
-                            isVisible:
-                                animation.status == AnimationStatus.completed,
-                            // animation.status == AnimationStatus.completed,
+    return idDocument.isNotEmpty
+        ? AnimatedBuilder(
+            animation: animation,
+            builder: (context, child) {
+              return Positioned(
+                height: lerp(minHeight, maxHeight),
+                left: minWidth * 0.7,
+                right: 0,
+                bottom: 0,
+                child: GestureDetector(
+                  onTap: _toggle,
+                  onVerticalDragUpdate:
+                      _handleDragUpdate, //<-- Add verticalDragUpdate callback
+                  onVerticalDragEnd: _handleDragEnd,
+                  child: ClipPath(
+                      clipper: ZigZagClipper(),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 18, vertical: verticalPadding),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[700],
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(20),
                           ),
                         ),
-                        animation.status == AnimationStatus.completed
-                            ? spaceHeight
-                            : const SizedBox(),
+                        child: StreamBuilder(
+                            stream: FirebaseFirestore.instance
+                                .collection('business')
+                                .doc('bandiis')
+                                .collection('orders')
+                                .doc(idDocument)
+                                // .where('idDocument', isEqualTo: idDocument)
+                                .snapshots()
+                                .map((doc) => ActiveOrder.fromDoc(doc)),
+                            builder:
+                                (context, AsyncSnapshot<ActiveOrder> snapshot) {
+                              // if (!snapshot.hasData) {
+                              //   return Center(child: CircularProgressIndicator());
+                              // }
+                              if (snapshot.hasError) {
+                                return Text('Something went wrong');
+                              }
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Center(
+                                    child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                ));
+                              }
 
-                        Positioned(
-                          top: lerp(0, height * 0.09),
-                          right: 0,
-                          child: AnimatedOpacity(
-                            duration: const Duration(milliseconds: 600),
-                            opacity:
-                                animation.status == AnimationStatus.completed
-                                    ? 1
-                                    : 0,
-                            child: SizedBox(
-                              // height: 50,
-                              width: minWidth * 0.3,
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 40.0),
-                                child: Stack(
-                                  children: [
-                                    Positioned(
-                                      left: 0,
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            Icons.list_alt_sharp,
-                                            color: Colors.white,
-                                          ),
-                                          Text(
-                                            'Conta',
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 18),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                    Positioned(
-                                      right: 0,
-                                      child: Text(
-                                        'ID: 236Wo0KaJduh6vw3OZW0',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                    ),
-                                    animation.status ==
-                                            AnimationStatus.completed
-                                        ? spaceHeight
-                                        : const SizedBox(),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          top: lerp(0, height * 0.15),
-                          child: Container(
-                            color: Colors.transparent,
-                            height: lerp(minHeight, height * 0.475),
-                            width: minWidth * 0.3,
-                            child: DefaultTabController(
-                              length: 3,
-                              child: Column(
-                                children: [
-                                  isOpen
-                                      ? TabBar(
-                                          isScrollable: true,
-                                          labelColor: Colors.white,
-                                          dividerColor: Colors.transparent,
-                                          padding: EdgeInsets.all(10),
-                                          labelStyle: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 15,
-                                          ),
-                                          unselectedLabelColor: Colors.white,
-                                          tabs: <Widget>[
-                                            Tab(
-                                              text: 'Carrinho',
-                                              iconMargin: EdgeInsets.all(25),
-                                            ),
-                                            Tab(
-                                              text: 'Resumo',
-                                            ),
-                                            Tab(
-                                              text: 'Detalhado',
-                                            ),
-                                          ],
-                                          // : <Widget>[
-                                          //     Tab(
-                                          //       icon: Icon(Icons.add_circle),
-                                          //     ),
-                                          //     Tab(
-                                          //       icon: Icon(Icons.check_circle),
-                                          //     ),
-                                          //     Tab(
-                                          //       icon: Icon(Icons.cancel_rounded),
-                                          //     ),
-                                          //   ],
-                                          indicator: ShapeDecoration(
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                Radius.circular(10),
-                                              )),
-                                              color: Colors.black54),
-                                        )
-                                      : const SizedBox(),
-                                  animation.status == AnimationStatus.completed
-                                      ? const SizedBox(height: 50)
-                                      : const SizedBox(),
-                                  Expanded(
-                                    child: TabBarView(
-                                      children: [
-                                        OrderDetails(
-                                          controller: animation,
-                                          height: height,
-                                          width: minWidth * 0.3,
-                                        ),
-                                        const SizedBox(
-                                          height: 100,
-                                          width: 100,
-                                        ),
-                                        const SizedBox(
-                                          height: 100,
-                                          width: 100,
-                                        ),
-                                      ],
+                              print(snapshot.data!.clientName);
+
+                              return Stack(
+                                //<-- Add a stack
+                                children: <Widget>[
+                                  Positioned(
+                                    top: lerp(
+                                        5,
+                                        20 +
+                                            MediaQuery.of(context).padding.top),
+                                    right: 0,
+                                    child: SheetHeader(
+                                      //<-- Add a header with params
+                                      width: minWidth * 0.3,
+                                      height: height,
+                                      fontSize: lerp(14, 24),
+
+                                      isVisible: animation.status ==
+                                          AnimationStatus.completed,
+                                      clientName: snapshot.data?.clientName,
+                                      idTable: snapshot.data!.idTable,
                                     ),
                                   ),
+                                  animation.status == AnimationStatus.completed
+                                      ? spaceHeight
+                                      : const SizedBox(),
+                                  Positioned(
+                                    top: lerp(0, height * 0.09),
+                                    right: 0,
+                                    child: AnimatedOpacity(
+                                      duration:
+                                          const Duration(milliseconds: 600),
+                                      opacity: animation.status ==
+                                              AnimationStatus.completed
+                                          ? 1
+                                          : 0,
+                                      child: SizedBox(
+                                        // height: 50,
+                                        width: minWidth * 0.3,
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 40.0),
+                                          child: Stack(
+                                            children: [
+                                              Positioned(
+                                                left: 0,
+                                                child: Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons.list_alt_sharp,
+                                                      color: Colors.white,
+                                                    ),
+                                                    Text(
+                                                      'Conta',
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 18),
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                              Positioned(
+                                                right: 0,
+                                                child: Text(
+                                                  'ID: 236Wo0KaJduh6vw3OZW0',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 14,
+                                                  ),
+                                                ),
+                                              ),
+                                              animation.status ==
+                                                      AnimationStatus.completed
+                                                  ? spaceHeight
+                                                  : const SizedBox(),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    top: lerp(0, height * 0.15),
+                                    child: Container(
+                                      color: Colors.transparent,
+                                      height: lerp(minHeight, height * 0.475),
+                                      width: minWidth * 0.3,
+                                      child: DefaultTabController(
+                                        length: 3,
+                                        child: Column(
+                                          children: [
+                                            currentOrderState ==
+                                                    OrderStateWidget.open
+                                                ? TabBar(
+                                                    isScrollable: true,
+                                                    labelColor: Colors.white,
+                                                    dividerColor:
+                                                        Colors.transparent,
+                                                    padding: EdgeInsets.all(10),
+                                                    labelStyle: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 15,
+                                                    ),
+                                                    unselectedLabelColor:
+                                                        Colors.white,
+                                                    tabs: <Widget>[
+                                                      Tab(
+                                                        text: 'Carrinho',
+                                                        iconMargin:
+                                                            EdgeInsets.all(25),
+                                                      ),
+                                                      Tab(
+                                                        text: 'Resumo',
+                                                      ),
+                                                      Tab(
+                                                        text: 'Detalhado',
+                                                      ),
+                                                    ],
+                                                    // : <Widget>[
+                                                    //     Tab(
+                                                    //       icon: Icon(Icons.add_circle),
+                                                    //     ),
+                                                    //     Tab(
+                                                    //       icon: Icon(Icons.check_circle),
+                                                    //     ),
+                                                    //     Tab(
+                                                    //       icon: Icon(Icons.cancel_rounded),
+                                                    //     ),
+                                                    //   ],
+                                                    indicator: ShapeDecoration(
+                                                        shape:
+                                                            RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .all(
+                                                          Radius.circular(10),
+                                                        )),
+                                                        color: Colors.black54),
+                                                  )
+                                                : const SizedBox(),
+                                            animation.status ==
+                                                    AnimationStatus.completed
+                                                ? const SizedBox(height: 50)
+                                                : const SizedBox(),
+                                            Expanded(
+                                              child: TabBarView(
+                                                children: [
+                                                  OrderDetails(
+                                                    controller: animation,
+                                                    height: height,
+                                                    width: minWidth * 0.3,
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 100,
+                                                    width: 100,
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 100,
+                                                    width: 100,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  animation.status == AnimationStatus.completed
+                                      ? Positioned(
+                                          top: lerp(0, height * 0.65),
+                                          child: SizedBox(
+                                              width: minWidth * 0.3,
+                                              child: const MySeparator(
+                                                  color: Colors.white)))
+                                      : const SizedBox(),
                                 ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        animation.status == AnimationStatus.completed
-                            ? Positioned(
-                                top: lerp(0, height * 0.65),
-                                child: SizedBox(
-                                    width: minWidth * 0.3,
-                                    child:
-                                        const MySeparator(color: Colors.white)))
-                            : const SizedBox(),
-                      ],
-                    ),
-                  )),
-            ),
-          );
-        });
+                              );
+                            }),
+                      )),
+                ),
+              );
+            })
+        : SizedBox();
   }
 }
 
@@ -389,17 +435,21 @@ class SheetHeader extends HookConsumerWidget {
   final double height;
   final double width;
   final bool isVisible;
+  final String? clientName;
+  final int idTable;
 
-  const SheetHeader(
-      {super.key,
-      required this.fontSize,
-      required this.isVisible,
-      required this.height,
-      required this.width});
+  const SheetHeader({
+    super.key,
+    required this.fontSize,
+    required this.isVisible,
+    required this.height,
+    required this.width,
+    this.clientName,
+    required this.idTable,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    AddOrder myOrder = ref.watch(addOrderProvider);
     return LayoutBuilder(builder: (context, constraints) {
       return SizedBox(
         height: height,
@@ -431,7 +481,7 @@ class SheetHeader extends HookConsumerWidget {
                           )
                         : const SizedBox(),
                     Text(
-                      myOrder.clientName,
+                      clientName ?? "",
                       style: TextStyle(
                         fontSize: fontSize,
                         fontWeight: FontWeight.bold,
@@ -452,13 +502,13 @@ class SheetHeader extends HookConsumerWidget {
               ),
               Positioned(
                 right: 0,
-                child: const CircleAvatar(
+                child: CircleAvatar(
                   maxRadius: 30,
                   backgroundColor: Colors.black54,
                   child: Center(
                     child: Text(
-                      '1',
-                      style: TextStyle(
+                      idTable.toString(),
+                      style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w900,
                           fontSize: 20),
