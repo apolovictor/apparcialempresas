@@ -103,7 +103,7 @@ class ProductAdd extends HookConsumerWidget {
     }
 
     return Stack(
-      clipBehavior: Clip.none,
+      clipBehavior: Clip.hardEdge,
       children: [
         AnimatedContainer(
           duration: const Duration(milliseconds: 375),
@@ -187,10 +187,10 @@ class ProductAdd extends HookConsumerWidget {
                                 const SizedBox(height: 25),
                                 Container(
                                   height: isActiveProductRegister
-                                      ? width * 0.3 - 75
+                                      ? width * 0.25 - 75
                                       : 0,
                                   width: isActiveProductRegister
-                                      ? width * 0.3 - 75
+                                      ? width * 0.25 - 75
                                       : 0,
                                   decoration: BoxDecoration(
                                       // gradient: LinearGradient(

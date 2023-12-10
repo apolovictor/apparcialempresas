@@ -73,7 +73,10 @@ class UpdateButton extends HookConsumerWidget {
                             : ref.watch(productNameProvider).text,
                         ref.watch(productPriceProvider).text.isEmpty
                             ? product.price['price']
-                            : ref.watch(productPriceProvider).text,
+                            : ref
+                                .watch(productPriceProvider)
+                                .text
+                                .replaceAll(RegExp('[^0-9,]'), ''),
                         ref.watch(productPromoProvider).text.isEmpty
                             ? product.price['promo']
                             : ref.watch(productPromoProvider).text,

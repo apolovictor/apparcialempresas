@@ -41,9 +41,9 @@ class RegisterButton extends HookConsumerWidget {
               ),
             ),
             onPressed: () async {
-              if (ref.watch(productNameProvider).text.isEmpty ||
-                  ref.watch(productPriceProvider).text.isEmpty ||
-                  ref.watch(productQuantityProvider).text.isEmpty ||
+              if (ref.watch(addProductNameProvider).text.isEmpty ||
+                  ref.watch(addProductPriceProvider).text.isEmpty ||
+                  ref.watch(addProductQuantityProvider).text.isEmpty ||
                   category.isEmpty) {
                 Fluttertoast.showToast(
                     msg: "Todos os campos devem ser preenchidos!",
@@ -59,12 +59,15 @@ class RegisterButton extends HookConsumerWidget {
                 final result = await ref
                     .read(registerProductProvider)
                     .registerProduct(
-                        ref.watch(productNameProvider).text,
+                        ref.watch(addProductNameProvider).text,
                         {
-                          'price': ref.watch(productPriceProvider).text,
-                          'promo': '0.00'
+                          'price': ref
+                              .watch(addProductPriceProvider)
+                              .text
+                              .replaceAll(RegExp('[^0-9,]'), ''),
+                          'promo': '0,00'
                         },
-                        ref.watch(productQuantityProvider).text,
+                        ref.watch(addProductQuantityProvider).text,
                         categories!
                             .firstWhere((e) => e.documentId == category)
                             .color!,
@@ -76,10 +79,9 @@ class RegisterButton extends HookConsumerWidget {
                         ref);
 
                 if (result) {
-                  ref.read(productNameProvider.notifier).clear();
-                  ref.read(productPriceProvider.notifier).clear();
-                  ref.read(productPromoProvider.notifier).clear();
-                  ref.read(productQuantityProvider.notifier).clear();
+                  ref.read(addProductNameProvider.notifier).clear();
+                  ref.read(addProductPriceProvider.notifier).clear();
+                  ref.read(addProductQuantityProvider.notifier).clear();
 
                   ref.read(isProductsOpenedProvider.notifier).fetch(false);
                   ref.read(categoryProductNotifier.notifier).clear();
