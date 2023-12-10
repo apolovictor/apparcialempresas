@@ -25,7 +25,7 @@ Widget registerFieldWidget(
             filled: true,
           ),
           keyboardType:
-              fieldName == "Nome" ? TextInputType.none : TextInputType.number)
+              fieldName == "Nome" ? TextInputType.text : TextInputType.number)
       : TextFormField(
           controller: controller,
           decoration: InputDecoration(
@@ -39,5 +39,5 @@ Widget registerFieldWidget(
             filled: true,
           ),
           keyboardType:
-              fieldName == "Nome" ? TextInputType.none : TextInputType.number);
+              fieldName == "Nome" ? TextInputType.text : TextInputType.number);
 }

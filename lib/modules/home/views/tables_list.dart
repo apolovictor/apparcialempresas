@@ -136,7 +136,7 @@ class TablesList extends HookConsumerWidget {
                                                                                           hintStyle: TextStyle(color: Colors.purple[50]),
                                                                                           filled: true,
                                                                                         ),
-                                                                                        keyboardType: TextInputType.none)
+                                                                                        keyboardType: TextInputType.text)
                                                                                   ],
                                                                                 ),
                                                                               ),
