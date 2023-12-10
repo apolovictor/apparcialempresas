@@ -6,9 +6,9 @@ Widget fieldWidget(TextEditingController controller, String fieldName,
   return fieldName == 'Preço' || fieldName == 'Promoção'
       ? TextFormField(
           inputFormatters: [
-            CurrencyTextInputFormatter(
-                locale: 'pt_Br', symbol: 'R\$', decimalDigits: 2)
-          ],
+              CurrencyTextInputFormatter(
+                  locale: 'pt_Br', symbol: 'R\$', decimalDigits: 2)
+            ],
           controller: controller,
           decoration: InputDecoration(
             enabledBorder: OutlineInputBorder(
@@ -19,7 +19,8 @@ Widget fieldWidget(TextEditingController controller, String fieldName,
             // fillColor: const Color(0xFFD7D7F4),
             filled: true,
           ),
-        )
+          keyboardType:
+              fieldName == "Nome" ? TextInputType.text : TextInputType.number)
       : TextFormField(
           controller: controller,
           decoration: InputDecoration(
