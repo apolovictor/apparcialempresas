@@ -219,10 +219,11 @@ AnimationController orderWidgetController(WidgetRef ref) {
     case OrderStateWidget.dragUpdate:
       controller.value = dragValue;
     case OrderStateWidget.dragEnd:
-      if (controller.isAnimating ||
-          controller.status == AnimationStatus.completed) {
-        break;
-      }
+      // if (controller.isAnimating ||
+      //     controller.status == AnimationStatus.completed) {
+      //   break;
+      // }
+      // print(flingVelocity);
       if (flingVelocity < 0.0) {
         controller.fling(
             velocity:
@@ -237,8 +238,6 @@ AnimationController orderWidgetController(WidgetRef ref) {
                 ? -2.0
                 : 2.0); //<-- or just continue to whichever edge is closer
       }
-    // controller.value = dragValue;
-
     default:
       throw Exception();
   }

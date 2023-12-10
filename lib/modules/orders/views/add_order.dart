@@ -17,22 +17,21 @@ const double iconsVerticalSpacing = 24; //<-- add edge values
 const double iconsHorizontalSpacing = 16; //<-- add edge values
 
 class AddOrderWidget extends HookConsumerWidget {
-  AddOrderWidget({
+  const AddOrderWidget({
     super.key,
     required this.minHeight,
     required this.minWidth,
     required this.height,
   });
 
-  double minHeight;
-  double minWidth;
-  double height;
+  final double minHeight;
+  final double minWidth;
+  final double height;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final idDocument = ref.watch(tableIdDocumentNotifier);
-    // AnimationController controller = ref.watch(animationItemsProvider);
-    final isOpen = ref.watch(isOpenProvider);
+    AnimationController controller = orderWidgetController(ref);
 
     // final orderListState = ref.watch(orderStateListProvider);
     final currentOrderState = ref.watch(currentOrderStateProvider);
@@ -42,13 +41,10 @@ class AddOrderWidget extends HookConsumerWidget {
             currentOrderState == OrderStateWidget.dragEnd
         ? 120
         : 0;
-    print(currentOrderState);
 
     // WidgetsBinding.instance.addPostFrameCallback((_) {
     //   ref.read(isOldOpenProvider.notifier).toogle(isOpen);
     // });
-
-    // print(isDrag);
 
     final Animation<double> animation = Tween(begin: .0, end: 1.0).animate(
         CurvedAnimation(
@@ -58,7 +54,7 @@ class AddOrderWidget extends HookConsumerWidget {
     double maxHeight =
         MediaQuery.of(context).size.height; //<-- Get max height of the screen
     double lerp(double min, double max) => ref.watch(
-        lerpProvider(MyParameter(min: min, max: max, value: animation.value)));
+        lerpProvider(MyParameter(min: min, max: max, value: controller.value)));
     // print(animation.status);
     // lerpDouble(min, max,
     //     controller.value)!; //<-- lerp any value based on the controller
@@ -71,7 +67,7 @@ class AddOrderWidget extends HookConsumerWidget {
     // double itemBorderRadius = lerp(8, 24); //<-- increase item border radius
 
     double verticalPadding = ref.watch(
-        lerpProvider(MyParameter(min: 6, max: 32, value: animation.value)));
+        lerpProvider(MyParameter(min: 6, max: 32, value: controller.value)));
 
     // lerp(6, 32);
 
@@ -126,8 +122,10 @@ class AddOrderWidget extends HookConsumerWidget {
     void _handleDragUpdate(DragUpdateDetails details) {
       ref.read(currentOrderStateProvider.notifier).state =
           OrderStateWidget.dragUpdate;
+      // controller.addListener(() {
       ref.read(dragValueProvider.notifier).state -=
           details.primaryDelta! / maxHeight;
+      // });
       // _toggle();
       // ref.read(isOldOpenProvider.notifier).toogle(true);
       // ref
@@ -144,13 +142,12 @@ class AddOrderWidget extends HookConsumerWidget {
     void _handleDragEnd(DragEndDetails details) {
       ref.read(currentOrderStateProvider.notifier).state =
           OrderStateWidget.dragEnd;
-      ref.read(flingVelocityProvider.notifier).state =
-          details.velocity.pixelsPerSecond.dy / maxHeight;
-
-      if (animation.status == AnimationStatus.completed) {
+      if (controller.status == AnimationStatus.completed) {
         ref.read(currentOrderStateProvider.notifier).state =
             OrderStateWidget.open;
       }
+      ref.read(flingVelocityProvider.notifier).state =
+          details.velocity.pixelsPerSecond.dy / maxHeight;
 
       // if (controller.isAnimating ||
       //     controller.status == AnimationStatus.completed) return;
@@ -178,7 +175,7 @@ class AddOrderWidget extends HookConsumerWidget {
 
     return idDocument.isNotEmpty
         ? AnimatedBuilder(
-            animation: animation,
+            animation: controller,
             builder: (context, child) {
               return Positioned(
                 height: lerp(minHeight, maxHeight),
@@ -216,11 +213,11 @@ class AddOrderWidget extends HookConsumerWidget {
                               //   return Center(child: CircularProgressIndicator());
                               // }
                               if (snapshot.hasError) {
-                                return Text('Something went wrong');
+                                return const Text('Something went wrong');
                               }
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
-                                return Center(
+                                return const Center(
                                     child: CircularProgressIndicator(
                                   color: Colors.white,
                                 ));
@@ -253,7 +250,7 @@ class AddOrderWidget extends HookConsumerWidget {
                                       ? spaceHeight
                                       : const SizedBox(),
                                   Positioned(
-                                    top: lerp(0, height * 0.09),
+                                    top: lerp(0, height * 0.12),
                                     right: 0,
                                     child: AnimatedOpacity(
                                       duration:
@@ -270,7 +267,7 @@ class AddOrderWidget extends HookConsumerWidget {
                                               const EdgeInsets.only(left: 40.0),
                                           child: Stack(
                                             children: [
-                                              Positioned(
+                                              const Positioned(
                                                 left: 0,
                                                 child: Row(
                                                   children: [
@@ -287,7 +284,7 @@ class AddOrderWidget extends HookConsumerWidget {
                                                   ],
                                                 ),
                                               ),
-                                              Positioned(
+                                              const Positioned(
                                                 right: 0,
                                                 child: Text(
                                                   'ID: 236Wo0KaJduh6vw3OZW0',
@@ -319,7 +316,7 @@ class AddOrderWidget extends HookConsumerWidget {
                                           children: [
                                             currentOrderState ==
                                                     OrderStateWidget.open
-                                                ? TabBar(
+                                                ? const TabBar(
                                                     isScrollable: true,
                                                     labelColor: Colors.white,
                                                     dividerColor:
@@ -410,23 +407,7 @@ class AddOrderWidget extends HookConsumerWidget {
                 ),
               );
             })
-        : SizedBox();
-  }
-}
-
-class MenuButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      //<-- Align the icon to bottom right corner
-      right: 0,
-      bottom: 24,
-      child: Icon(
-        Icons.menu,
-        color: Colors.white,
-        size: 28,
-      ),
-    );
+        : const SizedBox();
   }
 }
 
@@ -473,9 +454,8 @@ class SheetHeader extends HookConsumerWidget {
                                   .read(currentOrderStateProvider.notifier)
                                   .state = OrderStateWidget.close;
                             },
-                            child: Icon(
+                            child: const Icon(
                               Icons.close,
-                              // size: ,
                               color: Colors.white,
                             ),
                           )
@@ -488,15 +468,6 @@ class SheetHeader extends HookConsumerWidget {
                         color: Colors.white,
                       ),
                     ),
-                    // isVisible
-                    //     ? const Text(
-                    //         "Mesa",
-                    //         style: TextStyle(
-                    //           fontSize: 17,
-                    //           color: Colors.white,
-                    //         ),
-                    //       )
-                    //     : const SizedBox(),
                   ],
                 ),
               ),
@@ -536,7 +507,7 @@ class ExpandedEventItem extends StatelessWidget {
   final String date;
 
   const ExpandedEventItem({
-    Key? key,
+    super.key,
     required this.topMargin,
     required this.height,
     required this.isVisible,
@@ -617,7 +588,7 @@ class ExpandedEventItem extends StatelessWidget {
 }
 
 class OrderDetails extends HookConsumerWidget {
-  OrderDetails(
+  const OrderDetails(
       {super.key,
       required this.controller,
       required this.height,
@@ -683,8 +654,8 @@ class OrderDetails extends HookConsumerWidget {
 
     return SingleChildScrollView(
       physics: controller.status == AnimationStatus.completed
-          ? BouncingScrollPhysics()
-          : NeverScrollableScrollPhysics(),
+          ? const BouncingScrollPhysics()
+          : const NeverScrollableScrollPhysics(),
       child: SizedBox(
         height: height * 0.45,
         width: width,
@@ -692,7 +663,7 @@ class OrderDetails extends HookConsumerWidget {
             ? SizedBox(
                 width: width,
                 height: height * 0.45,
-                child: Center(
+                child: const Center(
                   child: AddProductButton(
                     buttonName: 'Adicionar Produtos',
                   ),
@@ -704,7 +675,6 @@ class OrderDetails extends HookConsumerWidget {
                     _buildFullItem(event), //<-- Add icons to the stack
                   for (Product event in productsList)
                     _buildIcon(event), //<-- Add icons to the stack
-
                   // Row(
                   // children: buildIconsbuildItems,
                   // )
@@ -722,7 +692,7 @@ class ZigZagClipper extends CustomClipper<Path> {
     Path path = Path();
     path.moveTo(factor, 0);
     path.arcToPoint(Offset(0, factor),
-        radius: Radius.circular(8), clockwise: false);
+        radius: const Radius.circular(8), clockwise: false);
     // path.quadraticBezierTo(factor, 0, 0, factor);
 
     path.lineTo(0, size.height);
@@ -742,7 +712,7 @@ class ZigZagClipper extends CustomClipper<Path> {
     }
     path.lineTo(size.width, factor);
     path.arcToPoint(Offset(size.width - factor, 0),
-        radius: Radius.circular(8), clockwise: false);
+        radius: const Radius.circular(8), clockwise: false);
     path.close();
     return path;
   }
@@ -753,53 +723,52 @@ class ZigZagClipper extends CustomClipper<Path> {
   }
 }
 
-class BorderPainter extends CustomPainter {
-  Color color;
-  BorderPainter({required this.color});
-  @override
-  void paint(Canvas canvas, Size size) {
-    double factor = 8;
-    Paint paint = Paint()
-      ..color = color
-      ..strokeCap = StrokeCap.round
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1;
-    Path path = Path();
-    path.moveTo(factor, 0);
-    path.arcToPoint(Offset(0, factor),
-        radius: Radius.circular(8), clockwise: false);
-    // path.quadraticBezierTo(factor, 0, 0, factor);
-    path.lineTo(0, size.height);
-    double x = 0;
-    double y = size.height;
-    double increment = size.width / 50;
+// class BorderPainter extends CustomPainter {
+//   Color color;
+//   BorderPainter({required this.color});
+//   @override
+//   void paint(Canvas canvas, Size size) {
+//     double factor = 8;
+//     Paint paint = Paint()
+//       ..color = color
+//       ..strokeCap = StrokeCap.round
+//       ..style = PaintingStyle.stroke
+//       ..strokeWidth = 1;
+//     Path path = Path();
+//     path.moveTo(factor, 0);
+//     path.arcToPoint(Offset(0, factor),
+//         radius:const Radius.circular(8), clockwise: false);
+//     // path.quadraticBezierTo(factor, 0, 0, factor);
+//     path.lineTo(0, size.height);
+//     double x = 0;
+//     double y = size.height;
+//     double increment = size.width / 50;
 
-    while (x < size.width) {
-      if (x + increment > size.width) {
-        x += size.width - x;
-      } else {
-        x += increment;
-      }
+//     while (x < size.width) {
+//       if (x + increment > size.width) {
+//         x += size.width - x;
+//       } else {
+//         x += increment;
+//       }
 
-      y = (y == size.height) ? size.height - increment : size.height;
-      path.lineTo(x, y);
-    }
-    path.lineTo(size.width, factor);
-    path.arcToPoint(Offset(size.width - factor, 0),
-        radius: Radius.circular(8), clockwise: false);
-    path.close();
-    canvas.drawPath(path, paint);
-  }
+//       y = (y == size.height) ? size.height - increment : size.height;
+//       path.lineTo(x, y);
+//     }
+//     path.lineTo(size.width, factor);
+//     path.arcToPoint(Offset(size.width - factor, 0),
+//         radius: Radius.circular(8), clockwise: false);
+//     path.close();
+//     canvas.drawPath(path, paint);
+//   }
 
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return true;
-  }
-}
+//   @override
+//   bool shouldRepaint(CustomPainter oldDelegate) {
+//     return true;
+//   }
+// }
 
 class MySeparator extends StatelessWidget {
-  const MySeparator({Key? key, this.height = 1, this.color = Colors.black})
-      : super(key: key);
+  const MySeparator({super.key, this.height = 1, this.color = Colors.black});
   final double height;
   final Color color;
 
@@ -812,6 +781,8 @@ class MySeparator extends StatelessWidget {
         final dashHeight = height;
         final dashCount = (boxWidth / (2 * dashWidth)).floor();
         return Flex(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          direction: Axis.horizontal,
           children: List.generate(dashCount, (_) {
             return SizedBox(
               width: dashWidth,
@@ -821,8 +792,6 @@ class MySeparator extends StatelessWidget {
               ),
             );
           }),
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          direction: Axis.horizontal,
         );
       },
     );
