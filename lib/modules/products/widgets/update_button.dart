@@ -59,6 +59,12 @@ class UpdateButton extends HookConsumerWidget {
               //     builder: (context) =>
               //         Center(child: CircularProgressIndicator()));
 
+              print(ref.watch(productPriceProvider).text);
+              print(ref
+                  .watch(productPriceProvider)
+                  .text
+                  .replaceAll(RegExp('[^0-9,]'), ''));
+
               final result =
                   await ref.read(updateProductProvider).updateQuickProduct(
                         product.documentId!,

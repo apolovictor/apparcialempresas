@@ -256,9 +256,8 @@ class ProducQuickEdit extends HookConsumerWidget {
                                             data: (List<Product> data) {
                                               return fieldWidget(
                                                 productNameController,
-                                                productSelected > -1
-                                                    ? data[productSelected].name
-                                                    : "Nome",
+                                                "Nome",
+                                                data[productSelected].name,
                                                 context,
                                                 productSelected > -1
                                                     ? Color(int.parse(
@@ -280,10 +279,9 @@ class ProducQuickEdit extends HookConsumerWidget {
                                             data: (List<Product> data) {
                                               return fieldWidget(
                                                 productPriceController,
-                                                productSelected > -1
-                                                    ? data[productSelected]
-                                                        .price['price']
-                                                    : "Preço",
+                                                "Preço",
+                                                data[productSelected]
+                                                    .price['price'],
                                                 context,
                                                 productSelected > -1
                                                     ? Color(int.parse(
@@ -305,10 +303,9 @@ class ProducQuickEdit extends HookConsumerWidget {
                                             data: (List<Product> data) {
                                               return fieldWidget(
                                                 productPromoController,
-                                                productSelected > -1
-                                                    ? data[productSelected]
-                                                        .price['promo']
-                                                    : "Promoção",
+                                                "Promoção",
+                                                data[productSelected]
+                                                    .price['promo'],
                                                 context,
                                                 productSelected > -1
                                                     ? Color(int.parse(
@@ -330,10 +327,8 @@ class ProducQuickEdit extends HookConsumerWidget {
                                             data: (List<Product> data) {
                                               return fieldWidget(
                                                 productQuantityController,
-                                                productSelected > -1
-                                                    ? data[productSelected]
-                                                        .quantity
-                                                    : "Nome",
+                                                "Quantidade",
+                                                data[productSelected].quantity,
                                                 context,
                                                 productSelected > -1
                                                     ? Color(int.parse(
@@ -351,22 +346,7 @@ class ProducQuickEdit extends HookConsumerWidget {
                                 ),
                               ),
                             ),
-                            Align(
-                              alignment: const Alignment(-1.1, 1.1),
-                              child: Container(
-                                  height: 80,
-                                  width: width * 0.3,
-                                  child: filteredProducts.when(
-                                    data: (List<Product> data) {
-                                      UpdateButton(
-                                          buttonName: "Salvar",
-                                          animation: animation,
-                                          product: data[productSelected]);
-                                    },
-                                    error: (err, stack) => const Text(''),
-                                    loading: () => const Text(''),
-                                  )),
-                            ),
+
                             Align(
                               alignment: const Alignment(-1.1, -1),
                               child: InkWell(

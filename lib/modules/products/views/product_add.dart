@@ -31,27 +31,27 @@ class ProductAdd extends HookConsumerWidget {
     bool isActiveProductRegister = ref.watch(isProductsOpenedProvider);
     final categories = ref.watch(categoriesNotifier).value;
     final TextEditingController productNameController =
-        ref.watch(productNameProvider);
+        ref.watch(addProductNameProvider);
 
     final TextEditingController productPriceController =
-        ref.watch(productPriceProvider);
+        ref.watch(addProductPriceProvider);
     final TextEditingController productQuantityController =
-        ref.watch(productQuantityProvider);
+        ref.watch(addProductQuantityProvider);
     final imgConverted = ref.watch(imgConvertedProvider);
 
     productNameController.addListener(() {
       ref
-          .read(productNameProvider.notifier)
+          .read(addProductNameProvider.notifier)
           .fetchProductName(productNameController);
     });
     productPriceController.addListener(() {
       ref
-          .read(productPriceProvider.notifier)
+          .read(addProductPriceProvider.notifier)
           .fetchProductPrice(productPriceController);
     });
     productQuantityController.addListener(() {
       ref
-          .read(productQuantityProvider.notifier)
+          .read(addProductQuantityProvider.notifier)
           .fetchProductQuantity(productQuantityController);
     });
 

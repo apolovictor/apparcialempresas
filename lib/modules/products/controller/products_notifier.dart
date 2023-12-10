@@ -252,6 +252,63 @@ class ProductQuantityController extends StateNotifier<TextEditingController> {
   }
 }
 
+class AddProductNameController extends StateNotifier<TextEditingController> {
+  AddProductNameController() : super(productName);
+  static TextEditingController productName = TextEditingController();
+
+  fetchProductName(TextEditingController productName) {
+    state = productName;
+    return state;
+  }
+
+  clear() {
+    state.clear();
+  }
+}
+
+class AddProductPriceController extends StateNotifier<TextEditingController> {
+  AddProductPriceController() : super(productPrice);
+  static TextEditingController productPrice = TextEditingController();
+
+  fetchProductPrice(TextEditingController productPrice) {
+    state = productPrice;
+    return state;
+  }
+
+  clear() {
+    state.clear();
+  }
+}
+
+class AddProductPromoController extends StateNotifier<TextEditingController> {
+  AddProductPromoController() : super(productPromo);
+  static TextEditingController productPromo = TextEditingController();
+
+  fetchProductPromo(TextEditingController productPromo) {
+    state = productPromo;
+    return state;
+  }
+
+  clear() {
+    state.clear();
+  }
+}
+
+class AddProductQuantityController
+    extends StateNotifier<TextEditingController> {
+  AddProductQuantityController() : super(productQuantity);
+  static TextEditingController productQuantity = TextEditingController();
+
+  fetchProductQuantity(TextEditingController productQuantity) {
+    state = productQuantity;
+    return state;
+  }
+
+  clear() {
+    state.clear();
+  }
+}
+
 final productNameProvider =
     StateNotifierProvider<ProductNameController, TextEditingController>(
         (ref) => ProductNameController());
@@ -264,6 +321,18 @@ final productPromoProvider =
 final productQuantityProvider =
     StateNotifierProvider<ProductQuantityController, TextEditingController>(
         (ref) => ProductQuantityController());
+final addProductNameProvider =
+    StateNotifierProvider<AddProductNameController, TextEditingController>(
+        (ref) => AddProductNameController());
+final addProductPriceProvider =
+    StateNotifierProvider<AddProductPriceController, TextEditingController>(
+        (ref) => AddProductPriceController());
+final addProductPromoProvider =
+    StateNotifierProvider<AddProductPromoController, TextEditingController>(
+        (ref) => AddProductPromoController());
+final addProductQuantityProvider =
+    StateNotifierProvider<AddProductQuantityController, TextEditingController>(
+        (ref) => AddProductQuantityController());
 final isProductsOpenedProvider =
     StateNotifierProvider<IsCProductDetailOpeneNotifier, bool>(
         (ref) => IsCProductDetailOpeneNotifier());
