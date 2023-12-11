@@ -29,13 +29,15 @@ class AddProductButton extends HookConsumerWidget {
                 minimumSize: const Size.fromHeight(60)),
             child: Text(
               buttonName,
-              style: TextStyle(
+              style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
                 color: Colors.white,
               ),
             ),
-            onPressed: () async {}),
+            onPressed: () {
+              ref.read(isAddingItemProvider.notifier).toogle(true);
+            }),
       ),
     );
   }

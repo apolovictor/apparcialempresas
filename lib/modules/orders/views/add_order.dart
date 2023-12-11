@@ -1,11 +1,14 @@
 import 'dart:math' as math;
+import 'package:dotted_border/dotted_border.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../controller/orders_notifier.dart';
 import '../model/order_model.dart';
+import '../widgets/drag_item_area.dart';
 import '../widgets/register_button.dart';
 
 // const double startHeight = 0;
@@ -184,9 +187,9 @@ class AddOrderWidget extends HookConsumerWidget {
                 bottom: 0,
                 child: GestureDetector(
                   onTap: _toggle,
-                  onVerticalDragUpdate:
-                      _handleDragUpdate, //<-- Add verticalDragUpdate callback
-                  onVerticalDragEnd: _handleDragEnd,
+                  // onVerticalDragUpdate:
+                  //     _handleDragUpdate, //<-- Add verticalDragUpdate callback
+                  // onVerticalDragEnd: _handleDragEnd,
                   child: ClipPath(
                       clipper: ZigZagClipper(),
                       child: Container(
@@ -495,100 +498,8 @@ class SheetHeader extends HookConsumerWidget {
   }
 }
 
-final List<Product> productsList = [];
-
-class ExpandedEventItem extends StatelessWidget {
-  final double topMargin;
-  final double leftMargin;
-  final double height;
-  final bool isVisible;
-  final double borderRadius;
-  final String title;
-  final String date;
-
-  const ExpandedEventItem({
-    super.key,
-    required this.topMargin,
-    required this.height,
-    required this.isVisible,
-    required this.borderRadius,
-    required this.title,
-    required this.date,
-    required this.leftMargin,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      top: topMargin,
-      left: leftMargin,
-      right: 0,
-      height: height,
-      child: AnimatedOpacity(
-        opacity: isVisible ? 1 : 0,
-        duration: const Duration(milliseconds: 200),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(borderRadius),
-            color: Colors.white,
-          ),
-          padding: EdgeInsets.only(left: height).add(EdgeInsets.all(8)),
-          child: _buildContent(),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildContent() {
-    return Column(
-      children: <Widget>[
-        // Text(title, style: TextStyle(fontSize: 16)),
-        const SizedBox(height: 8),
-        Row(
-          children: <Widget>[
-            Text(
-              '1 ticket',
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 12,
-                color: Colors.grey.shade600,
-              ),
-            ),
-            const SizedBox(width: 8),
-            Text(
-              date,
-              style: const TextStyle(
-                fontWeight: FontWeight.w300,
-                fontSize: 12,
-                color: Colors.grey,
-              ),
-            ),
-          ],
-        ),
-        const Spacer(),
-        Row(
-          children: <Widget>[
-            Icon(
-              Icons.place,
-              color: Colors.grey.shade400,
-              size: 16,
-            ),
-            Text(
-              'Science Park 10 25A',
-              style: TextStyle(
-                color: Colors.grey.shade400,
-                fontSize: 13,
-              ),
-            )
-          ],
-        )
-      ],
-    );
-  }
-}
-
 class OrderDetails extends HookConsumerWidget {
-  const OrderDetails(
+  OrderDetails(
       {super.key,
       required this.controller,
       required this.height,
@@ -599,87 +510,55 @@ class OrderDetails extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    double lerp(double min, double max) => ref.watch(
-        lerpProvider(MyParameter(min: min, max: max, value: controller.value)));
+    AnimationController dragAreaController = dragItemAreaController(ref);
+    final Animation<double> animation = Tween(begin: .0, end: width - 36)
+        .animate(
+            CurvedAnimation(parent: dragAreaController, curve: Curves.ease));
 
-    double itemBorderRadius = lerp(8, 24); //<-- increase item border radius
+    final itemList = ref.watch(itemListProvider);
 
-    double headerTopMargin = lerp(
-        20, 20 + MediaQuery.of(context).padding.top); //<-- Add new property
-
-    Widget _buildIcon(Product event) {
-      int index = productsList.indexOf(event); //<-- Get index of the event
-      return Positioned(
-        height: lerp(iconStartSize, iconEndSize), //<-- Specify icon's size
-        width: lerp(iconStartSize, iconEndSize), //<-- Specify icon's size
-        top: lerp(iconStartMarginTop,
-            height * 0.2 * (index / 1.8)), //<-- Specify icon's top margin
-        left: lerp(index * (iconsHorizontalSpacing + iconStartSize),
-            0), //<-- Specify icon's left margin
-        child: ClipRRect(
-          borderRadius: BorderRadius.horizontal(
-            left:
-                Radius.circular(itemBorderRadius), //<-- Set the rounded corners
-            right: Radius.circular(itemBorderRadius),
-          ),
-          child: Image.asset(
-            'assets/imgs/${event.photo_url}',
-            fit: BoxFit.cover,
-            alignment: Alignment(
-                lerp(1, 0), 0), //<-- Play with alignment for extra style points
-          ),
-        ),
-      );
-    }
-
-    Widget _buildFullItem(Product event) {
-      int index = productsList.indexOf(event);
-      return ExpandedEventItem(
-        topMargin: lerp(
-            iconStartMarginTop,
-            height *
-                0.2 *
-                (index / 1.8)), //<--provide margins and height same as for icon
-        leftMargin: lerp(index * (iconsHorizontalSpacing + iconStartSize), 0),
-        height: lerp(iconStartSize, iconEndSize),
-        isVisible:
-            controller.status == AnimationStatus.completed, //<--set visibility
-        borderRadius: itemBorderRadius, //<-- pass border radius
-        title: event.productName, //<-- data to be displayed
-        date: event.price, //<-- data to be displayed
-      );
-    }
-
-    // print(productsList.isEmpty);
+    // final Animation<double> widgetAnimation = Tween(begin: .0, end: 1.0)
+    //     .animate(CurvedAnimation(
+    //         parent: orderWidgetController(ref), curve: Curves.ease));
 
     return SingleChildScrollView(
       physics: controller.status == AnimationStatus.completed
           ? const BouncingScrollPhysics()
           : const NeverScrollableScrollPhysics(),
-      child: SizedBox(
-        height: height * 0.45,
-        width: width,
-        child: productsList.isEmpty
-            ? SizedBox(
-                width: width,
-                height: height * 0.45,
-                child: const Center(
-                  child: AddProductButton(
-                    buttonName: 'Adicionar Produtos',
-                  ),
-                ),
-              )
-            : Stack(
-                children: [
-                  for (Product event in productsList)
-                    _buildFullItem(event), //<-- Add icons to the stack
-                  for (Product event in productsList)
-                    _buildIcon(event), //<-- Add icons to the stack
-                  // Row(
-                  // children: buildIconsbuildItems,
-                  // )
-                ],
-              ),
+      child: Padding(
+        padding: const EdgeInsets.only(right: 25.0),
+        child: SizedBox(
+          height: height * 0.35,
+          width: width,
+          child: AnimatedBuilder(
+              animation: dragAreaController,
+              builder: (context, child) {
+                return Stack(
+                  children: [
+                    controller.status == AnimationStatus.completed
+                        ? Container(
+                            decoration: BoxDecoration(
+                                color: Colors.white70.withOpacity(0.3),
+                                borderRadius: BorderRadius.circular(24)),
+                            height: height * 0.35,
+                            width: animation.value,
+                          )
+                        : const SizedBox(),
+                    itemList.isEmpty
+                        ? const Center(
+                            child: AddProductButton(
+                              buttonName: 'Adicionar Produtos',
+                            ),
+                          )
+                        : DragItemArea(
+                            width: width,
+                            height: height,
+                            controller: controller,
+                            dragAreaController: dragAreaController)
+                  ],
+                );
+              }),
+        ),
       ),
     );
   }

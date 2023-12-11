@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:apparcialempresas/modules/home/views/categories_list.dart';
 import 'package:cached_firestorage/lib.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +8,8 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../orders/controller/orders_notifier.dart';
+import '../../orders/model/order_model.dart';
 import '../../products/model/products_model.dart';
 import '../controller/product_notifier.dart';
 
@@ -21,6 +25,7 @@ class DashboardProduct extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final todoList = ref.watch(filteredProductDashboardProvider);
+
     CategoriesScroller categoriesScroller = CategoriesScroller(
       products: products,
     );
@@ -111,6 +116,8 @@ class BusinessListView extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    bool isAddingItem = ref.watch(isAddingItemProvider);
+
     final scrollController = ScrollController();
     final _controller =
         useAnimationController(duration: const Duration(milliseconds: 500));
@@ -139,7 +146,7 @@ class BusinessListView extends HookConsumerWidget {
     }
 
     _buildItem(Product product, Animation<double> animation, int index,
-        BuildContext context) {
+        BuildContext context, bool isAddingItem) {
       return AnimationConfiguration.staggeredList(
           position: index,
           duration: const Duration(milliseconds: 675),
@@ -163,75 +170,118 @@ class BusinessListView extends HookConsumerWidget {
                         webPosition: "center",
                         webBgColor: "#bbdefb",
                         timeInSecForIosWeb: 5,
-                        textColor: _setColor(product.status!),
+                        textColor: _setColor(product.status),
                         gravity: ToastGravity.SNACKBAR,
                       );
                     },
-                    child: Container(
-                        height: 150,
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 10),
-                        decoration: BoxDecoration(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(20.0)),
-                            color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Colors.black.withAlpha(100),
-                                  blurRadius: 10.0),
-                            ]),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20.0, vertical: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(
-                                    product.name,
-                                    style: const TextStyle(
-                                        fontSize: 28,
-                                        fontWeight: FontWeight.bold),
+                    child: Stack(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 20.0),
+                          child: Container(
+                              height: 150,
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 10),
+                              decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(20.0)),
+                                  color: Colors.white,
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color: Colors.black.withAlpha(100),
+                                        blurRadius: 10.0),
+                                  ]),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 40.0, vertical: 10),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(
+                                          product.name,
+                                          style: const TextStyle(
+                                              fontSize: 28,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                          "R\$ ${product.price['price']}",
+                                          style: const TextStyle(
+                                              fontSize: 17, color: Colors.grey),
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
+                                          "Quantidade ${product.quantity}",
+                                          style: const TextStyle(
+                                              fontSize: 25,
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold),
+                                        )
+                                      ],
+                                    ),
+                                    ref.watch(pictureProductListProvider).any(
+                                            (element) =>
+                                                element.mapKey == product.logo)
+                                        ? ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(15.0),
+                                            child: Container(
+                                                color: Colors.transparent,
+                                                padding:
+                                                    const EdgeInsets.all(12),
+                                                width: 100,
+                                                height: 100,
+                                                child: ref
+                                                    .watch(
+                                                        pictureProductListProvider)
+                                                    .firstWhere((element) =>
+                                                        element.mapKey ==
+                                                        product.logo)),
+                                          )
+                                        : const SizedBox()
+                                  ],
+                                ),
+                              )),
+                        ),
+                        isAddingItem
+                            ? Positioned(
+                                right: 0,
+                                top: 37.5,
+                                child: Container(
+                                  height: 75.0,
+                                  width: 75.0,
+                                  decoration: BoxDecoration(
+                                      color: Colors.black87,
+                                      borderRadius:
+                                          BorderRadius.circular(50.0)),
+                                  child: InkWell(
+                                    onTap: () {
+                                      ref
+                                          .read(itemListProvider.notifier)
+                                          .setItem(OrderItem(
+                                            idDocument: product.documentId!,
+                                            productName: product.name,
+                                            photo_url: product.logo!,
+                                            price: product.price['price'],
+                                            quantity: 1,
+                                          ));
+                                    },
+                                    child: const Icon(
+                                      Icons.add,
+                                      color: Colors.white,
+                                    ),
                                   ),
-                                  Text(
-                                    "R\$ ${product.price['price']}",
-                                    style: const TextStyle(
-                                        fontSize: 17, color: Colors.grey),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text(
-                                    "Quantidade ${product.quantity}",
-                                    style: const TextStyle(
-                                        fontSize: 25,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold),
-                                  )
-                                ],
-                              ),
-                              ref.watch(pictureProductListProvider).any(
-                                      (element) =>
-                                          element.mapKey == product.logo)
-                                  ? ClipRRect(
-                                      borderRadius: BorderRadius.circular(15.0),
-                                      child: Container(
-                                          color: Colors.transparent,
-                                          padding: const EdgeInsets.all(12),
-                                          width: 100,
-                                          height: 100,
-                                          child: ref
-                                              .watch(pictureProductListProvider)
-                                              .firstWhere((element) =>
-                                                  element.mapKey ==
-                                                  product.logo)),
-                                    )
-                                  : const SizedBox()
-                            ],
-                          ),
-                        )),
+                                ),
+                              )
+                            : const SizedBox(),
+                      ],
+                    ),
                     //  Padding(
                     //   padding: const EdgeInsets.symmetric(vertical: 16.0),
                     //   child: Row(
@@ -319,8 +369,8 @@ class BusinessListView extends HookConsumerWidget {
                       child: Align(
                           heightFactor: 0.7,
                           alignment: Alignment.topCenter,
-                          child: _buildItem(
-                              _refresh[index], _controller, index, context))));
+                          child: _buildItem(_refresh[index], _controller, index,
+                              context, isAddingItem))));
             }),
       ),
     );

@@ -123,6 +123,55 @@ class IsOpenController extends StateNotifier<bool> {
   }
 }
 
+class IsAddingItemController extends StateNotifier<bool> {
+  IsAddingItemController() : super(isAddingItem);
+  static bool isAddingItem = false;
+
+  toogle(bool isAddingItem) {
+    state = isAddingItem;
+  }
+}
+
+class ItemListController extends StateNotifier<List<OrderItem>> {
+  ItemListController() : super(itemList);
+  static List<OrderItem> itemList = [];
+
+  setItem(OrderItem itemList) {
+    print(itemList.idDocument);
+    if (state.isNotEmpty) {
+      state = [
+        ...state,
+        ...state.map(
+          (element) => element.idDocument == itemList.idDocument
+              ? element.copyWith(quantity: element.quantity + 1)
+              : itemList,
+        ),
+      ];
+    } else {
+      state = [...state, itemList];
+    } // if (state.isNotEmpty) {
+    //   state.forEach((element) {
+    //     final index = state.indexOf(element);
+    //     if (element.idDocument == itemList.idDocument) {
+    //       // state[state.indexOf(element)] = OrderItem(
+    //       //     itemList.idDocument,
+    //       //     itemList.productName,
+    //       //     itemList.photo_url,
+    //       //     itemList.price,
+    //       //     state[state.indexOf(element)].quantity + 1);
+    //       print(itemList.idDocument);
+    //       print(element.idDocument);
+    //     } else {
+    //       state = [...state, itemList];
+    //     }
+    //   });
+    // } else {
+    //   state = [...state, itemList];
+    // }
+    return state;
+  }
+}
+
 class IsOldOpenController extends StateNotifier<bool> {
   IsOldOpenController() : super(isOldOpen);
   static bool isOldOpen = false;
@@ -168,6 +217,9 @@ final lerpProvider = Provider.family<double, MyParameter>((ref, myParameter) {
 
 final isOpenProvider =
     StateNotifierProvider<IsOpenController, bool>((ref) => IsOpenController());
+final isAddingItemProvider =
+    StateNotifierProvider<IsAddingItemController, bool>(
+        (ref) => IsAddingItemController());
 final isOldOpenProvider = StateNotifierProvider<IsOldOpenController, bool>(
     (ref) => IsOldOpenController());
 final dragUpdateProvider =
@@ -181,18 +233,40 @@ final addOrderProvider = StateNotifierProvider<AddOrderController, AddOrder>(
 final animationItemsProvider =
     StateNotifierProvider<AnimationItemsController, AnimationController>(
         (ref) => AnimationItemsController());
+final itemListProvider =
+    StateNotifierProvider<ItemListController, List<OrderItem>>(
+        (ref) => ItemListController());
 
 AnimationController buttonProductAddController(WidgetRef ref) {
   final controller =
       useAnimationController(duration: const Duration(milliseconds: 500));
   final isOpened = ref.watch(isOpenProvider);
 
-  if (isOpened) {
-    // Future.delayed(const Duration(milliseconds: 100), () {
-    controller.forward();
-    // });
-  } else {
+  final currentOrderState = ref.watch(currentOrderStateProvider);
+  bool isAddingItem = ref.watch(isAddingItemProvider);
+  controller.forward();
+  if (isAddingItem) {
     controller.reverse();
+  }
+  if (currentOrderState == OrderStateWidget.close) {
+    controller.reverse();
+  }
+  // if (isOpened) {
+  //   // Future.delayed(const Duration(milliseconds: 100), () {
+  //   // });
+  // } else {
+  //   controller.reverse();
+  // }
+
+  return controller;
+}
+
+AnimationController dragItemAreaController(WidgetRef ref) {
+  final controller =
+      useAnimationController(duration: const Duration(milliseconds: 500));
+  bool isAddingItem = ref.watch(isAddingItemProvider);
+  if (isAddingItem) {
+    controller.forward();
   }
 
   return controller;
