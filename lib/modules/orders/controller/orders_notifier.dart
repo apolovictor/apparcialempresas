@@ -136,39 +136,36 @@ class ItemListController extends StateNotifier<List<OrderItem>> {
   ItemListController() : super(itemList);
   static List<OrderItem> itemList = [];
 
-  setItem(OrderItem itemList) {
-    print(itemList.idDocument);
-    if (state.isNotEmpty) {
-      state = [
-        ...state,
-        ...state.map(
-          (element) => element.idDocument == itemList.idDocument
-              ? element.copyWith(quantity: element.quantity + 1)
-              : itemList,
-        ),
-      ];
-    } else {
-      state = [...state, itemList];
-    } // if (state.isNotEmpty) {
-    //   state.forEach((element) {
-    //     final index = state.indexOf(element);
-    //     if (element.idDocument == itemList.idDocument) {
-    //       // state[state.indexOf(element)] = OrderItem(
-    //       //     itemList.idDocument,
-    //       //     itemList.productName,
-    //       //     itemList.photo_url,
-    //       //     itemList.price,
-    //       //     state[state.indexOf(element)].quantity + 1);
-    //       print(itemList.idDocument);
-    //       print(element.idDocument);
-    //     } else {
-    //       state = [...state, itemList];
-    //     }
-    //   });
-    // } else {
-    //   state = [...state, itemList];
-    // }
-    return state;
+  setItem(OrderItem item) {
+    state = [...state, item];
+  }
+
+  updateItem(int index, OrderItem item) {
+    state = [
+      ...state.map(
+        (e) => e.idDocument == item.idDocument
+            ? e.copyWith(quantity: e.quantity + 1)
+            : e,
+      ),
+    ];
+  }
+
+  updateItemQuantity(String checkQuantity, OrderItem item) {
+    state = [
+      ...state.map(
+        (e) => e.idDocument == item.idDocument && checkQuantity == 'increment'
+            ? e.copyWith(quantity: e.quantity + 1)
+            : e.idDocument == item.idDocument && checkQuantity == 'decrement'
+                ? e.copyWith(quantity: e.quantity - 1)
+                : e,
+      ),
+    ];
+  }
+
+  removeItem(OrderItem item) {
+    state = [
+      ...state.where((e) => e.idDocument != item.idDocument),
+    ];
   }
 }
 

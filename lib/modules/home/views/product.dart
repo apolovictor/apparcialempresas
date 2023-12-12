@@ -117,6 +117,7 @@ class BusinessListView extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     bool isAddingItem = ref.watch(isAddingItemProvider);
+    final itemList = ref.watch(itemListProvider);
 
     final scrollController = ScrollController();
     final _controller =
@@ -146,7 +147,7 @@ class BusinessListView extends HookConsumerWidget {
     }
 
     _buildItem(Product product, Animation<double> animation, int index,
-        BuildContext context, bool isAddingItem) {
+        BuildContext context, bool isAddingItem, List<OrderItem> itemList) {
       return AnimationConfiguration.staggeredList(
           position: index,
           duration: const Duration(milliseconds: 675),
@@ -262,15 +263,42 @@ class BusinessListView extends HookConsumerWidget {
                                           BorderRadius.circular(50.0)),
                                   child: InkWell(
                                     onTap: () {
-                                      ref
-                                          .read(itemListProvider.notifier)
-                                          .setItem(OrderItem(
-                                            idDocument: product.documentId!,
-                                            productName: product.name,
-                                            photo_url: product.logo!,
-                                            price: product.price['price'],
-                                            quantity: 1,
-                                          ));
+                                      if (itemList.isNotEmpty) {
+                                        itemList.any((e) =>
+                                                e.idDocument ==
+                                                product.documentId)
+                                            ? ref
+                                                .read(itemListProvider.notifier)
+                                                .updateItem(
+                                                    itemList.indexOf(itemList
+                                                        .firstWhere((e) =>
+                                                            e.idDocument ==
+                                                            product
+                                                                .documentId)),
+                                                    itemList.firstWhere((e) =>
+                                                        e.idDocument ==
+                                                        product.documentId))
+                                            : ref
+                                                .read(itemListProvider.notifier)
+                                                .setItem(OrderItem(
+                                                  idDocument:
+                                                      product.documentId!,
+                                                  productName: product.name,
+                                                  photo_url: product.logo!,
+                                                  price: product.price['price'],
+                                                  quantity: 1,
+                                                ));
+                                      } else {
+                                        ref
+                                            .read(itemListProvider.notifier)
+                                            .setItem(OrderItem(
+                                              idDocument: product.documentId!,
+                                              productName: product.name,
+                                              photo_url: product.logo!,
+                                              price: product.price['price'],
+                                              quantity: 1,
+                                            ));
+                                      }
                                     },
                                     child: const Icon(
                                       Icons.add,
@@ -282,40 +310,6 @@ class BusinessListView extends HookConsumerWidget {
                             : const SizedBox(),
                       ],
                     ),
-                    //  Padding(
-                    //   padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    //   child: Row(
-                    //     children: <Widget>[
-                    //       Padding(
-                    //         padding: const EdgeInsets.symmetric(
-                    //             horizontal: 32.0 - dotSize / 2),
-                    //         child: Container(
-                    //           height: dotSize,
-                    //           width: dotSize,
-                    //           decoration: BoxDecoration(
-                    //               shape: BoxShape.circle,
-                    //               color: _setColor(todo.status)),
-                    //         ),
-                    //       ),
-                    //       Expanded(
-                    //         child: Column(
-                    //           crossAxisAlignment: CrossAxisAlignment.start,
-                    //           children: <Widget>[
-                    //             Text(
-                    //               todo.name!,
-                    //               style: const TextStyle(fontSize: 18.0),
-                    //             ),
-                    //             Text(
-                    //               todo.categories!,
-                    //               style: const TextStyle(
-                    //                   fontSize: 12.0, color: Colors.grey),
-                    //             )
-                    //           ],
-                    //         ),
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
                   ),
                 ),
               )));
@@ -370,7 +364,7 @@ class BusinessListView extends HookConsumerWidget {
                           heightFactor: 0.7,
                           alignment: Alignment.topCenter,
                           child: _buildItem(_refresh[index], _controller, index,
-                              context, isAddingItem))));
+                              context, isAddingItem, itemList))));
             }),
       ),
     );

@@ -29,8 +29,8 @@ class DragItemArea extends HookConsumerWidget {
 
     double itemBorderRadius = lerp(8, 24); //<-- increase item border radius
 
-    Widget _buildIcon(OrderItem event) {
-      int index = itemList.indexOf(event); //<-- Get index of the event
+    Widget _buildIcon(OrderItem item) {
+      int index = itemList.indexOf(item); //<-- Get index of the item
       return Positioned(
         height: lerp(iconStartSize, iconEndSize), //<-- Specify icon's size
         width: lerp(iconStartSize, iconEndSize), //<-- Specify icon's size
@@ -45,16 +45,16 @@ class DragItemArea extends HookConsumerWidget {
             right: Radius.circular(itemBorderRadius),
           ),
           child: RemotePicture(
-            mapKey: event.photo_url,
+            mapKey: item.photo_url,
             imagePath:
-                'gs://appparcial-123.appspot.com/products/${event.photo_url}',
+                'gs://appparcial-123.appspot.com/products/${item.photo_url}',
           ),
         ),
       );
     }
 
-    Widget _buildFullItem(OrderItem event) {
-      int index = itemList.indexOf(event);
+    Widget _buildFullItem(OrderItem item) {
+      int index = itemList.indexOf(item);
       return ExpandedEventItem(
         topMargin: lerp(
             iconStartMarginTop,
@@ -66,8 +66,9 @@ class DragItemArea extends HookConsumerWidget {
         isVisible:
             controller.status == AnimationStatus.completed, //<--set visibility
         borderRadius: itemBorderRadius, //<-- pass border radius
-        itemName: event.productName, //<-- data to be displayed
-        quantity: event.quantity, //<-- data to be displayed
+        itemName: item.productName, //<-- data to be displayed
+        quantity: item.quantity, //<-- data to be displayed
+        item: item,
       );
     }
 
@@ -93,7 +94,7 @@ class DragItemArea extends HookConsumerWidget {
   }
 }
 
-class ExpandedEventItem extends StatelessWidget {
+class ExpandedEventItem extends HookConsumerWidget {
   final double topMargin;
   final double leftMargin;
   final double height;
@@ -101,6 +102,7 @@ class ExpandedEventItem extends StatelessWidget {
   final double borderRadius;
   final String itemName;
   final int quantity;
+  final OrderItem item;
 
   const ExpandedEventItem({
     super.key,
@@ -111,10 +113,12 @@ class ExpandedEventItem extends StatelessWidget {
     required this.itemName,
     required this.quantity,
     required this.leftMargin,
+    required this.item,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    print(item.quantity);
     return Positioned(
       top: topMargin,
       left: leftMargin,
@@ -129,56 +133,86 @@ class ExpandedEventItem extends StatelessWidget {
             color: Colors.transparent,
           ),
           padding: EdgeInsets.only(left: height).add(const EdgeInsets.all(8)),
-          child: _buildContent(),
+          child: Column(
+            children: <Widget>[
+              // Text(title, style: TextStyle(fontSize: 16)),
+              const SizedBox(height: 8),
+              Row(
+                children: <Widget>[
+                  Text(
+                    itemName,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w900,
+                      fontSize: 18,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                ],
+              ),
+              const Spacer(),
+              Row(
+                children: <Widget>[
+                  MaterialButton(
+                    shape: const CircleBorder(),
+                    onPressed: () {
+                      if (item.quantity == 1) {
+                        print('here');
+                        ref.read(itemListProvider.notifier).removeItem(item);
+                      } else {
+                        ref
+                            .read(itemListProvider.notifier)
+                            .updateItemQuantity('decrement', item);
+                      }
+                    },
+                    child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(width: 1, color: Colors.white),
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        child: const Padding(
+                          padding: EdgeInsets.all(4.0),
+                          child: Icon(
+                            Icons.remove,
+                            color: Colors.white,
+                            size: 18,
+                          ),
+                        )),
+                  ),
+                  Text(
+                    quantity.toString(),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                    ),
+                  ),
+                  MaterialButton(
+                    shape: const CircleBorder(),
+                    onPressed: () {
+                      ref
+                          .read(itemListProvider.notifier)
+                          .updateItemQuantity('increment', item);
+                    },
+                    child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(width: 1, color: Colors.white),
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        child: const Padding(
+                          padding: EdgeInsets.all(4.0),
+                          child: Icon(
+                            Icons.add,
+                            color: Colors.white,
+                            size: 18,
+                          ),
+                        )),
+                  ),
+                ],
+              )
+            ],
+          ),
         ),
       ),
-    );
-  }
-
-  Widget _buildContent() {
-    return Column(
-      children: <Widget>[
-        // Text(title, style: TextStyle(fontSize: 16)),
-        const SizedBox(height: 8),
-        Row(
-          children: <Widget>[
-            Text(
-              itemName,
-              style: const TextStyle(
-                fontWeight: FontWeight.w900,
-                fontSize: 16,
-                color: Colors.white,
-              ),
-            ),
-            const SizedBox(width: 8),
-            Text(
-              quantity.toString(),
-              style: const TextStyle(
-                fontWeight: FontWeight.w300,
-                fontSize: 16,
-                color: Colors.grey,
-              ),
-            ),
-          ],
-        ),
-        const Spacer(),
-        Row(
-          children: <Widget>[
-            Icon(
-              Icons.place,
-              color: Colors.grey.shade400,
-              size: 16,
-            ),
-            Text(
-              quantity.toString(),
-              style: TextStyle(
-                color: Colors.grey.shade400,
-                fontSize: 16,
-              ),
-            )
-          ],
-        )
-      ],
     );
   }
 }
