@@ -180,9 +180,8 @@ class BusinessListView extends HookConsumerWidget {
                         Padding(
                           padding: const EdgeInsets.only(right: 20.0),
                           child: Container(
-                              height: 150,
-                              margin: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 10),
+                              height: 175,
+                              margin: const EdgeInsets.symmetric(vertical: 10),
                               decoration: BoxDecoration(
                                   borderRadius: const BorderRadius.all(
                                       Radius.circular(20.0)),
@@ -194,56 +193,64 @@ class BusinessListView extends HookConsumerWidget {
                                   ]),
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 40.0, vertical: 10),
+                                    horizontal: 20.0, vertical: 10),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Text(
-                                          product.name,
-                                          style: const TextStyle(
-                                              fontSize: 28,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        Text(
-                                          "R\$ ${product.price['price']}",
-                                          style: const TextStyle(
-                                              fontSize: 17, color: Colors.grey),
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        Text(
-                                          "Quantidade ${product.quantity}",
-                                          style: const TextStyle(
-                                              fontSize: 25,
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold),
-                                        )
-                                      ],
+                                    Expanded(
+                                      flex: 4,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          Text(
+                                            product.name,
+                                            style: const TextStyle(
+                                                fontSize: 24,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Text(
+                                            "R\$ ${product.price['price']}",
+                                            style: const TextStyle(
+                                                fontSize: 17,
+                                                color: Colors.grey),
+                                          ),
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                          Text(
+                                            "Quantidade ${product.quantity}",
+                                            style: const TextStyle(
+                                                fontSize: 20,
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold),
+                                          )
+                                        ],
+                                      ),
                                     ),
                                     ref.watch(pictureProductListProvider).any(
                                             (element) =>
                                                 element.mapKey == product.logo)
-                                        ? ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(15.0),
-                                            child: Container(
-                                                color: Colors.transparent,
-                                                padding:
-                                                    const EdgeInsets.all(12),
-                                                width: 100,
-                                                height: 100,
-                                                child: ref
-                                                    .watch(
-                                                        pictureProductListProvider)
-                                                    .firstWhere((element) =>
-                                                        element.mapKey ==
-                                                        product.logo)),
+                                        ? Expanded(
+                                            flex: 1,
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(15.0),
+                                              child: Container(
+                                                  color: Colors.transparent,
+                                                  padding:
+                                                      const EdgeInsets.all(12),
+                                                  width: 100,
+                                                  height: 100,
+                                                  child: ref
+                                                      .watch(
+                                                          pictureProductListProvider)
+                                                      .firstWhere((element) =>
+                                                          element.mapKey ==
+                                                          product.logo)),
+                                            ),
                                           )
                                         : const SizedBox()
                                   ],

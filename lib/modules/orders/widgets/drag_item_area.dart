@@ -62,21 +62,20 @@ class DragItemArea extends HookConsumerWidget {
                 0.2 *
                 (index / 1.8)), //<--provide margins and height same as for icon
         leftMargin: lerp(index * (iconsHorizontalSpacing + iconStartSize), 0),
-        height: lerp(iconStartSize, iconEndSize),
+        height: lerp(iconStartSize, iconEndSize + 15),
         isVisible:
             controller.status == AnimationStatus.completed, //<--set visibility
         borderRadius: itemBorderRadius, //<-- pass border radius
         itemName: item.productName, //<-- data to be displayed
+        price: double.parse(item.price.replaceAll(',', '.')),
         quantity: item.quantity, //<-- data to be displayed
         item: item,
       );
     }
 
-    print(itemList.length);
-
     return SingleChildScrollView(
       child: SizedBox(
-        height: height * 0.35,
+        height: height,
         width: width,
         child: Stack(
           children: [
@@ -102,6 +101,7 @@ class ExpandedEventItem extends HookConsumerWidget {
   final double borderRadius;
   final String itemName;
   final int quantity;
+  final double price;
   final OrderItem item;
 
   const ExpandedEventItem({
@@ -111,6 +111,7 @@ class ExpandedEventItem extends HookConsumerWidget {
     required this.isVisible,
     required this.borderRadius,
     required this.itemName,
+    required this.price,
     required this.quantity,
     required this.leftMargin,
     required this.item,
@@ -118,7 +119,12 @@ class ExpandedEventItem extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    print(item.quantity);
+    var itemsCart = ref.watch(itemListProvider);
+
+    var itemCart = itemsCart.firstWhere((e) => e == item);
+
+    print(itemCart.productName);
+
     return Positioned(
       top: topMargin,
       left: leftMargin,
@@ -138,75 +144,95 @@ class ExpandedEventItem extends HookConsumerWidget {
               // Text(title, style: TextStyle(fontSize: 16)),
               const SizedBox(height: 8),
               Row(
-                children: <Widget>[
-                  Text(
-                    itemName,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w900,
-                      fontSize: 18,
-                      color: Colors.white,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Text(
+                      itemName,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w900,
+                        fontSize: 18,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
-                  const SizedBox(width: 8),
                 ],
               ),
               const Spacer(),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  MaterialButton(
-                    shape: const CircleBorder(),
-                    onPressed: () {
-                      if (item.quantity == 1) {
-                        print('here');
-                        ref.read(itemListProvider.notifier).removeItem(item);
-                      } else {
-                        ref
-                            .read(itemListProvider.notifier)
-                            .updateItemQuantity('decrement', item);
-                      }
-                    },
-                    child: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(width: 1, color: Colors.white),
-                          borderRadius: BorderRadius.circular(24),
+                  Row(
+                    children: [
+                      MaterialButton(
+                        shape: const CircleBorder(),
+                        onPressed: () {
+                          if (item.quantity == 1) {
+                            print('here');
+                            ref
+                                .read(itemListProvider.notifier)
+                                .removeItem(item);
+                          } else {
+                            ref
+                                .read(itemListProvider.notifier)
+                                .updateItemQuantity('decrement', item);
+                          }
+                        },
+                        child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(width: 1, color: Colors.white),
+                              borderRadius: BorderRadius.circular(24),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Icon(
+                                Icons.remove,
+                                color: Colors.white,
+                                size: 18,
+                              ),
+                            )),
+                      ),
+                      Text(
+                        quantity.toString(),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
                         ),
-                        child: const Padding(
-                          padding: EdgeInsets.all(4.0),
-                          child: Icon(
-                            Icons.remove,
-                            color: Colors.white,
-                            size: 18,
-                          ),
-                        )),
+                      ),
+                      MaterialButton(
+                        shape: const CircleBorder(),
+                        onPressed: () {
+                          ref
+                              .read(itemListProvider.notifier)
+                              .updateItemQuantity('increment', item);
+                        },
+                        child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(width: 1, color: Colors.white),
+                              borderRadius: BorderRadius.circular(24),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Icon(
+                                Icons.add,
+                                color: Colors.white,
+                                size: 18,
+                              ),
+                            )),
+                      ),
+                    ],
                   ),
-                  Text(
-                    quantity.toString(),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                    ),
-                  ),
-                  MaterialButton(
-                    shape: const CircleBorder(),
-                    onPressed: () {
-                      ref
-                          .read(itemListProvider.notifier)
-                          .updateItemQuantity('increment', item);
-                    },
-                    child: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(width: 1, color: Colors.white),
-                          borderRadius: BorderRadius.circular(24),
+                  Row(
+                    children: [
+                      Text(
+                        '${price * itemCart.quantity}',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
                         ),
-                        child: const Padding(
-                          padding: EdgeInsets.all(4.0),
-                          child: Icon(
-                            Icons.add,
-                            color: Colors.white,
-                            size: 18,
-                          ),
-                        )),
-                  ),
+                      ),
+                    ],
+                  )
                 ],
               )
             ],
