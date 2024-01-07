@@ -22,7 +22,7 @@ const double iconsVerticalSpacing = 24; //<-- add edge values
 const double iconsHorizontalSpacing = 16; //<-- add edge values
 
 class AddOrderWidget extends HookConsumerWidget {
-  const AddOrderWidget({
+  AddOrderWidget({
     super.key,
     required this.minHeight,
     required this.minWidth,
@@ -449,119 +449,111 @@ class SheetHeader extends HookConsumerWidget {
                         ? MaterialButton(
                             shape: const CircleBorder(),
                             onPressed: () {
-                              itemList.isNotEmpty
-                                  ? showDialog(
-                                      context: context,
-                                      builder: (context) => Dialog(
-                                        backgroundColor: Colors.transparent,
-                                        insetPadding: const EdgeInsets.all(10),
-                                        child: Stack(
-                                          clipBehavior: Clip.none,
-                                          alignment: Alignment.center,
-                                          children: <Widget>[
-                                            Container(
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width /
-                                                  2,
-                                              // 1.3,
-                                              height: 200,
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(15),
-                                                  color: Colors.white),
-                                              padding:
-                                                  const EdgeInsets.fromLTRB(
-                                                      20, 50, 20, 20),
-                                              child: const Text(
-                                                  "Deseja descartar itens da mesa?",
-                                                  style: TextStyle(
-                                                      fontSize: 22,
-                                                      color: Colors.black87),
-                                                  textAlign: TextAlign.center),
-                                            ),
-                                            Positioned(
-                                              bottom: 10,
-                                              right: 0,
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceEvenly,
-                                                children: [
-                                                  TextButton(
-                                                      onPressed: () {
-                                                        Navigator.pop(
-                                                            context, false);
-                                                      },
-                                                      child: const Text(
-                                                        'Não',
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.black87,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      )),
-                                                  TextButton(
-                                                      onPressed: () {
-                                                        ref
-                                                                .read(currentOrderStateProvider
-                                                                    .notifier)
-                                                                .state =
-                                                            OrderStateWidget
-                                                                .close;
-                                                        Fluttertoast.showToast(
-                                                            msg:
-                                                                "Itens removidos da mesa nº $idTable com sucesso!",
-                                                            toastLength: Toast
-                                                                .LENGTH_LONG,
-                                                            gravity:
-                                                                ToastGravity
-                                                                    .TOP,
-                                                            timeInSecForIosWeb:
-                                                                3,
-                                                            webBgColor:
-                                                                '#151515',
-                                                            textColor:
-                                                                Colors.white,
-                                                            fontSize: 18.0);
-
-                                                        ref
-                                                            .read(
-                                                                itemListProvider
-                                                                    .notifier)
-                                                            .clearItemList();
-                                                        bool isAddingItem =
-                                                            ref.watch(
-                                                                isAddingItemProvider);
-                                                        ref
-                                                            .read(
-                                                                isAddingItemProvider
-                                                                    .notifier)
-                                                            .toogle(false);
-
-                                                        Navigator.pop(
-                                                            context, false);
-                                                      },
-                                                      child: const Text(
-                                                        'Sim',
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.black87,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      )),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
+                              if (itemList.isNotEmpty) {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => Dialog(
+                                    backgroundColor: Colors.transparent,
+                                    insetPadding: const EdgeInsets.all(10),
+                                    child: Stack(
+                                      clipBehavior: Clip.none,
+                                      alignment: Alignment.center,
+                                      children: <Widget>[
+                                        Container(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              2,
+                                          // 1.3,
+                                          height: 200,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
+                                              color: Colors.white),
+                                          padding: const EdgeInsets.fromLTRB(
+                                              20, 50, 20, 20),
+                                          child: const Text(
+                                              "Deseja descartar itens da mesa?",
+                                              style: TextStyle(
+                                                  fontSize: 22,
+                                                  color: Colors.black87),
+                                              textAlign: TextAlign.center),
                                         ),
-                                      ),
-                                    )
-                                  : ref
-                                      .read(currentOrderStateProvider.notifier)
-                                      .state = OrderStateWidget.close;
+                                        Positioned(
+                                          bottom: 10,
+                                          right: 0,
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              TextButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(
+                                                        context, false);
+                                                  },
+                                                  child: const Text(
+                                                    'Não',
+                                                    style: TextStyle(
+                                                        color: Colors.black87,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  )),
+                                              TextButton(
+                                                  onPressed: () {
+                                                    ref
+                                                            .read(
+                                                                currentOrderStateProvider
+                                                                    .notifier)
+                                                            .state =
+                                                        OrderStateWidget.close;
+                                                    Fluttertoast.showToast(
+                                                        msg:
+                                                            "Itens removidos da mesa nº $idTable com sucesso!",
+                                                        toastLength:
+                                                            Toast.LENGTH_LONG,
+                                                        gravity:
+                                                            ToastGravity.TOP,
+                                                        timeInSecForIosWeb: 3,
+                                                        webBgColor: '#151515',
+                                                        textColor: Colors.white,
+                                                        fontSize: 18.0);
+
+                                                    ref
+                                                        .read(itemListProvider
+                                                            .notifier)
+                                                        .clearItemList();
+
+                                                    ref
+                                                        .read(
+                                                            isAddingItemProvider
+                                                                .notifier)
+                                                        .toogle(false);
+
+                                                    Navigator.pop(
+                                                        context, false);
+                                                  },
+                                                  child: const Text(
+                                                    'Sim',
+                                                    style: TextStyle(
+                                                        color: Colors.black87,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  )),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                ref
+                                    .read(currentOrderStateProvider.notifier)
+                                    .state = OrderStateWidget.close;
+                                ref
+                                    .read(isAddingItemProvider.notifier)
+                                    .toogle(false);
+                              }
                             },
                             child: const Icon(
                               Icons.close,
@@ -616,12 +608,17 @@ class OrderDetails extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // print(ref.watch(currentOrderStateProvider) == OrderStateWidget.open);
+
     AnimationController dragAreaController = dragItemAreaController(ref);
     final Animation<double> animation = Tween(begin: .0, end: width - 36)
         .animate(
             CurvedAnimation(parent: dragAreaController, curve: Curves.ease));
 
-    final itemList = ref.watch(itemListProvider);
+    var itemList = ref.watch(itemListProvider);
+
+    print(itemList.isEmpty &&
+        ref.watch(currentOrderStateProvider) == OrderStateWidget.open);
 
     double total = 0;
     itemList.map((e) {
@@ -718,7 +715,7 @@ class OrderDetails extends HookConsumerWidget {
                                 itemList.isNotEmpty
                                     ? SizedBox(
                                         width: width * 0.85,
-                                        child: const AddOrdertButton(
+                                        child: AddOrdertButton(
                                           buttonName: 'Fechar Pedido',
                                         ),
                                       )

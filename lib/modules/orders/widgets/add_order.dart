@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -5,7 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../controller/orders_notifier.dart';
 
 class AddOrdertButton extends HookConsumerWidget {
-  const AddOrdertButton({
+  AddOrdertButton({
     super.key,
     required this.buttonName,
   });
@@ -15,6 +16,7 @@ class AddOrdertButton extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final itemList = ref.watch(itemListProvider);
+    final idDocumentTable = ref.watch(tableIdDocumentNotifier);
 
     final Animation<double> animation = Tween(begin: .0, end: 1.0).animate(
         CurvedAnimation(
@@ -49,6 +51,13 @@ class AddOrdertButton extends HookConsumerWidget {
                     fontSize: 18.0);
                 return;
               }
+              ref
+                  .read(registerOrderProvider)
+                  .registerItemOrder(idDocumentTable, itemList);
+              ref.read(itemListProvider.notifier).clearItemList();
+              ref.read(currentOrderStateProvider.notifier).state =
+                  OrderStateWidget.close;
+              ref.read(isAddingItemProvider.notifier).toogle(false);
             }
             // ),
             );

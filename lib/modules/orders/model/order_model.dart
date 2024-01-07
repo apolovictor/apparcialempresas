@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class OrderItem {
   final String idDocument;
+  final String productCategory;
   final String productName;
   final String photo_url;
   final String price;
@@ -9,6 +10,7 @@ class OrderItem {
 
   OrderItem(
       {required this.idDocument,
+      required this.productCategory,
       required this.productName,
       required this.photo_url,
       required this.price,
@@ -16,12 +18,14 @@ class OrderItem {
 
   OrderItem copyWith(
       {String? idDocument,
+      String? productCategory,
       String? productName,
       String? photo_url,
       String? price,
       int? quantity}) {
     return OrderItem(
         idDocument: idDocument ?? this.idDocument,
+        productCategory: productCategory ?? this.productCategory,
         productName: productName ?? this.productName,
         photo_url: photo_url ?? this.photo_url,
         price: price ?? this.price,

@@ -290,6 +290,8 @@ class BusinessListView extends HookConsumerWidget {
                                                 .setItem(OrderItem(
                                                   idDocument:
                                                       product.documentId!,
+                                                  productCategory:
+                                                      product.categories,
                                                   productName: product.name,
                                                   photo_url: product.logo!,
                                                   price: product.price['price'],
@@ -300,6 +302,8 @@ class BusinessListView extends HookConsumerWidget {
                                             .read(itemListProvider.notifier)
                                             .setItem(OrderItem(
                                               idDocument: product.documentId!,
+                                              productCategory:
+                                                  product.categories,
                                               productName: product.name,
                                               photo_url: product.logo!,
                                               price: product.price['price'],

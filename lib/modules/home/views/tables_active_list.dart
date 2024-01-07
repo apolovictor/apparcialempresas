@@ -1,4 +1,5 @@
 import 'package:apparcialempresas/modules/home/model/tables_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_sequence_animation/flutter_sequence_animation.dart';
@@ -61,6 +62,9 @@ class TablesListActive extends HookConsumerWidget {
                       ? DragTarget<DashboardTables>(
                           onWillAccept: (value) => !activeData.contains(value),
                           onAccept: (DashboardTables data) {
+                            Timestamp currentTimeStamp =
+                                Timestamp.fromDate(DateTime.now());
+                            print(currentTimeStamp);
                             ref
                                 .read(dragTableNotifier.notifier)
                                 .bookingOrderedByDraggable(data);

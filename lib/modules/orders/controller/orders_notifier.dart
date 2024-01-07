@@ -19,35 +19,90 @@ class RegisterOrder extends ChangeNotifier {
   Future<bool> registerOrder(int idTable, String clientName) async {
     final businessCollection = _firestore.collection('business');
 
-    final date = DateTime.now();
-
     final order = AddOrder(
         '', clientName, idTable, '0', FieldValue.serverTimestamp(), '');
+    var date1 = DateTime.now().microsecondsSinceEpoch;
+    var date2 = DateTime(2154, 2, 1).microsecondsSinceEpoch;
+    var result = date2 - date1;
+    final docRef = businessCollection
+        .doc(idDocument)
+        .collection("orders")
+        .doc(result.toString());
 
     try {
-      await businessCollection.doc(idDocument).collection("orders").add({
+      await docRef.set({
         'idTable': idTable,
         'clientName': clientName,
+        'idDocument': result.toString(),
         'createdAt': FieldValue.serverTimestamp(),
         'status': 1
-      }).then((value) {
-        print(value.id);
-        businessCollection
-            .doc(idDocument)
-            .collection("orders")
-            .doc(value.id)
-            .update({'idDocument': value.id});
-
-        businessCollection
-            .doc(idDocument)
-            .collection("tables")
-            .doc(idTable.toString())
-            .update({'idDocument': value.id});
       });
+      businessCollection
+          .doc(idDocument)
+          .collection("tables")
+          .doc(idTable.toString())
+          .update({'idDocument': result.toString()});
 
       return true;
     } catch (e) {
       // print(e.message);
+      return Future.error(e);
+    }
+  }
+
+  Future<bool> registerItemOrder(
+      String idDocumentTable, List<OrderItem> itemList) async {
+    final businessCollection = _firestore.collection('business');
+    try {
+      for (var item in itemList) {
+        Future.delayed(const Duration(microseconds: 100), () {
+          print(item.productName);
+          for (var i = 0; i < item.quantity; i++) {
+            Future.delayed(const Duration(microseconds: 100), () {
+              var date1 = DateTime.now().microsecondsSinceEpoch;
+              var date2 = DateTime(2154, 2, 1).microsecondsSinceEpoch;
+              var result = date2 - date1;
+              // print('result ========= ${item.productName} -- $result');
+              final docRef = businessCollection
+                  .doc(idDocument)
+                  .collection("detailOrders")
+                  .doc('$result-${item.productName}-$i');
+
+              docRef.set({
+                'orderDocument': idDocumentTable,
+                'idDocument': item.idDocument,
+                'productCategory': item.productCategory,
+                'productName': item.productName,
+                'price': item.price,
+                'createdAt': FieldValue.serverTimestamp(),
+                'status': 1
+              });
+            });
+          }
+        });
+        // var date1 = DateTime.now().microsecondsSinceEpoch;
+        // var date2 = DateTime(2154, 2, 1).microsecondsSinceEpoch;
+        // var result = date2 - date1;
+        // print('result ========= $result');
+        // final docRef = businessCollection
+        //     .doc(idDocument)
+        //     .collection("detailOrders")
+        //     .doc(result.toString());
+
+        // await docRef.set({
+        //   'orderDocument': idDocumentTable,
+        //   'idDocument': item.idDocument,
+        //   'productCategory': item.productCategory,
+        //   'productName': item.productName,
+        //   'price': item.price,
+        //   'createdAt': FieldValue.serverTimestamp(),
+        //   'status': 1
+        // });
+      }
+      return true;
+    } catch (e) {
+      // print(e.message);
+
       return Future.error(e);
     }
   }
@@ -168,8 +223,11 @@ class ItemListController extends StateNotifier<List<OrderItem>> {
     ];
   }
 
-  void clearItemList() {
+  clearItemList() {
     state.clear();
+
+    state = [];
+    return state;
   }
 }
 
