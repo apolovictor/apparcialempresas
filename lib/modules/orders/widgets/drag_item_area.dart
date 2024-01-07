@@ -123,8 +123,6 @@ class ExpandedEventItem extends HookConsumerWidget {
 
     var itemCart = itemsCart.firstWhere((e) => e == item);
 
-    print(itemCart.productName);
-
     return Positioned(
       top: topMargin,
       left: leftMargin,

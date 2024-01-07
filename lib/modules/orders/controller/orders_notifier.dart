@@ -167,6 +167,10 @@ class ItemListController extends StateNotifier<List<OrderItem>> {
       ...state.where((e) => e.idDocument != item.idDocument),
     ];
   }
+
+  void clearItemList() {
+    state.clear();
+  }
 }
 
 class IsOldOpenController extends StateNotifier<bool> {
