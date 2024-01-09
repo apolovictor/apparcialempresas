@@ -680,7 +680,7 @@ class SheetHeader3 extends HookConsumerWidget {
                           tabs: <Widget>[
                             Tab(
                               text: 'Carrinho',
-                              iconMargin: EdgeInsets.all(25),
+                              // iconMargin: EdgeInsets.all(25),
                             ),
                             Tab(
                               text: 'Resumo',
