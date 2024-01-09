@@ -86,8 +86,7 @@ class ProductNotifier extends StreamNotifier<List<Product>> {
     return _businessCollection
         .doc(ref.watch(idDocumentNotifier))
         .collection("products")
-
-        // .where('status', isEqualTo: ref.watch(statusNotifier))
+        .where('quantity', isGreaterThan: 0)
         .snapshots()
         .map((snapshot) {
       return snapshot.docs.map((doc) {

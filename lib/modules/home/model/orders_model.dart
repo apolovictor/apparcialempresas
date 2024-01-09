@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class DashboardOrders {
   final int orderDocument;
   final String? documentId;
@@ -14,7 +16,7 @@ class DashboardOrders {
   static DashboardOrders fromDoc(dynamic doc) {
     return DashboardOrders(
       doc!['orderDocument'],
-      doc['idDocument'],
+      doc['productDocument'],
       doc['openingClose'],
       doc['status'],
     );
@@ -25,6 +27,58 @@ class DashboardOrders {
       'orderDocument': orderDocument,
       'idDocument': documentId,
       'openingClose': openingClose,
+      'status': status,
+    };
+  }
+}
+
+class DashboardDetailOrders {
+  final String orderDocument;
+  final String productDocument;
+  final String productName;
+  final String productPhoto;
+  final String productCategory;
+  final String price;
+  final Timestamp createdAt;
+  final dynamic? finishedAt;
+  final int status;
+
+  DashboardDetailOrders({
+    required this.orderDocument,
+    required this.productDocument,
+    required this.productName,
+    required this.productPhoto,
+    required this.productCategory,
+    required this.price,
+    required this.createdAt,
+    required this.finishedAt,
+    required this.status,
+  });
+
+  static DashboardDetailOrders fromDoc(dynamic doc) {
+    return DashboardDetailOrders(
+      orderDocument: doc.data()['orderDocument'],
+      productDocument: doc.data()['productDocument'],
+      productName: doc.data()['productName'],
+      productPhoto: doc.data()['productPhoto'],
+      productCategory: doc.data()['productCategory'],
+      price: doc.data()['price'],
+      createdAt: doc.data()['createdAt'],
+      finishedAt: doc.data()['finishedAt'],
+      status: doc.data()['status'],
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'orderDocument': orderDocument,
+      'productDocument': productDocument,
+      'productName': productName,
+      'productPhoto': productPhoto,
+      'productCategory': productCategory,
+      'price': price,
+      'createdAt': createdAt,
+      'finishedAt': finishedAt,
       'status': status,
     };
   }

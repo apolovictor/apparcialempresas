@@ -170,7 +170,6 @@ class ExpandedEventItem extends HookConsumerWidget {
                   shape: const CircleBorder(),
                   onPressed: () {
                     if (item.quantity == 1) {
-                      print('here');
                       ref.read(itemListProvider.notifier).removeItem(item);
                     } else {
                       ref

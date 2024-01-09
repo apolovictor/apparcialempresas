@@ -101,7 +101,6 @@ class AddOrderWidget extends HookConsumerWidget {
     // }
 
     void _toggle() {
-      print('here');
       if (currentOrderState == OrderStateWidget.open) {
         ref.read(currentOrderStateProvider.notifier).state =
             OrderStateWidget.onResume;
@@ -219,9 +218,6 @@ class AddOrderWidget extends HookConsumerWidget {
 
                             return LayoutBuilder(
                                 builder: (context, constraints) {
-                              print('height == $height');
-                              print(constraints.maxHeight);
-                              print(constraints.maxWidth);
                               var myWidth = constraints.maxWidth;
                               var myHeight = constraints.maxHeight;
                               return Container(
@@ -656,7 +652,6 @@ class SheetHeader3 extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final currentOrderState = ref.watch(currentOrderStateProvider);
 
-    print(height);
     return isVisible
         ? Container(
             color: Colors.transparent,
@@ -713,8 +708,6 @@ class SheetHeader3 extends HookConsumerWidget {
                       : const SizedBox(),
                   Expanded(
                     child: LayoutBuilder(builder: (context, constraints) {
-                      print('height1 === $height');
-                      print('height ===== ${constraints.maxHeight}');
                       return TabBarView(
                         children: [
                           OrderDetails(

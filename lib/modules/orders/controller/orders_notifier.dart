@@ -58,7 +58,8 @@ class RegisterOrder extends ChangeNotifier {
   registerItemOrder(String idDocumentTable, List<OrderItem> itemList) async {
     final businessCollection = _firestore.collection('business');
 
-    updateStock(int quantity, String productIdDocument) async {
+    checkUpdateStock(
+        int quantity, String productIdDocument, int i, OrderItem item) async {
       return await FirebaseFirestore.instance
           .runTransaction((transaction) async {
         var documentSnapshot = await transaction.get(businessCollection
@@ -66,12 +67,40 @@ class RegisterOrder extends ChangeNotifier {
             .collection("products")
             .doc(productIdDocument));
         if (quantity <= documentSnapshot.data()!['quantity']) {
+          transaction.update(
+              businessCollection
+                  .doc(idDocument)
+                  .collection("products")
+                  .doc(productIdDocument),
+              <String, dynamic>{'quantity': FieldValue.increment(-quantity)});
+
+          for (var j = 0; j < quantity; j++) {
+            var date1 = DateTime.now().microsecondsSinceEpoch;
+            var date2 = DateTime(2154, 2, 1).microsecondsSinceEpoch;
+            var result = date2 - date1;
+            print('i ==== $i');
+            print("item === ${item.productName}");
+
+            final docRef = businessCollection
+                .doc(idDocument)
+                .collection("detailOrders")
+                .doc('$result-${item.productName}-$j');
+            transaction.set(docRef, {
+              'orderDocument': idDocumentTable,
+              'productDocument': item.productIdDocument,
+              'productCategory': item.productCategory,
+              'productName': item.productName,
+              'productPhoto': item.photo_url,
+              'price': item.price,
+              'createdAt': FieldValue.serverTimestamp(),
+              'finishedAt': '',
+              'status': 1
+            });
+          }
           return true;
         } else {
           return documentSnapshot.data();
         }
-
-        // print(documentSnapshot.data());
       });
     }
 
@@ -83,73 +112,16 @@ class RegisterOrder extends ChangeNotifier {
           .doc(idDocument)
           .collection("products")
           .doc(itemList[i].productIdDocument);
-      // .snapshots()
-      // .map((doc) => OrderItem.fromDoc(doc))
-      // .first;
-      // print(itemList[i].productIdDocument);
-      // print(itemList
-      //     .firstWhere((e) => e.productIdDocument == docRef.id)
-      //     .productName);
 
-      // try {
-      var result = updateStock(
+      var result = checkUpdateStock(
           itemList.firstWhere((e) => e.productIdDocument == docRef.id).quantity,
-          docRef.id);
+          docRef.id,
+          i,
+          itemList[i]);
 
       result.then((value) {
         print(value);
       });
-
-      //     // for (var item in itemList) {
-
-      //     // print(newMap.keys);
-
-      //     // newMap.keys.forEach((item) async {
-
-      // print(
-      //     'documentSnapshot === ${documentSnapshot.data()!['quantity']} == ${item.quantity} ');
-      // if (item.quantity <= documentSnapshot.data()!['quantity']) {
-      //   transaction.update(
-      //       businessCollection
-      //           .doc(idDocument)
-      //           .collection("products")
-      //           .doc(item.productIdDocument),
-      //       <String, dynamic>{
-      //         'quantity': FieldValue.increment(-item.quantity)
-      //       });
-      // }
-      // });
-
-      // // print(item.productName);
-      // if (documentSnapshot.data()) {}
-      // for (var i = 0; i < item.quantity; i++) {
-      //   var date1 = DateTime.now().microsecondsSinceEpoch;
-      //   var date2 = DateTime(2154, 2, 1).microsecondsSinceEpoch;
-      //   var result = date2 - date1;
-      //   // print('result ========= ${item.productName} -- $result');
-      //   final docRef = businessCollection
-      //       .doc(idDocument)
-      //       .collection("detailOrders")
-      //       .doc('$result-${item.productName}-$i');
-
-      //   docRef.set({
-      //     'orderDocument': idDocumentTable,
-      //     'productDocument': item.productIdDocument,
-      //     'productCategory': item.productCategory,
-      //     'productName': item.productName,
-      //     'price': item.price,
-      //     'createdAt': FieldValue.serverTimestamp(),
-      //     'finishedAt': '',
-      //     'status': 1
-      //   });
-      // }
-      // }
-      //     return true;
-      // } catch (e) {
-      //   // print(e.message);
-
-      //   return Future.error(e);
-      // }
     }
   }
 }
@@ -447,3 +419,28 @@ final recentOrdersNotifier = StreamProvider<List<DashboardOrders>>((ref) {
       .map((snapshot) =>
           snapshot.docs.map((doc) => DashboardOrders.fromDoc(doc)).toList());
 });
+
+class RecentOrdersNotifier extends StreamNotifier<List<DashboardDetailOrders>> {
+  // downloadUrl(product) async =>
+  //     await storage.ref("products").child(product).getDownloadURL();
+
+  @override
+  Stream<List<DashboardDetailOrders>> build() {
+    return _businessCollection
+        .doc(ref.watch(idDocumentNotifier))
+        .collection("detailOrders")
+        .where('status', isEqualTo: 1)
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs.map((doc) {
+        DashboardDetailOrders recentOrders = DashboardDetailOrders.fromDoc(doc);
+
+        return recentOrders;
+      }).toList();
+    });
+  }
+}
+
+final recentOrdersDashboardProvider =
+    StreamNotifierProvider<RecentOrdersNotifier, List<DashboardDetailOrders>>(
+        () => RecentOrdersNotifier());

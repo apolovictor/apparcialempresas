@@ -274,25 +274,33 @@ class BusinessListView extends HookConsumerWidget {
                                         itemList.any((e) =>
                                                 e.productIdDocument ==
                                                 product.documentId)
-                                            ? ref.read(itemListProvider.notifier).updateItem(
-                                                itemList.indexOf(
-                                                    itemList.firstWhere((e) =>
+                                            ? itemList.firstWhere((e) => e.productIdDocument == product.documentId).quantity <
+                                                    product.quantity
+                                                ? ref.read(itemListProvider.notifier).updateItem(
+                                                    itemList.indexOf(itemList.firstWhere((e) =>
                                                         e.productIdDocument ==
                                                         product.documentId)),
-                                                itemList.firstWhere((e) =>
-                                                    e.productIdDocument ==
-                                                    product.documentId))
+                                                    itemList.firstWhere((e) =>
+                                                        e.productIdDocument ==
+                                                        product.documentId))
+                                                : Fluttertoast.showToast(
+                                                    msg:
+                                                        "Estoque do produto ${product.name} indisponível! Adicione mais no módulo de produtos!",
+                                                    toastLength:
+                                                        Toast.LENGTH_LONG,
+                                                    gravity: ToastGravity.TOP,
+                                                    timeInSecForIosWeb: 4,
+                                                    webBgColor: '#151515',
+                                                    textColor: Colors.white,
+                                                    fontSize: 18.0)
                                             : ref
                                                 .read(itemListProvider.notifier)
                                                 .setItem(OrderItem(
-                                                    productIdDocument:
-                                                        product.documentId!,
-                                                    productCategory:
-                                                        product.categories,
+                                                    productIdDocument: product.documentId!,
+                                                    productCategory: product.categories,
                                                     productName: product.name,
                                                     photo_url: product.logo!,
-                                                    price:
-                                                        product.price['price'],
+                                                    price: product.price['price'],
                                                     quantity: 1,
                                                     isUnavailble: false));
                                       } else {
