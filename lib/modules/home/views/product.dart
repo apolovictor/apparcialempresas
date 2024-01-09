@@ -274,42 +274,40 @@ class BusinessListView extends HookConsumerWidget {
                                         itemList.any((e) =>
                                                 e.productIdDocument ==
                                                 product.documentId)
-                                            ? ref
-                                                .read(itemListProvider.notifier)
-                                                .updateItem(
-                                                    itemList.indexOf(itemList
-                                                        .firstWhere((e) =>
-                                                            e.productIdDocument ==
-                                                            product
-                                                                .documentId)),
+                                            ? ref.read(itemListProvider.notifier).updateItem(
+                                                itemList.indexOf(
                                                     itemList.firstWhere((e) =>
                                                         e.productIdDocument ==
-                                                        product.documentId))
+                                                        product.documentId)),
+                                                itemList.firstWhere((e) =>
+                                                    e.productIdDocument ==
+                                                    product.documentId))
                                             : ref
                                                 .read(itemListProvider.notifier)
                                                 .setItem(OrderItem(
-                                                  productIdDocument:
-                                                      product.documentId!,
-                                                  productCategory:
-                                                      product.categories,
-                                                  productName: product.name,
-                                                  photo_url: product.logo!,
-                                                  price: product.price['price'],
-                                                  quantity: 1,
-                                                ));
+                                                    productIdDocument:
+                                                        product.documentId!,
+                                                    productCategory:
+                                                        product.categories,
+                                                    productName: product.name,
+                                                    photo_url: product.logo!,
+                                                    price:
+                                                        product.price['price'],
+                                                    quantity: 1,
+                                                    isUnavailble: false));
                                       } else {
                                         ref
                                             .read(itemListProvider.notifier)
                                             .setItem(OrderItem(
-                                              productIdDocument:
-                                                  product.documentId!,
-                                              productCategory:
-                                                  product.categories,
-                                              productName: product.name,
-                                              photo_url: product.logo!,
-                                              price: product.price['price'],
-                                              quantity: 1,
-                                            ));
+                                                productIdDocument:
+                                                    product.documentId!,
+                                                productCategory:
+                                                    product.categories,
+                                                productName: product.name,
+                                                photo_url: product.logo!,
+                                                price: product.price['price'],
+                                                quantity: 1,
+                                                isUnavailble: false));
                                       }
                                     },
                                     child: const Icon(

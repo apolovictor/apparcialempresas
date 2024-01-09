@@ -7,29 +7,35 @@ class OrderItem {
   final String photo_url;
   final String price;
   final int quantity;
+  final bool isUnavailble;
+  OrderItem({
+    required this.productIdDocument,
+    required this.productCategory,
+    required this.productName,
+    required this.photo_url,
+    required this.price,
+    required this.quantity,
+    required this.isUnavailble,
+  });
 
-  OrderItem(
-      {required this.productIdDocument,
-      required this.productCategory,
-      required this.productName,
-      required this.photo_url,
-      required this.price,
-      required this.quantity});
-
-  OrderItem copyWith(
-      {String? productIdDocument,
-      String? productCategory,
-      String? productName,
-      String? photo_url,
-      String? price,
-      int? quantity}) {
+  OrderItem copyWith({
+    String? productIdDocument,
+    String? productCategory,
+    String? productName,
+    String? photo_url,
+    String? price,
+    int? quantity,
+    bool? isUnavailble,
+  }) {
     return OrderItem(
-        productIdDocument: productIdDocument ?? this.productIdDocument,
-        productCategory: productCategory ?? this.productCategory,
-        productName: productName ?? this.productName,
-        photo_url: photo_url ?? this.photo_url,
-        price: price ?? this.price,
-        quantity: quantity ?? this.quantity);
+      productIdDocument: productIdDocument ?? this.productIdDocument,
+      productCategory: productCategory ?? this.productCategory,
+      productName: productName ?? this.productName,
+      photo_url: photo_url ?? this.photo_url,
+      price: price ?? this.price,
+      quantity: quantity ?? this.quantity,
+      isUnavailble: isUnavailble ?? this.isUnavailble,
+    );
   }
 
   static OrderItem fromDoc(dynamic doc) {
@@ -40,6 +46,7 @@ class OrderItem {
       photo_url: doc.data()['photo_url'],
       price: doc.data()['price'],
       quantity: doc.data()['quantity'],
+      isUnavailble: doc.data()['isUnavailble'],
     );
   }
 }

@@ -1,8 +1,10 @@
 import 'package:cached_firestorage/lib.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../home/controller/product_notifier.dart';
 import '../controller/orders_notifier.dart';
 import '../model/order_model.dart';
 import '../views/add_order.dart';
@@ -22,61 +24,11 @@ class DragItemArea extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final itemList = ref.watch(itemListProvider);
-    var itemsCart = ref.watch(itemListProvider);
 
     double lerp(double min, double max) => ref.watch(
         lerpProvider(MyParameter(min: min, max: max, value: controller.value)));
 
     double itemBorderRadius = lerp(8, 24); //<-- increase item border radius
-
-    Widget _buildIcon(OrderItem item) {
-      int index = itemList.indexOf(item); //<-- Get index of the item
-      return Positioned(
-        height: lerp(iconStartSize, iconEndSize), //<-- Specify icon's size
-        width: lerp(iconStartSize, iconEndSize), //<-- Specify icon's size
-        top: lerp(iconStartMarginTop,
-            height * 0.175 * (index / 1.1)), //<-- Specify icon's top margin
-        left: lerp(index * (iconsHorizontalSpacing + iconStartSize),
-            0), //<-- Specify icon's left margin
-        child: ClipRRect(
-          borderRadius: BorderRadius.horizontal(
-            left:
-                Radius.circular(itemBorderRadius), //<-- Set the rounded corners
-            right: Radius.circular(itemBorderRadius),
-          ),
-          child: RemotePicture(
-            mapKey: item.photo_url,
-            imagePath:
-                'gs://appparcial-123.appspot.com/products/${item.photo_url}',
-          ),
-        ),
-      );
-    }
-
-    // Widget _buildFullItem(OrderItem item) {
-    //   int index = itemList.indexOf(item);
-    //   // print(height);
-    //   // print(height * 0.2 * (index / 1.8));
-    //   // print(height * 0.2 * (index / 1.5));
-    //   return ExpandedEventItem(
-    //     topMargin: lerp(
-    //         iconStartMarginTop,
-    //         height *
-    //             0.2 *
-    //             (index / 1.3)), //<--provide margins and height same as for icon
-    //     //!! Aqui onde a posição dos itens da lista se alteração no dragUpdate do widget
-    //     // leftMargin: lerp(index * (iconsHorizontalSpacing + iconStartSize), 0),
-    //     height: lerp(iconStartSize, height * 0.15),
-    //     isVisible:
-    //         controller.status == AnimationStatus.completed, //<--set visibility
-    //     borderRadius: itemBorderRadius, //<-- pass border radius
-    //     itemName: item.productName, //<-- data to be displayed
-    //     price: double.parse(item.price.replaceAll(',', '.')),
-    //     quantity: item.quantity, //<-- data to be displayed
-    //     item: item,
-    //   );
-    // }
-    // var itemCart = itemList.firstWhere((e) => e == item);
 
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
@@ -101,8 +53,8 @@ class DragItemArea extends HookConsumerWidget {
                             color: Colors.grey[500],
                             borderRadius:
                                 BorderRadius.circular(itemBorderRadius),
-                            boxShadow: [
-                              const BoxShadow(
+                            boxShadow: const [
+                              BoxShadow(
                                   color: Colors.black45,
                                   offset: Offset(4, 4),
                                   blurRadius: 2),
@@ -187,6 +139,7 @@ class ExpandedEventItem extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     var itemsCart = ref.watch(itemListProvider);
+    var productList = ref.watch(filteredProductDashboardProvider);
 
     var itemCart = itemsCart.firstWhere((e) => e == item);
     return Column(
@@ -240,7 +193,7 @@ class ExpandedEventItem extends HookConsumerWidget {
                       )),
                 ),
                 Text(
-                  quantity.toString(),
+                  '${quantity.toString()} / ${productList.firstWhere((e) => e.documentId == item.productIdDocument).quantity}',
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 18,
@@ -249,9 +202,25 @@ class ExpandedEventItem extends HookConsumerWidget {
                 MaterialButton(
                   shape: const CircleBorder(),
                   onPressed: () {
-                    ref
-                        .read(itemListProvider.notifier)
-                        .updateItemQuantity('increment', item);
+                    if (quantity <
+                        productList
+                            .firstWhere(
+                                (e) => e.documentId == item.productIdDocument)
+                            .quantity) {
+                      ref
+                          .read(itemListProvider.notifier)
+                          .updateItemQuantity('increment', item);
+                    } else {
+                      Fluttertoast.showToast(
+                          msg:
+                              "Estoque do produto ${item.productName} indisponível! Adicione mais no módulo de produtos!",
+                          toastLength: Toast.LENGTH_LONG,
+                          gravity: ToastGravity.TOP,
+                          timeInSecForIosWeb: 4,
+                          webBgColor: '#151515',
+                          textColor: Colors.white,
+                          fontSize: 18.0);
+                    }
                   },
                   child: Container(
                       decoration: BoxDecoration(
