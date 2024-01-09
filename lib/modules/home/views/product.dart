@@ -272,23 +272,23 @@ class BusinessListView extends HookConsumerWidget {
                                     onTap: () {
                                       if (itemList.isNotEmpty) {
                                         itemList.any((e) =>
-                                                e.idDocument ==
+                                                e.productIdDocument ==
                                                 product.documentId)
                                             ? ref
                                                 .read(itemListProvider.notifier)
                                                 .updateItem(
                                                     itemList.indexOf(itemList
                                                         .firstWhere((e) =>
-                                                            e.idDocument ==
+                                                            e.productIdDocument ==
                                                             product
                                                                 .documentId)),
                                                     itemList.firstWhere((e) =>
-                                                        e.idDocument ==
+                                                        e.productIdDocument ==
                                                         product.documentId))
                                             : ref
                                                 .read(itemListProvider.notifier)
                                                 .setItem(OrderItem(
-                                                  idDocument:
+                                                  productIdDocument:
                                                       product.documentId!,
                                                   productCategory:
                                                       product.categories,
@@ -301,7 +301,8 @@ class BusinessListView extends HookConsumerWidget {
                                         ref
                                             .read(itemListProvider.notifier)
                                             .setItem(OrderItem(
-                                              idDocument: product.documentId!,
+                                              productIdDocument:
+                                                  product.documentId!,
                                               productCategory:
                                                   product.categories,
                                               productName: product.name,

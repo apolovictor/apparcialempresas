@@ -81,7 +81,7 @@ class UpdateButton extends HookConsumerWidget {
                             ? product.price['promo']
                             : ref.watch(productPromoProvider).text,
                         ref.watch(productQuantityProvider).text.isEmpty
-                            ? product.quantity
+                            ? product.quantity.toString()
                             : ref.watch(productQuantityProvider).text,
                       );
 

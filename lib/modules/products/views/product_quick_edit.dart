@@ -328,7 +328,9 @@ class ProducQuickEdit extends HookConsumerWidget {
                                               return fieldWidget(
                                                 productQuantityController,
                                                 "Quantidade",
-                                                data[productSelected].quantity,
+                                                data[productSelected]
+                                                    .quantity
+                                                    .toString(),
                                                 context,
                                                 productSelected > -1
                                                     ? Color(int.parse(

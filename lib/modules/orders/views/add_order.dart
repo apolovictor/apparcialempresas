@@ -1,21 +1,15 @@
-import 'dart:math' as math;
-import 'package:dotted_border/dotted_border.dart';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../controller/orders_notifier.dart';
 import '../model/order_model.dart';
-import '../widgets/add_order.dart';
-import '../widgets/drag_item_area.dart';
-import '../widgets/register_button.dart';
+import 'order_details.dart';
 
 // const double startHeight = 0;
 const double iconStartSize = 44; //<-- add edge values
-const double iconEndSize = 100; //<-- add edge values
+const double iconEndSize = 80; //<-- add edge values
 const double iconStartMarginTop = 36; //<-- add edge values
 const double iconEndMarginTop = 80; //<-- add edge values
 const double iconsVerticalSpacing = 24; //<-- add edge values
@@ -40,7 +34,7 @@ class AddOrderWidget extends HookConsumerWidget {
 
     // final orderListState = ref.watch(orderStateListProvider);
     final currentOrderState = ref.watch(currentOrderStateProvider);
-
+    final double widthPadding = minWidth * 0.01;
     double minHeight = currentOrderState == OrderStateWidget.onResume ||
             currentOrderState == OrderStateWidget.dragUpdate ||
             currentOrderState == OrderStateWidget.dragEnd
@@ -72,7 +66,7 @@ class AddOrderWidget extends HookConsumerWidget {
     // double itemBorderRadius = lerp(8, 24); //<-- increase item border radius
 
     double verticalPadding = ref.watch(
-        lerpProvider(MyParameter(min: 6, max: 32, value: controller.value)));
+        lerpProvider(MyParameter(min: 0, max: 32, value: controller.value)));
 
     // lerp(6, 32);
 
@@ -107,6 +101,7 @@ class AddOrderWidget extends HookConsumerWidget {
     // }
 
     void _toggle() {
+      print('here');
       if (currentOrderState == OrderStateWidget.open) {
         ref.read(currentOrderStateProvider.notifier).state =
             OrderStateWidget.onResume;
@@ -175,8 +170,8 @@ class AddOrderWidget extends HookConsumerWidget {
       // }
     }
 
-    final order =
-        ref.read(ordersNotifierProvider).getOrderByIdDocument(idDocument);
+    // final order =
+    //     ref.read(ordersNotifierProvider).getOrderByIdDocument(idDocument);
 
     return idDocument.isNotEmpty
         ? AnimatedBuilder(
@@ -187,221 +182,208 @@ class AddOrderWidget extends HookConsumerWidget {
                 left: minWidth * 0.7,
                 right: 0,
                 bottom: 0,
-                child: GestureDetector(
-                  onTap: _toggle,
-                  // onVerticalDragUpdate:
-                  //     _handleDragUpdate, //<-- Add verticalDragUpdate callback
-                  // onVerticalDragEnd: _handleDragEnd,
-                  child: ClipPath(
-                      clipper: ZigZagClipper(),
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 18, vertical: verticalPadding),
-                        decoration: BoxDecoration(
-                          color: Colors.grey[700],
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                          ),
+                child: ClipPath(
+                    clipper: ZigZagClipper(),
+                    child: Container(
+                      width: minWidth * 0.3,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[700],
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(20),
                         ),
-                        child: StreamBuilder(
-                            stream: FirebaseFirestore.instance
-                                .collection('business')
-                                .doc('bandiis')
-                                .collection('orders')
-                                .doc(idDocument)
-                                // .where('idDocument', isEqualTo: idDocument)
-                                .snapshots()
-                                .map((doc) => ActiveOrder.fromDoc(doc)),
-                            builder:
-                                (context, AsyncSnapshot<ActiveOrder> snapshot) {
-                              // if (!snapshot.hasData) {
-                              //   return Center(child: CircularProgressIndicator());
-                              // }
-                              if (snapshot.hasError) {
-                                return const Text('Something went wrong');
-                              }
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return const Center(
-                                    child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                ));
-                              }
+                      ),
+                      child: StreamBuilder(
+                          stream: FirebaseFirestore.instance
+                              .collection('business')
+                              .doc('bandiis')
+                              .collection('orders')
+                              .doc(idDocument)
+                              // .where('idDocument', isEqualTo: idDocument)
+                              .snapshots()
+                              .map((doc) => ActiveOrder.fromDoc(doc)),
+                          builder:
+                              (context, AsyncSnapshot<ActiveOrder> snapshot) {
+                            // if (!snapshot.hasData) {
+                            //   return Center(child: CircularProgressIndicator());
+                            // }
+                            if (snapshot.hasError) {
+                              return const Text('Something went wrong');
+                            }
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                  child: CircularProgressIndicator(
+                                color: Colors.white,
+                              ));
+                            }
 
-                              print(snapshot.data!.clientName);
-
-                              return Stack(
-                                //<-- Add a stack
-                                children: <Widget>[
-                                  Positioned(
-                                    top: lerp(
-                                        5,
-                                        20 +
-                                            MediaQuery.of(context).padding.top),
-                                    right: 0,
-                                    child: SheetHeader(
-                                      //<-- Add a header with params
-                                      width: minWidth * 0.3,
-                                      height: height,
-                                      fontSize: lerp(14, 24),
-
-                                      isVisible: animation.status ==
-                                          AnimationStatus.completed,
-                                      clientName: snapshot.data?.clientName,
-                                      idTable: snapshot.data!.idTable,
+                            return LayoutBuilder(
+                                builder: (context, constraints) {
+                              print('height == $height');
+                              print(constraints.maxHeight);
+                              print(constraints.maxWidth);
+                              var myWidth = constraints.maxWidth;
+                              var myHeight = constraints.maxHeight;
+                              return Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: lerp(0, widthPadding),
+                                    vertical: lerp(6, 0)),
+                                height: myHeight,
+                                width: myWidth,
+                                child: Stack(
+                                  //<-- Add a stack
+                                  children: <Widget>[
+                                    animation.status ==
+                                            AnimationStatus.completed
+                                        ? spaceHeight
+                                        : const SizedBox(),
+                                    Positioned(
+                                        top: lerp(0, height * 0.12),
+                                        right: 0,
+                                        left: 0,
+                                        child: SheetHeader2(
+                                          isVisible: animation.status ==
+                                              AnimationStatus.completed,
+                                          height: 75,
+                                          width: minWidth * 0.3,
+                                        )),
+                                    animation.status ==
+                                            AnimationStatus.completed
+                                        ? spaceHeight
+                                        : const SizedBox(),
+                                    Positioned(
+                                      top: lerp(0, height * 0.2),
+                                      child: SheetHeader3(
+                                          isVisible: animation.status ==
+                                              AnimationStatus.completed,
+                                          height: height * 0.8,
+                                          width: minWidth * 0.3,
+                                          animation: animation,
+                                          widthPadding: widthPadding),
+                                      //  Container(
+                                      //   color: Colors.transparent,
+                                      //   height: lerp(minHeight, height),
+                                      //   width: minWidth * 0.274,
+                                      //   child: DefaultTabController(
+                                      //     length: 3,
+                                      //     child: Column(
+                                      //       children: [
+                                      //         currentOrderState ==
+                                      //                 OrderStateWidget.open
+                                      //             ? const TabBar(
+                                      //                 isScrollable: true,
+                                      //                 labelColor: Colors.white,
+                                      //                 dividerColor:
+                                      //                     Colors.transparent,
+                                      //                 padding:
+                                      //                     EdgeInsets.all(10),
+                                      //                 labelStyle: TextStyle(
+                                      //                   fontWeight:
+                                      //                       FontWeight.bold,
+                                      //                   fontSize: 15,
+                                      //                 ),
+                                      //                 unselectedLabelColor:
+                                      //                     Colors.white,
+                                      //                 tabs: <Widget>[
+                                      //                   Tab(
+                                      //                     text: 'Carrinho',
+                                      //                     iconMargin:
+                                      //                         EdgeInsets.all(
+                                      //                             25),
+                                      //                   ),
+                                      //                   Tab(
+                                      //                     text: 'Resumo',
+                                      //                   ),
+                                      //                   Tab(
+                                      //                     text: 'Detalhado',
+                                      //                   ),
+                                      //                 ],
+                                      //                 // : <Widget>[
+                                      //                 //     Tab(
+                                      //                 //       icon: Icon(Icons.add_circle),
+                                      //                 //     ),
+                                      //                 //     Tab(
+                                      //                 //       icon: Icon(Icons.check_circle),
+                                      //                 //     ),
+                                      //                 //     Tab(
+                                      //                 //       icon: Icon(Icons.cancel_rounded),
+                                      //                 //     ),
+                                      //                 //   ],
+                                      //                 indicator:
+                                      //                     ShapeDecoration(
+                                      //                         shape:
+                                      //                             RoundedRectangleBorder(
+                                      //                                 borderRadius:
+                                      //                                     BorderRadius
+                                      //                                         .all(
+                                      //                           Radius.circular(
+                                      //                               10),
+                                      //                         )),
+                                      //                         color: Colors
+                                      //                             .black54),
+                                      //               )
+                                      //             : const SizedBox(),
+                                      //         animation.status ==
+                                      //                 AnimationStatus.completed
+                                      //             ? const SizedBox(height: 50)
+                                      //             : const SizedBox(),
+                                      //         Expanded(
+                                      //           child: TabBarView(
+                                      //             children: [
+                                      //               OrderDetails(
+                                      //                 controller: animation,
+                                      //                 height: height * 0.5,
+                                      //                 width: minWidth * 0.29,
+                                      //               ),
+                                      //               const SizedBox(
+                                      //                 height: 100,
+                                      //                 width: 100,
+                                      //               ),
+                                      //               const SizedBox(
+                                      //                 height: 100,
+                                      //                 width: 100,
+                                      //               ),
+                                      //             ],
+                                      //           ),
+                                      //         ),
+                                      //       ],
+                                      //     ),
+                                      //   ),
+                                      // ),
                                     ),
-                                  ),
-                                  animation.status == AnimationStatus.completed
-                                      ? spaceHeight
-                                      : const SizedBox(),
-                                  Positioned(
-                                    top: lerp(0, height * 0.12),
-                                    right: 0,
-                                    child: AnimatedOpacity(
-                                      duration:
-                                          const Duration(milliseconds: 600),
-                                      opacity: animation.status ==
-                                              AnimationStatus.completed
-                                          ? 1
-                                          : 0,
-                                      child: SizedBox(
-                                        // height: 50,
-                                        width: minWidth * 0.3,
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 40.0),
-                                          child: Stack(
-                                            children: [
-                                              const Positioned(
-                                                left: 0,
-                                                child: Row(
-                                                  children: [
-                                                    Icon(
-                                                      Icons.list_alt_sharp,
-                                                      color: Colors.white,
-                                                    ),
-                                                    Text(
-                                                      'Conta',
-                                                      style: TextStyle(
-                                                          color: Colors.white,
-                                                          fontSize: 18),
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                              const Positioned(
-                                                right: 0,
-                                                child: Text(
-                                                  'ID: 236Wo0KaJduh6vw3OZW0',
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 14,
-                                                  ),
-                                                ),
-                                              ),
-                                              animation.status ==
-                                                      AnimationStatus.completed
-                                                  ? spaceHeight
-                                                  : const SizedBox(),
-                                            ],
+                                    Positioned(
+                                        top: 0,
+                                        left: 0,
+                                        right: 0,
+                                        child: Container(
+                                          color: Colors.transparent,
+                                          width: lerp(
+                                              minWidth * 0.3, minWidth * 0.3),
+                                          height: lerp(minHeight, height * 0.2),
+                                          child: GestureDetector(
+                                            onTap: _toggle,
                                           ),
-                                        ),
-                                      ),
+                                        )),
+                                    Positioned(
+                                      top: lerp(5, 5),
+                                      right: 0,
+                                      left: 0,
+                                      child: SheetHeader(
+                                          //<-- Add a header with params
+                                          width: minWidth * 0.3,
+                                          height: height,
+                                          fontSize: lerp(14, 24),
+                                          isVisible: animation.status ==
+                                              AnimationStatus.completed,
+                                          clientName: snapshot.data?.clientName,
+                                          idTable: snapshot.data!.idTable),
                                     ),
-                                  ),
-                                  Positioned(
-                                    top: lerp(0, height * 0.15),
-                                    child: Container(
-                                      color: Colors.transparent,
-                                      height: lerp(minHeight, height),
-                                      width: minWidth * 0.3,
-                                      child: DefaultTabController(
-                                        length: 3,
-                                        child: Column(
-                                          children: [
-                                            currentOrderState ==
-                                                    OrderStateWidget.open
-                                                ? const TabBar(
-                                                    isScrollable: true,
-                                                    labelColor: Colors.white,
-                                                    dividerColor:
-                                                        Colors.transparent,
-                                                    padding: EdgeInsets.all(10),
-                                                    labelStyle: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 15,
-                                                    ),
-                                                    unselectedLabelColor:
-                                                        Colors.white,
-                                                    tabs: <Widget>[
-                                                      Tab(
-                                                        text: 'Carrinho',
-                                                        iconMargin:
-                                                            EdgeInsets.all(25),
-                                                      ),
-                                                      Tab(
-                                                        text: 'Resumo',
-                                                      ),
-                                                      Tab(
-                                                        text: 'Detalhado',
-                                                      ),
-                                                    ],
-                                                    // : <Widget>[
-                                                    //     Tab(
-                                                    //       icon: Icon(Icons.add_circle),
-                                                    //     ),
-                                                    //     Tab(
-                                                    //       icon: Icon(Icons.check_circle),
-                                                    //     ),
-                                                    //     Tab(
-                                                    //       icon: Icon(Icons.cancel_rounded),
-                                                    //     ),
-                                                    //   ],
-                                                    indicator: ShapeDecoration(
-                                                        shape:
-                                                            RoundedRectangleBorder(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .all(
-                                                          Radius.circular(10),
-                                                        )),
-                                                        color: Colors.black54),
-                                                  )
-                                                : const SizedBox(),
-                                            animation.status ==
-                                                    AnimationStatus.completed
-                                                ? const SizedBox(height: 50)
-                                                : const SizedBox(),
-                                            Expanded(
-                                              child: TabBarView(
-                                                children: [
-                                                  OrderDetails(
-                                                    controller: animation,
-                                                    height: height,
-                                                    width: minWidth * 0.3,
-                                                  ),
-                                                  const SizedBox(
-                                                    height: 100,
-                                                    width: 100,
-                                                  ),
-                                                  const SizedBox(
-                                                    height: 100,
-                                                    width: 100,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               );
-                            }),
-                      )),
-                ),
+                            });
+                          }),
+                    )),
               );
             })
         : const SizedBox();
@@ -434,133 +416,127 @@ class SheetHeader extends HookConsumerWidget {
       return SizedBox(
         height: height,
         width: width,
-        child: Padding(
-          padding: const EdgeInsets.only(left: 40.0),
-          child: Stack(
-            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            // crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Positioned(
-                left: 0,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    isVisible
-                        ? MaterialButton(
-                            shape: const CircleBorder(),
-                            onPressed: () {
-                              if (itemList.isNotEmpty) {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) => Dialog(
-                                    backgroundColor: Colors.transparent,
-                                    insetPadding: const EdgeInsets.all(10),
-                                    child: Stack(
-                                      clipBehavior: Clip.none,
-                                      alignment: Alignment.center,
-                                      children: <Widget>[
-                                        Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width /
-                                              2,
-                                          // 1.3,
-                                          height: 200,
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(15),
-                                              color: Colors.white),
-                                          padding: const EdgeInsets.fromLTRB(
-                                              20, 50, 20, 20),
-                                          child: const Text(
-                                              "Deseja descartar itens da mesa?",
-                                              style: TextStyle(
-                                                  fontSize: 22,
-                                                  color: Colors.black87),
-                                              textAlign: TextAlign.center),
-                                        ),
-                                        Positioned(
-                                          bottom: 10,
-                                          right: 0,
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceEvenly,
-                                            children: [
-                                              TextButton(
-                                                  onPressed: () {
-                                                    Navigator.pop(
-                                                        context, false);
-                                                  },
-                                                  child: const Text(
-                                                    'Não',
-                                                    style: TextStyle(
-                                                        color: Colors.black87,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  )),
-                                              TextButton(
-                                                  onPressed: () {
-                                                    ref
-                                                            .read(
-                                                                currentOrderStateProvider
-                                                                    .notifier)
-                                                            .state =
-                                                        OrderStateWidget.close;
-                                                    Fluttertoast.showToast(
-                                                        msg:
-                                                            "Itens removidos da mesa nº $idTable com sucesso!",
-                                                        toastLength:
-                                                            Toast.LENGTH_LONG,
-                                                        gravity:
-                                                            ToastGravity.TOP,
-                                                        timeInSecForIosWeb: 3,
-                                                        webBgColor: '#151515',
-                                                        textColor: Colors.white,
-                                                        fontSize: 18.0);
-
-                                                    ref
-                                                        .read(itemListProvider
-                                                            .notifier)
-                                                        .clearItemList();
-
-                                                    ref
-                                                        .read(
-                                                            isAddingItemProvider
-                                                                .notifier)
-                                                        .toogle(false);
-
-                                                    Navigator.pop(
-                                                        context, false);
-                                                  },
-                                                  child: const Text(
-                                                    'Sim',
-                                                    style: TextStyle(
-                                                        color: Colors.black87,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  )),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
+        child: Column(
+          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          // crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                isVisible
+                    ? TextButton(
+                        style: TextButton.styleFrom(
+                          minimumSize: Size.zero,
+                          padding: EdgeInsets.zero,
+                        ),
+                        onPressed: () {
+                          if (itemList.isNotEmpty) {
+                            showDialog(
+                              context: context,
+                              builder: (context) => Dialog(
+                                backgroundColor: Colors.transparent,
+                                insetPadding: const EdgeInsets.all(10),
+                                child: Stack(
+                                  clipBehavior: Clip.none,
+                                  alignment: Alignment.center,
+                                  children: <Widget>[
+                                    Container(
+                                      width:
+                                          MediaQuery.of(context).size.width / 2,
+                                      // 1.3,
+                                      height: 200,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                          color: Colors.white),
+                                      padding: const EdgeInsets.fromLTRB(
+                                          20, 50, 20, 20),
+                                      child: const Text(
+                                          "Deseja descartar itens da mesa?",
+                                          style: TextStyle(
+                                              fontSize: 22,
+                                              color: Colors.black87),
+                                          textAlign: TextAlign.center),
                                     ),
-                                  ),
-                                );
-                              } else {
-                                ref
-                                    .read(currentOrderStateProvider.notifier)
-                                    .state = OrderStateWidget.close;
-                                ref
-                                    .read(isAddingItemProvider.notifier)
-                                    .toogle(false);
-                              }
-                            },
-                            child: const Icon(
-                              Icons.close,
-                              color: Colors.white,
-                            ),
-                          )
-                        : const SizedBox(),
+                                    Positioned(
+                                      bottom: 10,
+                                      right: 0,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context, false);
+                                              },
+                                              child: const Text(
+                                                'Não',
+                                                style: TextStyle(
+                                                    color: Colors.black87,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              )),
+                                          TextButton(
+                                              onPressed: () {
+                                                ref
+                                                    .read(
+                                                        currentOrderStateProvider
+                                                            .notifier)
+                                                    .state = OrderStateWidget.close;
+                                                Fluttertoast.showToast(
+                                                    msg:
+                                                        "Itens removidos da mesa nº $idTable com sucesso!",
+                                                    toastLength:
+                                                        Toast.LENGTH_LONG,
+                                                    gravity: ToastGravity.TOP,
+                                                    timeInSecForIosWeb: 3,
+                                                    webBgColor: '#151515',
+                                                    textColor: Colors.white,
+                                                    fontSize: 18.0);
+
+                                                ref
+                                                    .read(itemListProvider
+                                                        .notifier)
+                                                    .clearItemList();
+
+                                                ref
+                                                    .read(isAddingItemProvider
+                                                        .notifier)
+                                                    .toogle(false);
+
+                                                Navigator.pop(context, false);
+                                              },
+                                              child: const Text(
+                                                'Sim',
+                                                style: TextStyle(
+                                                    color: Colors.black87,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              )),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          } else {
+                            ref.read(currentOrderStateProvider.notifier).state =
+                                OrderStateWidget.close;
+                            ref
+                                .read(isAddingItemProvider.notifier)
+                                .toogle(false);
+                          }
+                        },
+                        child: const Icon(
+                          Icons.close,
+                          color: Colors.white,
+                          size: 32,
+                        ),
+                      )
+                    : const SizedBox(),
+                Row(
+                  children: [
                     Text(
                       clientName ?? "",
                       style: TextStyle(
@@ -569,169 +545,200 @@ class SheetHeader extends HookConsumerWidget {
                         color: Colors.white,
                       ),
                     ),
+                    const SizedBox(width: 10),
+                    CircleAvatar(
+                      maxRadius: 30,
+                      backgroundColor: Colors.black54,
+                      child: Center(
+                        child: Text(
+                          idTable.toString(),
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w900,
+                              fontSize: 20),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
-              ),
-              Positioned(
-                right: 0,
-                child: CircleAvatar(
-                  maxRadius: 30,
-                  backgroundColor: Colors.black54,
-                  child: Center(
-                    child: Text(
-                      idTable.toString(),
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w900,
-                          fontSize: 20),
-                    ),
-                  ),
-                ),
-              )
-            ],
-          ),
+              ],
+            ),
+          ],
         ),
       );
     });
   }
 }
 
-class OrderDetails extends HookConsumerWidget {
-  OrderDetails(
-      {super.key,
-      required this.controller,
-      required this.height,
-      required this.width});
-  final Animation<double> controller;
+class SheetHeader2 extends HookConsumerWidget {
   final double height;
   final double width;
+  final bool isVisible;
+  final String? accountName;
+
+  const SheetHeader2({
+    super.key,
+    required this.isVisible,
+    required this.height,
+    required this.width,
+    this.accountName,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // print(ref.watch(currentOrderStateProvider) == OrderStateWidget.open);
-
-    AnimationController dragAreaController = dragItemAreaController(ref);
-    final Animation<double> animation = Tween(begin: .0, end: width - 36)
-        .animate(
-            CurvedAnimation(parent: dragAreaController, curve: Curves.ease));
-
-    var itemList = ref.watch(itemListProvider);
-
-    print(itemList.isEmpty &&
-        ref.watch(currentOrderStateProvider) == OrderStateWidget.open);
-
-    double total = 0;
-    itemList.map((e) {
-      return double.parse(e.price.replaceAll(',', '.')) * e.quantity;
-    });
-    for (var itemCart in itemList) {
-      total = double.parse(itemCart.price.replaceAll(',', '.')) *
-              itemCart.quantity +
-          total;
-      // total = total + total;
-    }
-    // final Animation<double> widgetAnimation = Tween(begin: .0, end: 1.0)
-    //     .animate(CurvedAnimation(
-    //         parent: orderWidgetController(ref), curve: Curves.ease));
-
-    return Padding(
-      padding: const EdgeInsets.only(right: 25.0),
-      child: LayoutBuilder(builder: (context, constraints) {
-        var localHeight = constraints.maxHeight;
-        // print(constraints.maxHeight);
-        return SingleChildScrollView(
-          child: Container(
-            color: Colors.black12,
-            height: localHeight * 0.8,
+    return isVisible
+        ? SizedBox(
+            height: height,
             width: width,
-            child: AnimatedBuilder(
-                animation: dragAreaController,
-                builder: (context, child) {
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      controller.status == AnimationStatus.completed
-                          ? SizedBox(
-                              height: localHeight * 0.6,
-                              width: width,
-                              child: Stack(
-                                children: [
-                                  // Expanded(
-                                  //   child:
-                                  Container(
-                                    decoration: BoxDecoration(
-                                        color: Colors.white70.withOpacity(0.3),
-                                        borderRadius:
-                                            BorderRadius.circular(24)),
-                                    height: localHeight * 0.6,
-                                    width: animation.value,
-                                  ),
-                                  // ),
-                                  itemList.isEmpty
-                                      ? const Center(
-                                          child: AddProductButton(
-                                            buttonName: 'Adicionar Produtos',
-                                          ),
-                                        )
-                                      : DragItemArea(
-                                          width: width,
-                                          height: localHeight,
-                                          controller: controller,
-                                          dragAreaController:
-                                              dragAreaController),
-                                ],
-                              ),
-                            )
-                          : const SizedBox(),
-                      controller.status == AnimationStatus.completed
-                          ? SizedBox(
-                              width: width,
-                              child: const MySeparator(color: Colors.white))
-                          : const SizedBox(),
-                      Container(
-                        height: localHeight * 0.15,
-                        width: width,
-                        padding: const EdgeInsets.symmetric(horizontal: 15),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text(
-                                  'Total',
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 18),
-                                ),
-                                Text(
-                                  total.toString(),
-                                  style: const TextStyle(
-                                      color: Colors.white, fontSize: 18),
-                                )
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                itemList.isNotEmpty
-                                    ? SizedBox(
-                                        width: width * 0.85,
-                                        child: AddOrdertButton(
-                                          buttonName: 'Fechar Pedido',
-                                        ),
-                                      )
-                                    : const SizedBox(),
-                              ],
-                            )
-                          ],
+            child: Column(
+              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              // crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.list_alt_sharp,
+                          color: Colors.white,
                         ),
-                      )
-                    ],
-                  );
-                }),
-          ),
-        );
-      }),
-    );
+                        Text(
+                          'Conta',
+                          style: TextStyle(color: Colors.white, fontSize: 18),
+                        )
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          'ID: 236Wo0KaJduh6vw3OZW0',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                          ),
+                        ),
+                        // animation.status ==
+                        //         AnimationStatus
+                        //             .completed
+                        //     ? spaceHeight
+                        //     : const SizedBox(),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          )
+        : SizedBox();
+  }
+}
+
+class SheetHeader3 extends HookConsumerWidget {
+  final double height;
+  final double width;
+  final bool isVisible;
+  final String? accountName;
+  final Animation<double> animation;
+  final double widthPadding;
+
+  const SheetHeader3({
+    super.key,
+    required this.isVisible,
+    required this.height,
+    required this.width,
+    this.accountName,
+    required this.animation,
+    required this.widthPadding,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentOrderState = ref.watch(currentOrderStateProvider);
+
+    print(height);
+    return isVisible
+        ? Container(
+            color: Colors.transparent,
+            height: height,
+            width: width - (widthPadding * 2),
+            child: DefaultTabController(
+              length: 3,
+              child: Column(
+                children: [
+                  currentOrderState == OrderStateWidget.open
+                      ? const TabBar(
+                          isScrollable: true,
+                          labelColor: Colors.white,
+                          dividerColor: Colors.transparent,
+                          padding: EdgeInsets.all(10),
+                          labelStyle: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                          ),
+                          unselectedLabelColor: Colors.white,
+                          tabs: <Widget>[
+                            Tab(
+                              text: 'Carrinho',
+                              iconMargin: EdgeInsets.all(25),
+                            ),
+                            Tab(
+                              text: 'Resumo',
+                            ),
+                            Tab(
+                              text: 'Detalhado',
+                            ),
+                          ],
+                          // : <Widget>[
+                          //     Tab(
+                          //       icon: Icon(Icons.add_circle),
+                          //     ),
+                          //     Tab(
+                          //       icon: Icon(Icons.check_circle),
+                          //     ),
+                          //     Tab(
+                          //       icon: Icon(Icons.cancel_rounded),
+                          //     ),
+                          //   ],
+                          indicator: ShapeDecoration(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              )),
+                              color: Colors.black54),
+                        )
+                      : const SizedBox(),
+                  animation.status == AnimationStatus.completed
+                      ? const SizedBox(height: 50)
+                      : const SizedBox(),
+                  Expanded(
+                    child: LayoutBuilder(builder: (context, constraints) {
+                      print('height1 === $height');
+                      print('height ===== ${constraints.maxHeight}');
+                      return TabBarView(
+                        children: [
+                          OrderDetails(
+                            controller: animation,
+                            height: constraints.maxHeight,
+                            width: width,
+                          ),
+                          const SizedBox(
+                            height: 100,
+                            width: 100,
+                          ),
+                          const SizedBox(
+                            height: 100,
+                            width: 100,
+                          ),
+                        ],
+                      );
+                    }),
+                  ),
+                ],
+              ),
+            ),
+          )
+        : const SizedBox();
   }
 }
 
@@ -816,34 +823,3 @@ class ZigZagClipper extends CustomClipper<Path> {
 //     return true;
 //   }
 // }
-
-class MySeparator extends StatelessWidget {
-  const MySeparator({super.key, this.height = 1, this.color = Colors.black});
-  final double height;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) {
-        final boxWidth = constraints.constrainWidth();
-        const dashWidth = 10.0;
-        final dashHeight = height;
-        final dashCount = (boxWidth / (2 * dashWidth)).floor();
-        return Flex(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          direction: Axis.horizontal,
-          children: List.generate(dashCount, (_) {
-            return SizedBox(
-              width: dashWidth,
-              height: dashHeight,
-              child: DecoratedBox(
-                decoration: BoxDecoration(color: color),
-              ),
-            );
-          }),
-        );
-      },
-    );
-  }
-}

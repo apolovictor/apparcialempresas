@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class OrderItem {
-  final String idDocument;
+  final String productIdDocument;
   final String productCategory;
   final String productName;
   final String photo_url;
@@ -9,7 +9,7 @@ class OrderItem {
   final int quantity;
 
   OrderItem(
-      {required this.idDocument,
+      {required this.productIdDocument,
       required this.productCategory,
       required this.productName,
       required this.photo_url,
@@ -17,19 +17,30 @@ class OrderItem {
       required this.quantity});
 
   OrderItem copyWith(
-      {String? idDocument,
+      {String? productIdDocument,
       String? productCategory,
       String? productName,
       String? photo_url,
       String? price,
       int? quantity}) {
     return OrderItem(
-        idDocument: idDocument ?? this.idDocument,
+        productIdDocument: productIdDocument ?? this.productIdDocument,
         productCategory: productCategory ?? this.productCategory,
         productName: productName ?? this.productName,
         photo_url: photo_url ?? this.photo_url,
         price: price ?? this.price,
         quantity: quantity ?? this.quantity);
+  }
+
+  static OrderItem fromDoc(dynamic doc) {
+    return OrderItem(
+      productIdDocument: doc.data()['productIdDocument'],
+      productCategory: doc.data()['productCategory'],
+      productName: doc.data()['productName'],
+      photo_url: doc.data()['photo_url'],
+      price: doc.data()['price'],
+      quantity: doc.data()['quantity'],
+    );
   }
 }
 

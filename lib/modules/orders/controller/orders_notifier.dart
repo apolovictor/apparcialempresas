@@ -2,16 +2,21 @@ import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:equatable/equatable.dart';
 
+import '../../home/controller/product_notifier.dart';
+import '../../home/model/orders_model.dart';
 import '../model/order_model.dart';
 
 var tableIdDocumentNotifier = StateProvider((_) => '');
 
 FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+final _businessCollection = _firestore.collection('business');
 
 class RegisterOrder extends ChangeNotifier {
   static String idDocument = "bandiis";
@@ -50,60 +55,101 @@ class RegisterOrder extends ChangeNotifier {
     }
   }
 
-  Future<bool> registerItemOrder(
-      String idDocumentTable, List<OrderItem> itemList) async {
+  registerItemOrder(String idDocumentTable, List<OrderItem> itemList) async {
     final businessCollection = _firestore.collection('business');
-    try {
-      for (var item in itemList) {
-        Future.delayed(const Duration(microseconds: 100), () {
-          print(item.productName);
-          for (var i = 0; i < item.quantity; i++) {
-            Future.delayed(const Duration(microseconds: 100), () {
-              var date1 = DateTime.now().microsecondsSinceEpoch;
-              var date2 = DateTime(2154, 2, 1).microsecondsSinceEpoch;
-              var result = date2 - date1;
-              // print('result ========= ${item.productName} -- $result');
-              final docRef = businessCollection
-                  .doc(idDocument)
-                  .collection("detailOrders")
-                  .doc('$result-${item.productName}-$i');
 
-              docRef.set({
-                'orderDocument': idDocumentTable,
-                'idDocument': item.idDocument,
-                'productCategory': item.productCategory,
-                'productName': item.productName,
-                'price': item.price,
-                'createdAt': FieldValue.serverTimestamp(),
-                'status': 1
-              });
-            });
-          }
-        });
-        // var date1 = DateTime.now().microsecondsSinceEpoch;
-        // var date2 = DateTime(2154, 2, 1).microsecondsSinceEpoch;
-        // var result = date2 - date1;
-        // print('result ========= $result');
-        // final docRef = businessCollection
-        //     .doc(idDocument)
-        //     .collection("detailOrders")
-        //     .doc(result.toString());
+    updateStock(int quantity, String productIdDocument) async {
+      return await FirebaseFirestore.instance
+          .runTransaction((transaction) async {
+        var documentSnapshot = await transaction.get(businessCollection
+            .doc(idDocument)
+            .collection("products")
+            .doc(productIdDocument));
+        if (quantity <= documentSnapshot.data()!['quantity']) {
+          return true;
+        } else {
+          return documentSnapshot.data();
+        }
 
-        // await docRef.set({
-        //   'orderDocument': idDocumentTable,
-        //   'idDocument': item.idDocument,
-        //   'productCategory': item.productCategory,
-        //   'productName': item.productName,
-        //   'price': item.price,
-        //   'createdAt': FieldValue.serverTimestamp(),
-        //   'status': 1
-        // });
-      }
-      return true;
-    } catch (e) {
-      // print(e.message);
+        // print(documentSnapshot.data());
+      });
+    }
 
-      return Future.error(e);
+    // var newMap = groupBy(itemList, (OrderItem obj) => obj.productIdDocument);
+    // print(itemList.length);
+    for (var i = 0; i < itemList.length; i++) {
+      // print("item.productIdDocument  === ${itemList[i].productIdDocument}");
+      var docRef = businessCollection
+          .doc(idDocument)
+          .collection("products")
+          .doc(itemList[i].productIdDocument);
+      // .snapshots()
+      // .map((doc) => OrderItem.fromDoc(doc))
+      // .first;
+      // print(itemList[i].productIdDocument);
+      // print(itemList
+      //     .firstWhere((e) => e.productIdDocument == docRef.id)
+      //     .productName);
+
+      // try {
+      var result = updateStock(
+          itemList.firstWhere((e) => e.productIdDocument == docRef.id).quantity,
+          docRef.id);
+
+      result.then((value) {
+        print(value);
+      });
+
+      //     // for (var item in itemList) {
+
+      //     // print(newMap.keys);
+
+      //     // newMap.keys.forEach((item) async {
+
+      // print(
+      //     'documentSnapshot === ${documentSnapshot.data()!['quantity']} == ${item.quantity} ');
+      // if (item.quantity <= documentSnapshot.data()!['quantity']) {
+      //   transaction.update(
+      //       businessCollection
+      //           .doc(idDocument)
+      //           .collection("products")
+      //           .doc(item.productIdDocument),
+      //       <String, dynamic>{
+      //         'quantity': FieldValue.increment(-item.quantity)
+      //       });
+      // }
+      // });
+
+      // // print(item.productName);
+      // if (documentSnapshot.data()) {}
+      // for (var i = 0; i < item.quantity; i++) {
+      //   var date1 = DateTime.now().microsecondsSinceEpoch;
+      //   var date2 = DateTime(2154, 2, 1).microsecondsSinceEpoch;
+      //   var result = date2 - date1;
+      //   // print('result ========= ${item.productName} -- $result');
+      //   final docRef = businessCollection
+      //       .doc(idDocument)
+      //       .collection("detailOrders")
+      //       .doc('$result-${item.productName}-$i');
+
+      //   docRef.set({
+      //     'orderDocument': idDocumentTable,
+      //     'productDocument': item.productIdDocument,
+      //     'productCategory': item.productCategory,
+      //     'productName': item.productName,
+      //     'price': item.price,
+      //     'createdAt': FieldValue.serverTimestamp(),
+      //     'finishedAt': '',
+      //     'status': 1
+      //   });
+      // }
+      // }
+      //     return true;
+      // } catch (e) {
+      //   // print(e.message);
+
+      //   return Future.error(e);
+      // }
     }
   }
 }
@@ -198,7 +244,7 @@ class ItemListController extends StateNotifier<List<OrderItem>> {
   updateItem(int index, OrderItem item) {
     state = [
       ...state.map(
-        (e) => e.idDocument == item.idDocument
+        (e) => e.productIdDocument == item.productIdDocument
             ? e.copyWith(quantity: e.quantity + 1)
             : e,
       ),
@@ -208,9 +254,11 @@ class ItemListController extends StateNotifier<List<OrderItem>> {
   updateItemQuantity(String checkQuantity, OrderItem item) {
     state = [
       ...state.map(
-        (e) => e.idDocument == item.idDocument && checkQuantity == 'increment'
+        (e) => e.productIdDocument == item.productIdDocument &&
+                checkQuantity == 'increment'
             ? e.copyWith(quantity: e.quantity + 1)
-            : e.idDocument == item.idDocument && checkQuantity == 'decrement'
+            : e.productIdDocument == item.productIdDocument &&
+                    checkQuantity == 'decrement'
                 ? e.copyWith(quantity: e.quantity - 1)
                 : e,
       ),
@@ -219,7 +267,7 @@ class ItemListController extends StateNotifier<List<OrderItem>> {
 
   removeItem(OrderItem item) {
     state = [
-      ...state.where((e) => e.idDocument != item.idDocument),
+      ...state.where((e) => e.productIdDocument != item.productIdDocument),
     ];
   }
 
@@ -388,4 +436,14 @@ final flingVelocityProvider = StateProvider((ref) => 0.0);
 
 final orderStateListProvider = Provider<List<OrderStateWidget>>((ref) {
   return OrderStateWidget.values;
+});
+
+final recentOrdersNotifier = StreamProvider<List<DashboardOrders>>((ref) {
+  return _businessCollection
+      .doc(ref.watch(idDocumentNotifier))
+      .collection("detailOrders")
+      .where('status', isEqualTo: 1)
+      .snapshots()
+      .map((snapshot) =>
+          snapshot.docs.map((doc) => DashboardOrders.fromDoc(doc)).toList());
 });

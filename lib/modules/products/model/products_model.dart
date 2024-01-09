@@ -6,7 +6,7 @@ class Product {
   String secondaryColor;
   String name;
   Map<String, dynamic> price;
-  String quantity;
+  int quantity;
   String? description;
   String? logo;
   int status;
