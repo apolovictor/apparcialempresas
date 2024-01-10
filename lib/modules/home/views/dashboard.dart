@@ -22,13 +22,6 @@ class Dashboard extends HookConsumerWidget {
               .read(filteredProductDashboardProvider.notifier)
               .filteredList(products, "");
         });
-        //   for (var product in products) {
-        //     WidgetsBinding.instance.addPostFrameCallback((_) {
-        //       ref
-        //           .read(filteredProductDashboardProvider.notifier)
-        //           .filteredList(product);
-        //     });
-        //   }
       }
 
       return Stack(

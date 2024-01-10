@@ -6,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../controller/orders_notifier.dart';
 import '../model/order_model.dart';
 import 'order_details.dart';
+import 'table_bill.dart';
 
 // const double startHeight = 0;
 const double iconStartSize = 44; //<-- add edge values
@@ -41,64 +42,19 @@ class AddOrderWidget extends HookConsumerWidget {
         ? 120
         : 0;
 
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   ref.read(isOldOpenProvider.notifier).toogle(isOpen);
-    // });
-
     final Animation<double> animation = Tween(begin: .0, end: 1.0).animate(
         CurvedAnimation(
             parent: orderWidgetController(ref), curve: Curves.ease));
-    // final controller = orderWidgetController(ref, 0);
 
     double maxHeight =
         MediaQuery.of(context).size.height; //<-- Get max height of the screen
     double lerp(double min, double max) => ref.watch(
         lerpProvider(MyParameter(min: min, max: max, value: controller.value)));
-    // print(animation.status);
-    // lerpDouble(min, max,
-    //     controller.value)!; //<-- lerp any value based on the controller
-
-    // double headerTopMargin = lerp(
-    //     20, 20 + MediaQuery.of(context).padding.top); //<-- Add new property
-
-    // double headerFontSize = lerp(14, 24); //<-- Add new property
-
-    // double itemBorderRadius = lerp(8, 24); //<-- increase item border radius
 
     double verticalPadding = ref.watch(
         lerpProvider(MyParameter(min: 0, max: 32, value: controller.value)));
 
-    // lerp(6, 32);
-
-    // double iconSize = lerp(iconStartSize, iconEndSize); //<-- increase icon size
-
-    // double iconTopMargin(int index) => lerp(
-    //     iconStartMarginTop,
-    //     iconEndMarginTop * 2 +
-    //         index *
-    //             (iconsVerticalSpacing +
-    //                 iconEndSize)); //<-- calculate top margin based on header margin, and size of all of icons above (from small to big)
-
-    // double iconLeftMargin(int index) => lerp(
-    //     index * (iconsHorizontalSpacing + iconStartSize),
-    //     0); //<-- calculate left margin (from big to small)
-
     Widget spaceHeight = SizedBox(height: height * 0.05);
-
-    // Widget _buildFullItem(Event event) {
-    //   int index = events.indexOf(event);
-    //   return ExpandedEventItem(
-    //     topMargin: iconTopMargin(
-    //         index), //<--provide margins and height same as for icon
-    //     leftMargin: iconLeftMargin(index),
-    //     height: iconSize,
-    //     isVisible:
-    //         controller.status == AnimationStatus.completed, //<--set visibility
-    //     borderRadius: itemBorderRadius, //<-- pass border radius
-    //     title: event.title, //<-- data to be displayed
-    //     date: event.date, //<-- data to be displayed
-    //   );
-    // }
 
     void _toggle() {
       if (currentOrderState == OrderStateWidget.open) {
@@ -108,14 +64,6 @@ class AddOrderWidget extends HookConsumerWidget {
         ref.read(currentOrderStateProvider.notifier).state =
             OrderStateWidget.open;
       }
-
-      // ref.read(isOpenProvider.notifier).toogle(!isOpen);
-      // notifier.toogle(isOpen);
-      // ref.read(isOpenProvider.notifier).toogle(isOpen);
-      // final bool isOpen = animation.status == AnimationStatus.completed;
-      // animation.fling(
-      //     velocity:
-      //         isOpen ? -2 : 2); //<-- ...snap the sheet in proper direction
     }
 
     void _handleDragUpdate(DragUpdateDetails details) {
@@ -168,9 +116,6 @@ class AddOrderWidget extends HookConsumerWidget {
       //           : 2.0); //<-- or just continue to whichever edge is closer
       // }
     }
-
-    // final order =
-    //     ref.read(ordersNotifierProvider).getOrderByIdDocument(idDocument);
 
     return idDocument.isNotEmpty
         ? AnimatedBuilder(
@@ -256,96 +201,6 @@ class AddOrderWidget extends HookConsumerWidget {
                                           width: minWidth * 0.3,
                                           animation: animation,
                                           widthPadding: widthPadding),
-                                      //  Container(
-                                      //   color: Colors.transparent,
-                                      //   height: lerp(minHeight, height),
-                                      //   width: minWidth * 0.274,
-                                      //   child: DefaultTabController(
-                                      //     length: 3,
-                                      //     child: Column(
-                                      //       children: [
-                                      //         currentOrderState ==
-                                      //                 OrderStateWidget.open
-                                      //             ? const TabBar(
-                                      //                 isScrollable: true,
-                                      //                 labelColor: Colors.white,
-                                      //                 dividerColor:
-                                      //                     Colors.transparent,
-                                      //                 padding:
-                                      //                     EdgeInsets.all(10),
-                                      //                 labelStyle: TextStyle(
-                                      //                   fontWeight:
-                                      //                       FontWeight.bold,
-                                      //                   fontSize: 15,
-                                      //                 ),
-                                      //                 unselectedLabelColor:
-                                      //                     Colors.white,
-                                      //                 tabs: <Widget>[
-                                      //                   Tab(
-                                      //                     text: 'Carrinho',
-                                      //                     iconMargin:
-                                      //                         EdgeInsets.all(
-                                      //                             25),
-                                      //                   ),
-                                      //                   Tab(
-                                      //                     text: 'Resumo',
-                                      //                   ),
-                                      //                   Tab(
-                                      //                     text: 'Detalhado',
-                                      //                   ),
-                                      //                 ],
-                                      //                 // : <Widget>[
-                                      //                 //     Tab(
-                                      //                 //       icon: Icon(Icons.add_circle),
-                                      //                 //     ),
-                                      //                 //     Tab(
-                                      //                 //       icon: Icon(Icons.check_circle),
-                                      //                 //     ),
-                                      //                 //     Tab(
-                                      //                 //       icon: Icon(Icons.cancel_rounded),
-                                      //                 //     ),
-                                      //                 //   ],
-                                      //                 indicator:
-                                      //                     ShapeDecoration(
-                                      //                         shape:
-                                      //                             RoundedRectangleBorder(
-                                      //                                 borderRadius:
-                                      //                                     BorderRadius
-                                      //                                         .all(
-                                      //                           Radius.circular(
-                                      //                               10),
-                                      //                         )),
-                                      //                         color: Colors
-                                      //                             .black54),
-                                      //               )
-                                      //             : const SizedBox(),
-                                      //         animation.status ==
-                                      //                 AnimationStatus.completed
-                                      //             ? const SizedBox(height: 50)
-                                      //             : const SizedBox(),
-                                      //         Expanded(
-                                      //           child: TabBarView(
-                                      //             children: [
-                                      //               OrderDetails(
-                                      //                 controller: animation,
-                                      //                 height: height * 0.5,
-                                      //                 width: minWidth * 0.29,
-                                      //               ),
-                                      //               const SizedBox(
-                                      //                 height: 100,
-                                      //                 width: 100,
-                                      //               ),
-                                      //               const SizedBox(
-                                      //                 height: 100,
-                                      //                 width: 100,
-                                      //               ),
-                                      //             ],
-                                      //           ),
-                                      //         ),
-                                      //       ],
-                                      //     ),
-                                      //   ),
-                                      // ),
                                     ),
                                     Positioned(
                                         top: 0,
@@ -711,14 +566,11 @@ class SheetHeader3 extends HookConsumerWidget {
                       return TabBarView(
                         children: [
                           OrderDetails(
-                            controller: animation,
-                            height: constraints.maxHeight,
-                            width: width,
-                          ),
-                          const SizedBox(
-                            height: 100,
-                            width: 100,
-                          ),
+                              controller: animation,
+                              height: constraints.maxHeight,
+                              width: width),
+                          TableBill(
+                              height: constraints.maxHeight, width: width),
                           const SizedBox(
                             height: 100,
                             width: 100,

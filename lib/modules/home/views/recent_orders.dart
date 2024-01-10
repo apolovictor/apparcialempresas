@@ -32,11 +32,15 @@ class RecentOrders extends HookConsumerWidget {
                   ),
                   Text(
                     recentOrders[i].productName,
-                    style: TextStyle(fontSize: 18),
+                    style: const TextStyle(fontSize: 18),
                   ),
                   Text(recentOrders[i].price),
                   MaterialButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      ref
+                          .read(recentOrdersDashboardProvider.notifier)
+                          .updateRecentOrder(recentOrders[i].id);
+                    },
                     color: Colors.black87,
                     textColor: Colors.white,
                     child: const Text('Atendido'),

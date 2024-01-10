@@ -42,6 +42,7 @@ class DashboardDetailOrders {
   final Timestamp createdAt;
   final dynamic? finishedAt;
   final int status;
+  final String id;
 
   DashboardDetailOrders({
     required this.orderDocument,
@@ -53,6 +54,7 @@ class DashboardDetailOrders {
     required this.createdAt,
     required this.finishedAt,
     required this.status,
+    required this.id,
   });
 
   static DashboardDetailOrders fromDoc(dynamic doc) {
@@ -66,6 +68,7 @@ class DashboardDetailOrders {
       createdAt: doc.data()['createdAt'],
       finishedAt: doc.data()['finishedAt'],
       status: doc.data()['status'],
+      id: doc.id,
     );
   }
 

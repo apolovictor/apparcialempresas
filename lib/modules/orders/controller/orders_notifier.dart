@@ -439,6 +439,40 @@ class RecentOrdersNotifier extends StreamNotifier<List<DashboardDetailOrders>> {
       }).toList();
     });
   }
+
+  Stream<List<DashboardDetailOrders>> getOrdersByIdDocumentTable(
+      String orderDocument) {
+    return _businessCollection
+        .doc(ref.watch(idDocumentNotifier))
+        .collection("detailOrders")
+        .where('orderDocument', isEqualTo: orderDocument)
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs.map((doc) {
+        DashboardDetailOrders detailOrdersTableBill =
+            DashboardDetailOrders.fromDoc(doc);
+
+        return detailOrdersTableBill;
+      }).toList();
+    });
+  }
+
+  Future<bool> updateRecentOrder(String orderIdDocument) async {
+    final businessCollection = _firestore.collection('business');
+
+    try {
+      await businessCollection
+          .doc(ref.watch(idDocumentNotifier))
+          .collection("detailOrders")
+          .doc(orderIdDocument)
+          .update({'status': 2});
+
+      return true;
+    } catch (e) {
+      // print(e.message);
+      return Future.error(e);
+    }
+  }
 }
 
 final recentOrdersDashboardProvider =

@@ -46,7 +46,7 @@ class DragItemArea extends HookConsumerWidget {
                     children: [
                       Container(
                         margin: const EdgeInsets.only(bottom: 10),
-                        padding: EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(8),
                         width: double.infinity,
                         height: iconEndSize + 20,
                         decoration: BoxDecoration(

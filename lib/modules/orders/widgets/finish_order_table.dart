@@ -3,31 +3,32 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../home/model/orders_model.dart';
 import '../controller/orders_notifier.dart';
 
-class AddOrdertButton extends HookConsumerWidget {
-  AddOrdertButton({
+class FinishOrderTabletButton extends HookConsumerWidget {
+  FinishOrderTabletButton({
     super.key,
     required this.buttonName,
+    required this.listDetailOrders,
   });
 
   final String buttonName;
+  final List<DashboardDetailOrders> listDetailOrders;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final itemList = ref.watch(itemListProvider);
     final idDocumentTable = ref.watch(tableIdDocumentNotifier);
 
-    final Animation<double> animation = Tween(begin: .0, end: 1.0).animate(
-        CurvedAnimation(
-            parent: buttonProductAddController(ref), curve: Curves.ease));
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return ElevatedButton(
           onPressed: () {
-            if (itemList.isEmpty) {
+            if (listDetailOrders.where((e) => e.status == 1).isNotEmpty) {
               Fluttertoast.showToast(
-                  msg: "Adicione um item a lista!",
+                  msg:
+                      "Existem items em aberto. Feche-os antes de finalizar a conta!",
                   toastLength: Toast.LENGTH_LONG,
                   gravity: ToastGravity.TOP,
                   timeInSecForIosWeb: 3,
@@ -35,22 +36,16 @@ class AddOrdertButton extends HookConsumerWidget {
                   textColor: Colors.white,
                   fontSize: 18.0);
               return;
+            } else {
+              Fluttertoast.showToast(
+                  msg: "Fechamento de pedido em desenvolvimento!",
+                  toastLength: Toast.LENGTH_LONG,
+                  gravity: ToastGravity.TOP,
+                  timeInSecForIosWeb: 4,
+                  webBgColor: '#151515',
+                  textColor: Colors.white,
+                  fontSize: 18.0);
             }
-            ref
-                .read(registerOrderProvider)
-                .registerItemOrder(idDocumentTable, itemList);
-            ref.read(itemListProvider.notifier).clearItemList();
-            ref.read(currentOrderStateProvider.notifier).state =
-                OrderStateWidget.close;
-            ref.read(isAddingItemProvider.notifier).toogle(false);
-            Fluttertoast.showToast(
-                msg: "Pedido realizado com sucesso!",
-                toastLength: Toast.LENGTH_LONG,
-                gravity: ToastGravity.TOP,
-                timeInSecForIosWeb: 4,
-                webBgColor: '#151515',
-                textColor: Colors.white,
-                fontSize: 18.0);
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.black87,
