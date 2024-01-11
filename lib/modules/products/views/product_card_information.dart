@@ -25,7 +25,7 @@ class BasicInformations extends HookConsumerWidget {
         case Icons.attach_money_rounded:
           return price['price'];
         case Icons.security_update_warning:
-          return quantity;
+          return quantity.toString();
         case Icons.star:
           return "4.8";
         default:
