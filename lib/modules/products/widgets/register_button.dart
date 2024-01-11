@@ -67,7 +67,7 @@ class RegisterButton extends HookConsumerWidget {
                               .replaceAll(RegExp('[^0-9,]'), ''),
                           'promo': '0,00'
                         },
-                        ref.watch(addProductQuantityProvider).text,
+                        int.parse(ref.watch(addProductQuantityProvider).text),
                         categories!
                             .firstWhere((e) => e.documentId == category)
                             .color!,

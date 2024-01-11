@@ -15,7 +15,7 @@ class RegisterProduct extends ChangeNotifier {
   Future<bool> registerProduct(
       String productName,
       Map<String, String> productPrice,
-      String productQuantity,
+      int productQuantity,
       String color,
       String secondaryColor,
       String category,

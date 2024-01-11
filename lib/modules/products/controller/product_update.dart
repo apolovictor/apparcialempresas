@@ -8,7 +8,7 @@ class UpdateProduct extends ChangeNotifier {
   static String idDocument = "bandiis";
 
   Future<bool> updateQuickProduct(String productId, String productName,
-      String productPrice, String productPromo, String productQuantity) async {
+      String productPrice, String productPromo, int productQuantity) async {
     final businessCollection = _firestore.collection('business');
 
     try {

@@ -65,25 +65,26 @@ class UpdateButton extends HookConsumerWidget {
                   .text
                   .replaceAll(RegExp('[^0-9,]'), ''));
 
-              final result =
-                  await ref.read(updateProductProvider).updateQuickProduct(
-                        product.documentId!,
-                        ref.watch(productNameProvider).text.isEmpty
-                            ? product.name
-                            : ref.watch(productNameProvider).text,
-                        ref.watch(productPriceProvider).text.isEmpty
-                            ? product.price['price']
-                            : ref
-                                .watch(productPriceProvider)
-                                .text
-                                .replaceAll(RegExp('[^0-9,]'), ''),
-                        ref.watch(productPromoProvider).text.isEmpty
-                            ? product.price['promo']
-                            : ref.watch(productPromoProvider).text,
-                        ref.watch(productQuantityProvider).text.isEmpty
-                            ? product.quantity.toString()
-                            : ref.watch(productQuantityProvider).text,
-                      );
+              final result = await ref
+                  .read(updateProductProvider)
+                  .updateQuickProduct(
+                    product.documentId!,
+                    ref.watch(productNameProvider).text.isEmpty
+                        ? product.name
+                        : ref.watch(productNameProvider).text,
+                    ref.watch(productPriceProvider).text.isEmpty
+                        ? product.price['price']
+                        : ref
+                            .watch(productPriceProvider)
+                            .text
+                            .replaceAll(RegExp('[^0-9,]'), ''),
+                    ref.watch(productPromoProvider).text.isEmpty
+                        ? product.price['promo']
+                        : ref.watch(productPromoProvider).text,
+                    ref.watch(productQuantityProvider).text.isEmpty
+                        ? product.quantity
+                        : int.parse(ref.watch(productQuantityProvider).text),
+                  );
 
               if (result) {
                 ref.read(productNameProvider.notifier).clear();
