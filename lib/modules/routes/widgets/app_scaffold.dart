@@ -59,7 +59,7 @@ class AppScaffold extends HookConsumerWidget {
     // });
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       drawer: displayMobileLayout
           ? const AppDrawer(
               // orders: orders,
