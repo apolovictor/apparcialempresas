@@ -187,10 +187,10 @@ class ProductAdd extends HookConsumerWidget {
                                 const SizedBox(height: 25),
                                 Container(
                                   height: isActiveProductRegister
-                                      ? width * 0.25 - 75
+                                      ? width * 0.2 - 75
                                       : 0,
                                   width: isActiveProductRegister
-                                      ? width * 0.25 - 75
+                                      ? width * 0.2 - 75
                                       : 0,
                                   decoration: BoxDecoration(
                                       // gradient: LinearGradient(
