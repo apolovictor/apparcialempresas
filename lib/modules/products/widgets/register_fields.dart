@@ -24,8 +24,7 @@ Widget registerFieldWidget(
             hintStyle: const TextStyle(color: Colors.white),
             filled: true,
           ),
-          keyboardType:
-              fieldName == "Nome" ? TextInputType.text : TextInputType.number)
+          keyboardType: TextInputType.number)
       : TextFormField(
           controller: controller,
           decoration: InputDecoration(

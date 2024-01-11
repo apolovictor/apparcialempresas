@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 
 Widget fieldWidget(TextEditingController controller, String fieldName,
     String hintText, BuildContext context, Color secondaryColor) {
-  return fieldName == 'Preço' || fieldName == 'Promoção'
+  return fieldName == 'Preço' ||
+          fieldName == 'Promoção' ||
+          fieldName == 'Quantidade'
       ? TextFormField(
           inputFormatters: [
               CurrencyTextInputFormatter(
@@ -19,8 +21,7 @@ Widget fieldWidget(TextEditingController controller, String fieldName,
             // fillColor: const Color(0xFFD7D7F4),
             filled: true,
           ),
-          keyboardType:
-              fieldName == "Nome" ? TextInputType.text : TextInputType.number)
+          keyboardType: TextInputType.number)
       : TextFormField(
           controller: controller,
           decoration: InputDecoration(
