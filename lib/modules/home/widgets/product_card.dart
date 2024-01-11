@@ -32,7 +32,7 @@ class ProductCardDashboard extends HookConsumerWidget {
                         fontSize: 28, fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    "R\$ ${product.price['price']}",
+                    "R\$ ${product.price.price}",
                     style: const TextStyle(fontSize: 17, color: Colors.grey),
                   ),
                   const SizedBox(

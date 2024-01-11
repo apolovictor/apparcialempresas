@@ -18,7 +18,7 @@ class NeumorphismTable extends HookConsumerWidget {
   final double avatarSize;
   final DashboardTables table;
   final double padding;
-  final String? total;
+  final double? total;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -38,11 +38,12 @@ class NeumorphismTable extends HookConsumerWidget {
               Text(
                 table.idTable.toString(),
                 style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                    const TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
               ),
               Text(
-                total ?? '',
-                style: const TextStyle(fontSize: 18),
+                total != null ? 'R\$ $total' : '',
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.w300),
               ),
             ],
           ),
@@ -51,41 +52,3 @@ class NeumorphismTable extends HookConsumerWidget {
     );
   }
 }
-
-// class NeumorphismTable extends StatefulHookConsumerWidget {
-//   const NeumorphismTable({super.key, required this.child});
-
-//   final Widget child;
-
-//   @override
-//   ConsumerState<ConsumerStatefulWidget> createState() =>
-//       _NeumorphismTableState();
-// }
-
-// class _NeumorphismTableState extends ConsumerState<NeumorphismTable> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       // padding: const EdgeInsets.all(75),
-//       height: 160,
-//       width: 160,
-//       decoration: BoxDecoration(
-//         color: Colors.grey[300],
-//         borderRadius: BorderRadius.circular(75),
-//         boxShadow: [
-//           BoxShadow(
-//               color: Colors.grey[500]!,
-//               blurRadius: 24,
-//               offset: const Offset(6, 6),
-//               spreadRadius: 1),
-//           const BoxShadow(
-//               color: Colors.white,
-//               blurRadius: 24,
-//               offset: Offset(-6, -6),
-//               spreadRadius: 1),
-//         ],
-//       ),
-//       child: widget.child,
-//     );
-//   }
-// }

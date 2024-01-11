@@ -11,7 +11,7 @@ class DashboardTables {
     this.status,
   );
 
-  static DashboardTables fromDoc(Map<String, dynamic>? doc) {
+  static DashboardTables fromDoc(dynamic doc) {
     return DashboardTables(
       doc!['idTable'],
       doc['idDocument'],

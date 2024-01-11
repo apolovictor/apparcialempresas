@@ -21,20 +21,49 @@ class RecentOrders extends HookConsumerWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    height: 50,
-                    width: 50,
-                    child: RemotePicture(
-                      mapKey: recentOrders[i].productPhoto,
-                      imagePath:
-                          'gs://appparcial-123.appspot.com/products/${recentOrders[i].productPhoto}',
-                    ),
-                  ),
+                  FutureBuilder<String>(
+                      future: ref
+                          .read(recentOrdersDashboardProvider.notifier)
+                          .getTableByOrderIdDocument(
+                              recentOrders[i].orderDocument),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<String> snapshot) {
+                        if (snapshot.hasError) {
+                          return const Text("Something went wrong");
+                        }
+
+                        return snapshot.data != null
+                            ? CircleAvatar(
+                                maxRadius: 30,
+                                backgroundColor: Colors.black87,
+                                child: Center(
+                                    child: Text(
+                                  snapshot.data!,
+                                  style: const TextStyle(
+                                      fontSize: 18, color: Colors.white),
+                                )),
+                              )
+                            : const SizedBox();
+                      }),
+                  // Container(
+                  //   height: 50,
+                  //   width: 50,
+                  //   child: RemotePicture(
+                  //     mapKey: recentOrders[i].productPhoto,
+                  //     imagePath:
+                  //         'gs://appparcial-123.appspot.com/products/${recentOrders[i].productPhoto}',
+                  //   ),
+                  // ),
                   Text(
                     recentOrders[i].productName,
-                    style: const TextStyle(fontSize: 18),
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.w300),
                   ),
-                  Text(recentOrders[i].price),
+                  Text(
+                    recentOrders[i].price.toString(),
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.w300),
+                  ),
                   MaterialButton(
                     onPressed: () {
                       ref

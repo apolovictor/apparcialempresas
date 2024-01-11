@@ -1,11 +1,29 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+
+class Price {
+  double price;
+  double? promo;
+
+  Price({
+    required this.price,
+    this.promo,
+  });
+
+  static Price fromDoc(Map<String, dynamic> doc) {
+    return Price(
+      price: doc['price']!,
+      promo: doc['promo'],
+    );
+  }
+}
 
 class Product {
   String categories;
   String primaryColor;
   String secondaryColor;
   String name;
-  Map<String, dynamic> price;
+  Price price;
   int quantity;
   String? description;
   String? logo;
@@ -40,17 +58,17 @@ class Product {
     };
   }
 
-  static Product fromDoc(dynamic doc) {
+  static Product fromDoc(DocumentSnapshot<Map<String, dynamic>> doc) {
     return Product(
-      categories: doc.data()['categories'],
-      primaryColor: doc.data()['color'],
-      secondaryColor: doc.data()['secondaryColor'],
-      name: doc.data()['name'],
-      price: doc.data()['price'],
-      quantity: doc.data()['quantity'],
-      description: doc.data()['description'],
-      logo: doc.data()['photo_url'],
-      status: doc.data()['status'],
+      categories: doc.data()!['categories'],
+      primaryColor: doc.data()!['color'],
+      secondaryColor: doc.data()!['secondaryColor'],
+      name: doc.data()!['name'],
+      price: Price.fromDoc(doc.data()!['price']),
+      quantity: doc.data()!['quantity'],
+      description: doc.data()!['description'],
+      logo: doc.data()!['photo_url'],
+      status: doc.data()!['status'],
       documentId: doc.id,
     );
   }

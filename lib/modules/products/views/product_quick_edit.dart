@@ -281,7 +281,9 @@ class ProducQuickEdit extends HookConsumerWidget {
                                                 productPriceController,
                                                 "Preço",
                                                 data[productSelected]
-                                                    .price['price'],
+                                                    .price
+                                                    .price
+                                                    .toString(),
                                                 context,
                                                 productSelected > -1
                                                     ? Color(int.parse(
@@ -305,7 +307,9 @@ class ProducQuickEdit extends HookConsumerWidget {
                                                 productPromoController,
                                                 "Promoção",
                                                 data[productSelected]
-                                                    .price['promo'],
+                                                    .price
+                                                    .promo
+                                                    .toString(),
                                                 context,
                                                 productSelected > -1
                                                     ? Color(int.parse(

@@ -7,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../orders/controller/orders_notifier.dart';
+import '../model/orders_model.dart';
 import 'tables.dart';
 
 class ActiveTableWidget extends HookConsumerWidget {
@@ -33,7 +34,7 @@ class ActiveTableWidget extends HookConsumerWidget {
     final idDocumentTable = ref.watch(tableIdDocumentNotifier);
     final itemOrderList = ref
         .read(recentOrdersDashboardProvider.notifier)
-        .getOrdersByIdDocumentTable(idDocumentTable);
+        .getOrdersByIdDocumentTable(dashboardTable.documentId!);
 
     return AnimationLimiter(
         key: GlobalKey<AnimatedListState>(debugLabel: i.toString()),
@@ -175,21 +176,28 @@ class ActiveTableWidget extends HookConsumerWidget {
                     },
                     child: StreamBuilder(
                         stream: itemOrderList,
-                        builder: (ctx, snapshot) {
+                        builder: (ctx,
+                            AsyncSnapshot<List<DashboardDetailOrders>>
+                                snapshot) {
                           if (!snapshot.hasData) {
                             return const Center(
                               child: CircularProgressIndicator(),
                             );
                           }
                           if (snapshot.data != null) {
+                            print(snapshot.data!
+                                .map((e) => e.price)
+                                .reduce((a, b) => a + b));
+
                             return NeumorphismTable(
-                                radius: avatarSize,
-                                avatarSize: iconSize,
-                                padding: 15,
-                                table: dashboardTable,
-                                total: 'Total'
-                                // snapshot.data!.reduce((a, b) => a + b).price,
-                                );
+                              radius: avatarSize,
+                              avatarSize: iconSize,
+                              padding: 15,
+                              table: dashboardTable,
+                              total: snapshot.data!
+                                  .map((e) => e.price)
+                                  .reduce((a, b) => a + b),
+                            );
                           } else {
                             return const SizedBox();
                           }

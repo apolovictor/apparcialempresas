@@ -212,7 +212,7 @@ class BusinessListView extends HookConsumerWidget {
                                                 fontWeight: FontWeight.bold),
                                           ),
                                           Text(
-                                            "R\$ ${product.price['price']}",
+                                            "R\$ ${product.price.price.toString()}",
                                             style: const TextStyle(
                                                 fontSize: 17,
                                                 color: Colors.grey),
@@ -300,7 +300,7 @@ class BusinessListView extends HookConsumerWidget {
                                                     productCategory: product.categories,
                                                     productName: product.name,
                                                     photo_url: product.logo!,
-                                                    price: product.price['price'],
+                                                    price: product.price.price,
                                                     quantity: 1,
                                                     isUnavailble: false));
                                       } else {
@@ -313,7 +313,7 @@ class BusinessListView extends HookConsumerWidget {
                                                     product.categories,
                                                 productName: product.name,
                                                 photo_url: product.logo!,
-                                                price: product.price['price'],
+                                                price: product.price.price,
                                                 quantity: 1,
                                                 isUnavailble: false));
                                       }

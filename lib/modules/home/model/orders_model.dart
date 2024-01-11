@@ -1,3 +1,4 @@
+import 'package:apparcialempresas/modules/products/model/products_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DashboardOrders {
@@ -38,7 +39,7 @@ class DashboardDetailOrders {
   final String productName;
   final String productPhoto;
   final String productCategory;
-  final String price;
+  final double price;
   final Timestamp createdAt;
   final dynamic? finishedAt;
   final int status;

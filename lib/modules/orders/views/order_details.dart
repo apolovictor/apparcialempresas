@@ -29,12 +29,10 @@ class OrderDetails extends HookConsumerWidget {
 
     double total = 0;
     itemList.map((e) {
-      return double.parse(e.price.replaceAll(',', '.')) * e.quantity;
+      return e.price * e.quantity;
     });
     for (var itemCart in itemList) {
-      total = double.parse(itemCart.price.replaceAll(',', '.')) *
-              itemCart.quantity +
-          total;
+      total = itemCart.price * itemCart.quantity + total;
       // total = total + total;
     }
     // final Animation<double> widgetAnimation = Tween(begin: .0, end: 1.0)

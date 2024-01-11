@@ -114,7 +114,7 @@ class ProductCard extends HookConsumerWidget {
                                     BasicInformations(
                                       index: index,
                                       icon: const Icon(
-                                          Icons.security_update_warning),
+                                          Icons.local_fire_department),
                                       price: product.price,
                                       quantity: product.quantity,
                                     ),

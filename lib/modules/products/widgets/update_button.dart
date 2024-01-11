@@ -59,11 +59,17 @@ class UpdateButton extends HookConsumerWidget {
               //     builder: (context) =>
               //         Center(child: CircularProgressIndicator()));
 
-              print(ref.watch(productPriceProvider).text);
-              print(ref
+              // print(ref.watch(productPriceProvider).text);
+              // print(ref
+              //     .watch(productPriceProvider)
+              //     .text
+              //     .replaceAll(RegExp('[^0-9.]'), ''));
+
+              print(double.parse(ref
                   .watch(productPriceProvider)
                   .text
-                  .replaceAll(RegExp('[^0-9,]'), ''));
+                  .replaceAll(',', '.')
+                  .replaceAll('R\$', '')));
 
               final result = await ref
                   .read(updateProductProvider)
@@ -73,14 +79,15 @@ class UpdateButton extends HookConsumerWidget {
                         ? product.name
                         : ref.watch(productNameProvider).text,
                     ref.watch(productPriceProvider).text.isEmpty
-                        ? product.price['price']
-                        : ref
+                        ? product.price.price
+                        : double.parse(ref
                             .watch(productPriceProvider)
                             .text
-                            .replaceAll(RegExp('[^0-9,]'), ''),
+                            .replaceAll(',', '.')
+                            .replaceAll('R\$', '')),
                     ref.watch(productPromoProvider).text.isEmpty
-                        ? product.price['promo']
-                        : ref.watch(productPromoProvider).text,
+                        ? product.price.promo!
+                        : double.parse(ref.watch(productPromoProvider).text),
                     ref.watch(productQuantityProvider).text.isEmpty
                         ? product.quantity
                         : int.parse(ref.watch(productQuantityProvider).text),

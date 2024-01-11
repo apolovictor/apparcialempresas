@@ -10,6 +10,7 @@ import 'package:equatable/equatable.dart';
 
 import '../../home/controller/product_notifier.dart';
 import '../../home/model/orders_model.dart';
+import '../../home/model/tables_model.dart';
 import '../model/order_model.dart';
 
 var tableIdDocumentNotifier = StateProvider((_) => '');
@@ -455,6 +456,20 @@ class RecentOrdersNotifier extends StreamNotifier<List<DashboardDetailOrders>> {
         return detailOrdersTableBill;
       }).toList();
     });
+  }
+
+  getTableByOrderIdDocument(String orderDocument) {
+    var docRef = _businessCollection
+        .doc(ref.watch(idDocumentNotifier))
+        .collection("tables")
+        .where('idDocument', isEqualTo: orderDocument)
+        .snapshots();
+
+    //   .map((snapshot) {
+    // return snapshot.docs.map((doc) => snapshot.docs.first.id
+
+    return docRef.first.then((value) => value.docs.first.id);
+    // });
   }
 
   Future<bool> updateRecentOrder(String orderIdDocument) async {

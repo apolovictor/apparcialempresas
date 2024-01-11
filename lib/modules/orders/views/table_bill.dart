@@ -80,9 +80,8 @@ class TableBill extends HookConsumerWidget {
                                                 Expanded(
                                                   child: ExpandedEventItem(
                                                     height: height / 2,
-                                                    price: double.parse(item
-                                                        .price
-                                                        .replaceAll(',', '.')),
+                                                    price: double.parse(
+                                                        item.price.toString()),
                                                     item: item,
                                                   ),
                                                 )

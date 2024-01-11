@@ -5,7 +5,7 @@ class OrderItem {
   final String productCategory;
   final String productName;
   final String photo_url;
-  final String price;
+  final double price;
   final int quantity;
   final bool isUnavailble;
   OrderItem({
@@ -23,7 +23,7 @@ class OrderItem {
     String? productCategory,
     String? productName,
     String? photo_url,
-    String? price,
+    double? price,
     int? quantity,
     bool? isUnavailble,
   }) {

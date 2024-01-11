@@ -61,11 +61,19 @@ class RegisterButton extends HookConsumerWidget {
                     .registerProduct(
                         ref.watch(addProductNameProvider).text,
                         {
-                          'price': ref
+                          'price': double.parse(ref
                               .watch(addProductPriceProvider)
                               .text
-                              .replaceAll(RegExp('[^0-9,]'), ''),
-                          'promo': '0,00'
+                              .replaceAll(',', '.')
+                              .replaceAll('R\$', '')),
+                          'promo':
+                              ref.watch(addProductPromoProvider).text.isEmpty
+                                  ? 0
+                                  : double.parse(ref
+                                      .watch(addProductPromoProvider)
+                                      .text
+                                      .replaceAll(',', '.')
+                                      .replaceAll('R\$', ''))
                         },
                         int.parse(ref.watch(addProductQuantityProvider).text),
                         categories!

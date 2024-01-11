@@ -89,8 +89,7 @@ class DragItemArea extends HookConsumerWidget {
                               child: ExpandedEventItem(
                                 height: height,
                                 itemName: item.productName,
-                                price: double.parse(
-                                    item.price.replaceAll(',', '.')),
+                                price: item.price,
                                 quantity:
                                     item.quantity, //<-- data to be displayed
                                 item: item,
