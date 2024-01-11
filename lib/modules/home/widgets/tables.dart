@@ -11,12 +11,14 @@ class NeumorphismTable extends HookConsumerWidget {
     required this.avatarSize,
     required this.table,
     required this.padding,
+    this.total,
   });
 
   final double radius;
   final double avatarSize;
   final DashboardTables table;
   final double padding;
+  final String? total;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -30,7 +32,20 @@ class NeumorphismTable extends HookConsumerWidget {
         shape: CircleBorder(),
         elevation: 5,
         child: Center(
-          child: Text(table.idTable.toString()),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                table.idTable.toString(),
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+              ),
+              Text(
+                total ?? '',
+                style: const TextStyle(fontSize: 18),
+              ),
+            ],
+          ),
         ),
       ),
     );
