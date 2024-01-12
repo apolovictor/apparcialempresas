@@ -20,7 +20,7 @@ class TableBill extends HookConsumerWidget {
     final documentIdTable = ref.watch(tableIdDocumentNotifier);
     final itemOrderList = ref
         .read(recentOrdersDashboardProvider.notifier)
-        .getOrdersByIdDocumentTable(documentIdTable);
+        .getDetailOrdersByIdDocumentTable(documentIdTable);
     AnimationController dragAreaController = dragItemAreaController(ref);
     final Animation<double> animation = Tween(begin: .0, end: width).animate(
         CurvedAnimation(parent: dragAreaController, curve: Curves.ease));
@@ -46,13 +46,13 @@ class TableBill extends HookConsumerWidget {
                     //                     in snapshot.data!)
                     var newMap = groupBy(snapshot.data!.toList(),
                         (DashboardDetailOrders obj) => obj.productDocument);
-                    print(newMap.length);
+                    // print(newMap.length);
 
-                    newMap.forEach((j, e) {
-                      print('j == $j');
-                      print(
-                          'e == ${e.map((e) => e.price).reduce((a, b) => a + b)}');
-                    });
+                    // newMap.forEach((j, e) {
+                    //   print('j == $j');
+                    //   print(
+                    //       'e == ${e.map((e) => e.price).reduce((a, b) => a + b)}');
+                    // });
 
                     return Column(
                       children: [

@@ -21,6 +21,14 @@ class FinishOrderTabletButton extends HookConsumerWidget {
     final itemList = ref.watch(itemListProvider);
     final idDocumentTable = ref.watch(tableIdDocumentNotifier);
 
+    final order = ref
+        .read(recentOrdersDashboardProvider.notifier)
+        .getOrderByIdDocumentTable(idDocumentTable);
+
+    // if (order != null) {
+    //   print(order.first);
+    // }
+
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return ElevatedButton(
@@ -37,8 +45,14 @@ class FinishOrderTabletButton extends HookConsumerWidget {
                   fontSize: 18.0);
               return;
             } else {
+              order.first.then((value) {
+                print(value.idTable);
+                ref
+                    .read(recentOrdersDashboardProvider.notifier)
+                    .finishOrder(value.idTable, listDetailOrders);
+              });
               Fluttertoast.showToast(
-                  msg: "Fechamento de pedido em desenvolvimento!",
+                  msg: "Conta finalizada com sucesso!",
                   toastLength: Toast.LENGTH_LONG,
                   gravity: ToastGravity.TOP,
                   timeInSecForIosWeb: 4,
@@ -69,29 +83,5 @@ class FinishOrderTabletButton extends HookConsumerWidget {
         );
       },
     );
-
-    // ScaleTransition(
-    //   scale: animation,
-    //   child:
-    // MaterialButton(
-
-    //     // ElevatedButton(
-    //     // style: ElevatedButton.styleFrom(
-    //     shape:
-    //         RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-    //     // backgroundColor: Colors.black87,
-    //     // minimumSize: const Size.fromHeight(60)
-    //     // ),
-    //     child: Text(
-    //       buttonName,
-    //       style: const TextStyle(
-    //         fontWeight: FontWeight.bold,
-    //         fontSize: 20,
-    //         color: Colors.white,
-    //       ),
-    //     ),
-
-    //     // ),
-    //     );
   }
 }

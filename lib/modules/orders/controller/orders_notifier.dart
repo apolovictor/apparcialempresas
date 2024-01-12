@@ -132,23 +132,6 @@ final registerOrderProvider = Provider((ref) => RegisterOrder());
 class OrdersNotifier extends ChangeNotifier {
   final businessCollection = _firestore.collection('business');
 
-  // final orderNotifier = StreamProvider.autoDispose<ActiveOrder>((ref) {
-  //   var idDocument = ref.watch(tableIdDocumentNotifier);
-  //   print(idDocument);
-  //   var result = _firestore
-  //       .collection('business')
-  //       .doc('bandiis')
-  //       .collection('orders')
-  //       .where('idDocument', isEqualTo: idDocument)
-  //       .snapshots()
-  //       .map((doc) => ActiveOrder.fromDoc(doc));
-
-  //   // print(result.map((e) => e.clientName));
-  //   print(result.first);
-  //   print('result ========= $result');
-  //   return result;
-  // });
-
   Stream<QuerySnapshot> getOrderByIdDocument(idDocument) => businessCollection
       .doc('bandiis')
       .collection('orders')
@@ -441,7 +424,21 @@ class RecentOrdersNotifier extends StreamNotifier<List<DashboardDetailOrders>> {
     });
   }
 
-  Stream<List<DashboardDetailOrders>> getOrdersByIdDocumentTable(
+  Stream<DashboardOrders> getOrderByIdDocumentTable(String orderDocument) {
+    return _businessCollection
+        .doc(ref.watch(idDocumentNotifier))
+        .collection("orders")
+        .where('idDocument', isEqualTo: orderDocument)
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs.map((doc) {
+        DashboardOrders detailOrdersTableBill = DashboardOrders.fromDoc(doc);
+        return detailOrdersTableBill;
+      }).first;
+    });
+  }
+
+  Stream<List<DashboardDetailOrders>> getDetailOrdersByIdDocumentTable(
       String orderDocument) {
     return _businessCollection
         .doc(ref.watch(idDocumentNotifier))
@@ -482,6 +479,60 @@ class RecentOrdersNotifier extends StreamNotifier<List<DashboardDetailOrders>> {
           .doc(orderIdDocument)
           .update({'status': 2});
 
+      return true;
+    } catch (e) {
+      // print(e.message);
+      return Future.error(e);
+    }
+  }
+
+  Future<bool> finishOrder(
+      int idTable, List<DashboardDetailOrders> listDetailOrders) async {
+    final businessCollection = _firestore.collection('business');
+    var idDocument = ref.watch(idDocumentNotifier);
+    final String idDocumentOrder = ref.watch(tableIdDocumentNotifier);
+
+    try {
+      WriteBatch batch = _firestore.batch();
+      final docRefOrders = businessCollection
+          .doc(idDocument)
+          .collection("orders")
+          .doc(idDocumentOrder);
+      final docRefTables = businessCollection
+          .doc(idDocument)
+          .collection("tables")
+          .doc(idTable.toString());
+      final docRefdetailOrders = businessCollection
+          .doc(idDocument)
+          .collection("detailOrders")
+          .doc(idTable.toString());
+
+      batch.update(docRefOrders,
+          {'status': 2, 'finishedAt': FieldValue.serverTimestamp()});
+      batch.update(docRefTables, {'idDocument': '', 'status': 1});
+
+      for (var item in listDetailOrders) {
+        item.status == 2
+            ? batch.update(
+                businessCollection
+                    .doc(idDocument)
+                    .collection("detailOrders")
+                    .doc(item.id),
+                {'status': 4, 'finishedAt': FieldValue.serverTimestamp()})
+            : batch.update(
+                businessCollection
+                    .doc(idDocument)
+                    .collection("detailOrders")
+                    .doc(item.id),
+                {'status': 5, 'finishedAt': FieldValue.serverTimestamp()});
+      }
+
+      batch.commit();
+
+      ref.read(isAddingItemProvider.notifier).toogle(false);
+      ref.read(itemListProvider.notifier).clearItemList();
+      ref.read(currentOrderStateProvider.notifier).state =
+          OrderStateWidget.close;
       return true;
     } catch (e) {
       // print(e.message);

@@ -34,7 +34,7 @@ class ActiveTableWidget extends HookConsumerWidget {
     final idDocumentTable = ref.watch(tableIdDocumentNotifier);
     final itemOrderList = ref
         .read(recentOrdersDashboardProvider.notifier)
-        .getOrdersByIdDocumentTable(dashboardTable.documentId!);
+        .getDetailOrdersByIdDocumentTable(dashboardTable.documentId!);
 
     return AnimationLimiter(
         key: GlobalKey<AnimatedListState>(debugLabel: i.toString()),
@@ -194,7 +194,7 @@ class ActiveTableWidget extends HookConsumerWidget {
                               avatarSize: iconSize,
                               padding: 15,
                               table: dashboardTable,
-                              total: snapshot.data!.length > 0
+                              total: snapshot.data!.isNotEmpty
                                   ? snapshot.data!
                                       .map((e) => e.price)
                                       .reduce((a, b) => a + b)
