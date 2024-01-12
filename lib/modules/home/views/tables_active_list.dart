@@ -71,6 +71,9 @@ class TablesListActive extends HookConsumerWidget {
                           builder: (BuildContext context,
                               List<DashboardTables?> candidateData,
                               List<dynamic> rejectedData) {
+                            // activeData.forEach((e) {
+                            //   print(e!.idTable);
+                            // });
                             return LayoutBuilder(
                                 builder: (context, constraints) {
                               final width = constraints.maxWidth;

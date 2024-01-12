@@ -185,18 +185,20 @@ class ActiveTableWidget extends HookConsumerWidget {
                             );
                           }
                           if (snapshot.data != null) {
-                            print(snapshot.data!
-                                .map((e) => e.price)
-                                .reduce((a, b) => a + b));
+                            // print(snapshot.data!
+                            //     .map((e) => e.price)
+                            //     .reduce((a, b) => a + b));
 
                             return NeumorphismTable(
                               radius: avatarSize,
                               avatarSize: iconSize,
                               padding: 15,
                               table: dashboardTable,
-                              total: snapshot.data!
-                                  .map((e) => e.price)
-                                  .reduce((a, b) => a + b),
+                              total: snapshot.data!.length > 0
+                                  ? snapshot.data!
+                                      .map((e) => e.price)
+                                      .reduce((a, b) => a + b)
+                                  : 0,
                             );
                           } else {
                             return const SizedBox();
