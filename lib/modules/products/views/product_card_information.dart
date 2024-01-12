@@ -15,7 +15,7 @@ class BasicInformations extends HookConsumerWidget {
   final int index;
   final Icon icon;
   final Price price;
-  final int quantity;
+  final double quantity;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

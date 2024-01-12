@@ -24,7 +24,7 @@ class Product {
   String secondaryColor;
   String name;
   Price price;
-  int quantity;
+  double quantity;
   String? description;
   String? logo;
   int status;

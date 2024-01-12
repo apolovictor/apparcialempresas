@@ -10,7 +10,7 @@ class UpdateProduct extends ChangeNotifier {
   Future<bool> updateQuickProduct(String productId, String productName,
       double productPrice, double productPromo, int productQuantity) async {
     final businessCollection = _firestore.collection('business');
-
+//!!CHECAR SE A QUANTIDADE É O UNICO CAMPO ALTERADO NO PROCESSO, CASO SEJA, ALTERAR COM O FILEDVALUE.INCREMENT()
     try {
       await businessCollection
           .doc(idDocument)

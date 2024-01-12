@@ -65,11 +65,11 @@ class UpdateButton extends HookConsumerWidget {
               //     .text
               //     .replaceAll(RegExp('[^0-9.]'), ''));
 
-              print(double.parse(ref
-                  .watch(productPriceProvider)
-                  .text
-                  .replaceAll(',', '.')
-                  .replaceAll('R\$', '')));
+              // print(double.parse(ref
+              //     .watch(productPriceProvider)
+              //     .text
+              //     .replaceAll(',', '.')
+              //     .replaceAll('R\$', '')));
 
               final result = await ref
                   .read(updateProductProvider)
@@ -89,7 +89,7 @@ class UpdateButton extends HookConsumerWidget {
                         ? product.price.promo!
                         : double.parse(ref.watch(productPromoProvider).text),
                     ref.watch(productQuantityProvider).text.isEmpty
-                        ? product.quantity
+                        ? product.quantity as int
                         : int.parse(ref.watch(productQuantityProvider).text),
                   );
 
