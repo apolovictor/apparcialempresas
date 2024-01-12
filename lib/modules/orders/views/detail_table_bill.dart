@@ -1,14 +1,16 @@
 import 'package:apparcialempresas/modules/home/model/orders_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../controller/orders_notifier.dart';
 import '../widgets/add_order_separator.dart';
+import '../widgets/cart_button.dart';
 import '../widgets/finish_order_table.dart';
 
-class TableBill extends HookConsumerWidget {
-  const TableBill({super.key, required this.height, required this.width});
+class DetailTableBill extends HookConsumerWidget {
+  const DetailTableBill({super.key, required this.height, required this.width});
 
   final double height;
   final double width;
@@ -42,18 +44,6 @@ class TableBill extends HookConsumerWidget {
                     );
                   }
                   if (snapshot.data != null) {
-                    // for (DashboardDetailOrders item
-                    //                     in snapshot.data!)
-                    var newMap = groupBy(snapshot.data!.toList(),
-                        (DashboardDetailOrders obj) => obj.productDocument);
-                    print(newMap.length);
-
-                    newMap.forEach((j, e) {
-                      print('j == $j');
-                      print(
-                          'e == ${e.map((e) => e.price).reduce((a, b) => a + b)}');
-                    });
-
                     return Column(
                       children: [
                         SizedBox(

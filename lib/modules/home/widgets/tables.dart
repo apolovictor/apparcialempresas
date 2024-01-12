@@ -29,24 +29,20 @@ class NeumorphismTable extends HookConsumerWidget {
         borderRadius: BorderRadius.circular(avatarSize),
       ),
       child: Card(
-        shape: CircleBorder(),
+        shape: const CircleBorder(),
         elevation: 5,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                table.idTable.toString(),
-                style:
-                    const TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
-              ),
-              Text(
-                total != null ? 'R\$ $total' : '',
-                style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.w300),
-              ),
-            ],
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              table.idTable.toString(),
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
+            ),
+            Text(
+              total != null ? 'R\$ $total' : '',
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+            ),
+          ],
         ),
       ),
     );

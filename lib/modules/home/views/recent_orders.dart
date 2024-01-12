@@ -57,12 +57,12 @@ class RecentOrders extends HookConsumerWidget {
                   Text(
                     recentOrders[i].productName,
                     style: const TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.w300),
+                        fontSize: 20, fontWeight: FontWeight.w500),
                   ),
                   Text(
                     recentOrders[i].price.toString(),
                     style: const TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.w300),
+                        fontSize: 20, fontWeight: FontWeight.w500),
                   ),
                   MaterialButton(
                     onPressed: () {
