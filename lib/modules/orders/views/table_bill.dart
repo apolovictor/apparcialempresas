@@ -24,6 +24,7 @@ class TableBill extends HookConsumerWidget {
     AnimationController dragAreaController = dragItemAreaController(ref);
     final Animation<double> animation = Tween(begin: .0, end: width).animate(
         CurvedAnimation(parent: dragAreaController, curve: Curves.ease));
+
     return Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(24),
@@ -42,10 +43,52 @@ class TableBill extends HookConsumerWidget {
                     );
                   }
                   if (snapshot.data != null) {
-                    // for (DashboardDetailOrders item
-                    //                     in snapshot.data!)
                     var newMap = groupBy(snapshot.data!.toList(),
                         (DashboardDetailOrders obj) => obj.productDocument);
+                    getItem(List<DashboardDetailOrders> item) => Stack(
+                          // getItem(List<DashboardDetailOrders> item) => Stack(
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.only(bottom: 10),
+                              padding: const EdgeInsets.all(8),
+                              width: double.infinity,
+                              height: (height * 0.7) / 6,
+                              decoration: BoxDecoration(
+                                  color: Colors.grey[500],
+                                  borderRadius: BorderRadius.circular(24),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                        color: Colors.black45,
+                                        offset: Offset(4, 4),
+                                        blurRadius: 2),
+                                  ]
+                                  // border: Border.all(width: 1, color: Colors.white),
+                                  ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: ExpandedEventItem(
+                                      height: height / 2,
+                                      item: item,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ],
+                        );
+
+                    groupItems() {
+                      return newMap.entries.map((item) => getItem(item.value)
+                          // return getItem(item);
+                          // print()
+                          // return getItem(item);
+                          );
+                    }
+
+                    // for (DashboardDetailOrders item
+                    //                     in snapshot.data!)
+
                     // print(newMap.length);
 
                     // newMap.forEach((j, e) {
@@ -53,6 +96,8 @@ class TableBill extends HookConsumerWidget {
                     //   print(
                     //       'e == ${e.map((e) => e.price).reduce((a, b) => a + b)}');
                     // });
+                    // for (DashboardDetailOrders item
+                    //     in snapshot.data!)
 
                     return Column(
                       children: [
@@ -63,45 +108,7 @@ class TableBill extends HookConsumerWidget {
                             child: Column(
                               children: [
                                 Column(
-                                  children: [
-                                    for (DashboardDetailOrders item
-                                        in snapshot.data!)
-                                      Stack(
-                                        children: [
-                                          Container(
-                                            margin: const EdgeInsets.only(
-                                                bottom: 10),
-                                            padding: const EdgeInsets.all(8),
-                                            width: double.infinity,
-                                            height: (height * 0.7) / 6,
-                                            decoration: BoxDecoration(
-                                                color: Colors.grey[500],
-                                                borderRadius:
-                                                    BorderRadius.circular(24),
-                                                boxShadow: const [
-                                                  BoxShadow(
-                                                      color: Colors.black45,
-                                                      offset: Offset(4, 4),
-                                                      blurRadius: 2),
-                                                ]
-                                                // border: Border.all(width: 1, color: Colors.white),
-                                                ),
-                                            child: Row(
-                                              children: [
-                                                Expanded(
-                                                  child: ExpandedEventItem(
-                                                    height: height / 2,
-                                                    price: double.parse(
-                                                        item.price.toString()),
-                                                    item: item,
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      )
-                                  ],
+                                  children: [...groupItems()],
                                 )
                               ],
                             ),
@@ -150,13 +157,11 @@ class TableBill extends HookConsumerWidget {
 class ExpandedEventItem extends HookConsumerWidget {
   // final double leftMargin;
   final double height;
-  final double price;
-  final DashboardDetailOrders item;
+  final List<DashboardDetailOrders> item;
 
   const ExpandedEventItem({
     super.key,
     required this.height,
-    required this.price,
     // required this.leftMargin,
     required this.item,
   });
@@ -165,7 +170,7 @@ class ExpandedEventItem extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     print(height);
     return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
       // crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         // Text(title, style: TextStyle(fontSize: 16)),
@@ -174,7 +179,7 @@ class ExpandedEventItem extends HookConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Text(
-              item.productName,
+              item.first.productName,
               style: const TextStyle(
                 fontWeight: FontWeight.w500,
                 fontSize: 16,
@@ -184,9 +189,18 @@ class ExpandedEventItem extends HookConsumerWidget {
           ],
         ),
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              '${item.price} x  ${1} = R\$ 00,00',
+              '${item.first.price.toStringAsFixed(2)} x ${(item.length)} ',
+              //   'R\$ ${(price * itemCart.quantity).toStringAsFixed(2)}',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+              ),
+            ),
+            Text(
+              'R\$ ${(item.first.price * (item.length)).toStringAsFixed(2)}',
               //   'R\$ ${(price * itemCart.quantity).toStringAsFixed(2)}',
               style: const TextStyle(
                 color: Colors.white,
