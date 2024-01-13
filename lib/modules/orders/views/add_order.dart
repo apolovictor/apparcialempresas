@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../controller/orders_notifier.dart';
 import '../model/order_model.dart';
+import 'detail_table_bill.dart';
 import 'order_details.dart';
 import 'table_bill.dart';
 
@@ -571,9 +572,9 @@ class SheetHeader3 extends HookConsumerWidget {
                               width: width),
                           TableBill(
                               height: constraints.maxHeight, width: width),
-                          const SizedBox(
-                            height: 100,
-                            width: 100,
+                          DetailTableBill(
+                            height: constraints.maxHeight,
+                            width: width,
                           ),
                         ],
                       );

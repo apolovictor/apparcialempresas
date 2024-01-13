@@ -477,7 +477,7 @@ class RecentOrdersNotifier extends StreamNotifier<List<DashboardDetailOrders>> {
           .doc(ref.watch(idDocumentNotifier))
           .collection("detailOrders")
           .doc(orderIdDocument)
-          .update({'status': 2});
+          .update({'status': 2, 'finishedAt': FieldValue.serverTimestamp()});
 
       return true;
     } catch (e) {

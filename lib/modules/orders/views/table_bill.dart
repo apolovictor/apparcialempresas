@@ -15,15 +15,10 @@ class TableBill extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    const double iconEndSize = 80; //<-- add edge values
-
     final documentIdTable = ref.watch(tableIdDocumentNotifier);
     final itemOrderList = ref
         .read(recentOrdersDashboardProvider.notifier)
         .getDetailOrdersByIdDocumentTable(documentIdTable);
-    AnimationController dragAreaController = dragItemAreaController(ref);
-    final Animation<double> animation = Tween(begin: .0, end: width).animate(
-        CurvedAnimation(parent: dragAreaController, curve: Curves.ease));
 
     return Container(
         decoration: BoxDecoration(
@@ -85,19 +80,6 @@ class TableBill extends HookConsumerWidget {
                           // return getItem(item);
                           );
                     }
-
-                    // for (DashboardDetailOrders item
-                    //                     in snapshot.data!)
-
-                    // print(newMap.length);
-
-                    // newMap.forEach((j, e) {
-                    //   print('j == $j');
-                    //   print(
-                    //       'e == ${e.map((e) => e.price).reduce((a, b) => a + b)}');
-                    // });
-                    // for (DashboardDetailOrders item
-                    //     in snapshot.data!)
 
                     return Column(
                       children: [
