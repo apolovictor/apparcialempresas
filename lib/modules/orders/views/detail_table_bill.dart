@@ -36,90 +36,101 @@ class DetailTableBill extends HookConsumerWidget {
                     );
                   }
                   if (snapshot.data != null) {
-                    generateItems() {}
-                    return Column(
-                      children: [
-                        SizedBox(
-                          height: height * 0.7,
-                          width: width,
-                          child: SingleChildScrollView(
-                            child: Column(
-                              children: [
-                                Column(
-                                  children: [
-                                    for (DashboardDetailOrders item
-                                        in snapshot.data!)
-                                      Stack(
+                    return snapshot.data!.isNotEmpty
+                        ? Column(
+                            children: [
+                              SizedBox(
+                                height: height * 0.7,
+                                width: width,
+                                child: SingleChildScrollView(
+                                  child: Column(
+                                    children: [
+                                      Column(
                                         children: [
-                                          Container(
-                                            margin: const EdgeInsets.only(
-                                                bottom: 10),
-                                            padding: const EdgeInsets.all(8),
-                                            width: double.infinity,
-                                            height: (height * 0.7) / 5,
-                                            decoration: BoxDecoration(
-                                                color: Colors.grey[500],
-                                                borderRadius:
-                                                    BorderRadius.circular(24),
-                                                boxShadow: const [
-                                                  BoxShadow(
-                                                      color: Colors.black45,
-                                                      offset: Offset(4, 4),
-                                                      blurRadius: 2),
-                                                ]
-                                                // border: Border.all(width: 1, color: Colors.white),
-                                                ),
-                                            child: Row(
+                                          for (DashboardDetailOrders item
+                                              in snapshot.data!)
+                                            Stack(
                                               children: [
-                                                Expanded(
-                                                  child: ExpandedEventItem(
-                                                    item: item,
+                                                Container(
+                                                  margin: const EdgeInsets.only(
+                                                      bottom: 10),
+                                                  padding:
+                                                      const EdgeInsets.all(8),
+                                                  width: double.infinity,
+                                                  height: (height * 0.7) / 5,
+                                                  decoration: BoxDecoration(
+                                                      color: Colors.grey[500],
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              24),
+                                                      boxShadow: const [
+                                                        BoxShadow(
+                                                            color:
+                                                                Colors.black45,
+                                                            offset:
+                                                                Offset(4, 4),
+                                                            blurRadius: 2),
+                                                      ]
+                                                      // border: Border.all(width: 1, color: Colors.white),
+                                                      ),
+                                                  child: Row(
+                                                    children: [
+                                                      Expanded(
+                                                        child:
+                                                            ExpandedEventItem(
+                                                          item: item,
+                                                        ),
+                                                      )
+                                                    ],
                                                   ),
-                                                )
+                                                ),
                                               ],
-                                            ),
-                                          ),
+                                            )
                                         ],
                                       )
-                                  ],
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                            width: width,
-                            child: const MySeparator(color: Colors.white)),
-                        Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Text(
-                                    'Total',
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 18),
+                                    ],
                                   ),
-                                  Text(
-                                    '${snapshot.data!.map((e) => e.price).reduce((a, b) => a + b)}',
-                                    // total.toStringAsFixed(2).toString(),
-                                    style: const TextStyle(
-                                        color: Colors.white, fontSize: 18),
-                                  )
-                                ],
+                                ),
                               ),
-                              // FinishOrderTabletButton(
-                              //   buttonName: 'Fechar Pedido',
-                              //   listDetailOrders: snapshot.data!,
-                              // ),
+                              SizedBox(
+                                  width: width,
+                                  child:
+                                      const MySeparator(color: Colors.white)),
+                              Expanded(
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const Text(
+                                          'Total',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 18),
+                                        ),
+                                        Text(
+                                          '${snapshot.data!.map((e) => e.price).reduce((a, b) => a + b)}',
+                                          // total.toStringAsFixed(2).toString(),
+                                          style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 18),
+                                        )
+                                      ],
+                                    ),
+                                    // FinishOrderTabletButton(
+                                    //   buttonName: 'Fechar Pedido',
+                                    //   listDetailOrders: snapshot.data!,
+                                    // ),
+                                  ],
+                                ),
+                              )
                             ],
-                          ),
-                        )
-                      ],
-                    );
+                            //!! Put empty image here
+                          )
+                        : const SizedBox();
                   } else {
                     return const SizedBox();
                   }

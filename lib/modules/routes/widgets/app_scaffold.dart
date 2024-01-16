@@ -96,7 +96,11 @@ class AppScaffold extends HookConsumerWidget {
                                     : e.title == '/produtos'
                                         ? const Icon(Icons.restaurant_menu,
                                             size: 40)
-                                        : const Icon(Icons.table_bar, size: 40),
+                                        : e.title == '/relatorios'
+                                            ? const Icon(Icons.bar_chart,
+                                                size: 40)
+                                            : const Icon(Icons.table_bar,
+                                                size: 40),
                                 products: products),
                           )
                           .toList(),

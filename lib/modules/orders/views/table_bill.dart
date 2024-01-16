@@ -38,99 +38,104 @@ class TableBill extends HookConsumerWidget {
                     );
                   }
                   if (snapshot.data != null) {
-                    var newMap = groupBy(snapshot.data!.toList(),
-                        (DashboardDetailOrders obj) => obj.productDocument);
-                    getItem(List<DashboardDetailOrders> item) => Stack(
-                          // getItem(List<DashboardDetailOrders> item) => Stack(
-                          children: [
-                            Container(
-                              margin: const EdgeInsets.only(bottom: 10),
-                              padding: const EdgeInsets.all(8),
-                              width: double.infinity,
-                              height: (height * 0.7) / 6,
-                              decoration: BoxDecoration(
-                                  color: Colors.grey[500],
-                                  borderRadius: BorderRadius.circular(24),
-                                  boxShadow: const [
-                                    BoxShadow(
-                                        color: Colors.black45,
-                                        offset: Offset(4, 4),
-                                        blurRadius: 2),
-                                  ]
-                                  // border: Border.all(width: 1, color: Colors.white),
-                                  ),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: ExpandedEventItem(
-                                      height: height / 2,
-                                      item: item,
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ],
-                        );
-
-                    groupItems() {
-                      return newMap.entries.map((item) => getItem(item.value)
-                          // return getItem(item);
-                          // print()
-                          // return getItem(item);
-                          );
-                    }
-
-                    return Column(
-                      children: [
-                        SizedBox(
-                          height: height * 0.7,
-                          width: width,
-                          child: SingleChildScrollView(
-                            child: Column(
-                              children: [
-                                Column(
-                                  children: [...groupItems()],
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                            width: width,
-                            child: const MySeparator(color: Colors.white)),
-                        Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    if (snapshot.data!.isNotEmpty) {
+                      var newMap = groupBy(snapshot.data!.toList(),
+                          (DashboardDetailOrders obj) => obj.productDocument);
+                      getItem(List<DashboardDetailOrders> item) => Stack(
+                            // getItem(List<DashboardDetailOrders> item) => Stack(
                             children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Text(
-                                    'Total',
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 18),
-                                  ),
-                                  Text(
-                                    '${snapshot.data!.map((e) => e.price).reduce((a, b) => a + b)}',
-                                    // total.toStringAsFixed(2).toString(),
-                                    style: const TextStyle(
-                                        color: Colors.white, fontSize: 18),
-                                  )
-                                ],
-                              ),
-                              FinishOrderTabletButton(
-                                buttonName: 'Fechar Pedido',
-                                listDetailOrders: snapshot.data!,
+                              Container(
+                                margin: const EdgeInsets.only(bottom: 10),
+                                padding: const EdgeInsets.all(8),
+                                width: double.infinity,
+                                height: (height * 0.7) / 6,
+                                decoration: BoxDecoration(
+                                    color: Colors.grey[500],
+                                    borderRadius: BorderRadius.circular(24),
+                                    boxShadow: const [
+                                      BoxShadow(
+                                          color: Colors.black45,
+                                          offset: Offset(4, 4),
+                                          blurRadius: 2),
+                                    ]
+                                    // border: Border.all(width: 1, color: Colors.white),
+                                    ),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: ExpandedEventItem(
+                                        height: height / 2,
+                                        item: item,
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ),
                             ],
+                          );
+
+                      groupItems() {
+                        return newMap.entries.map((item) => getItem(item.value)
+                            // return getItem(item);
+                            // print()
+                            // return getItem(item);
+                            );
+                      }
+
+                      return Column(
+                        children: [
+                          SizedBox(
+                            height: height * 0.7,
+                            width: width,
+                            child: SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  Column(
+                                    children: [...groupItems()],
+                                  )
+                                ],
+                              ),
+                            ),
                           ),
-                        )
-                      ],
-                    );
+                          SizedBox(
+                              width: width,
+                              child: const MySeparator(color: Colors.white)),
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text(
+                                      'Total',
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 18),
+                                    ),
+                                    Text(
+                                      '${snapshot.data!.map((e) => e.price).reduce((a, b) => a + b)}',
+                                      // total.toStringAsFixed(2).toString(),
+                                      style: const TextStyle(
+                                          color: Colors.white, fontSize: 18),
+                                    )
+                                  ],
+                                ),
+                                FinishOrderTabletButton(
+                                  buttonName: 'Fechar Pedido',
+                                  listDetailOrders: snapshot.data!,
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      );
+                    } else {
+                      return const SizedBox();
+                    }
                   } else {
-                    return const SizedBox();
+                    //!! Add image of empty cart list here
+                    return SizedBox();
                   }
                 })));
   }

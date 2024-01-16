@@ -22,5 +22,6 @@ class RouteNamesList {
 List<RouteNamesList> topBarList = [
   RouteNamesList(title: RouteNames.home),
   RouteNamesList(title: RouteNames.products),
+  RouteNamesList(title: RouteNames.reports),
   RouteNamesList(title: RouteNames.tables),
 ];
