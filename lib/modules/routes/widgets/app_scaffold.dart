@@ -60,6 +60,7 @@ class AppScaffold extends HookConsumerWidget {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
+      backgroundColor: Colors.white,
       drawer: displayMobileLayout
           ? const AppDrawer(
               // orders: orders,
@@ -114,6 +115,8 @@ class AppScaffold extends HookConsumerWidget {
             /// Body
             Positioned(
               top: height * 0.1,
+              left: 0,
+              right: 0,
               child: Container(
                   height: height * 0.9,
                   width: width,

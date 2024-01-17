@@ -28,8 +28,8 @@ class TopBarItem extends HookConsumerWidget {
     final int selectedRoute = ref.watch(selectedRouteNotifier);
     return AnimatedContainer(
       duration: const Duration(milliseconds: 375),
-      height: selectedRoute == indexRoute ? 80 : 60,
-      width: selectedRoute == indexRoute ? 80 : 60,
+      height: selectedRoute == indexRoute ? 90 : 75,
+      width: selectedRoute == indexRoute ? 90 : 75,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
         color: selectedRoute == indexRoute
