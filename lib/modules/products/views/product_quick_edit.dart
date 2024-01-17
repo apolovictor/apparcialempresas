@@ -36,6 +36,8 @@ class ProducQuickEdit extends HookConsumerWidget {
         ref.watch(productPromoProvider);
     final TextEditingController productQuantityController =
         ref.watch(productQuantityProvider);
+    final TextEditingController productUnitPriceController =
+        ref.watch(productUnitPriceProvider);
 
     int productSelected = ref.watch(selectedProductNotifier);
 
@@ -60,12 +62,6 @@ class ProducQuickEdit extends HookConsumerWidget {
         },
       );
     }
-
-    // productNameController.addListener(() {
-    //   ref
-    //       .read(productNameProvider.notifier)
-    //       .fetchProductName(productNameController);
-    // });
 
     final Animation<double> animation = Tween(begin: .0, end: 1.0).animate(
         CurvedAnimation(
@@ -241,7 +237,7 @@ class ProducQuickEdit extends HookConsumerWidget {
                             ),
                             //  Fields
                             Align(
-                              alignment: const Alignment(1, 1),
+                              alignment: const Alignment(1, 0.7),
                               child: SizedBox(
                                 width: width * 0.3,
                                 height: height * 0.4,
@@ -347,6 +343,32 @@ class ProducQuickEdit extends HookConsumerWidget {
                                                 const Text(''),
                                             loading: () => const Text(''),
                                           )),
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      ScaleTransition(
+                                          scale: animation,
+                                          child: filteredProducts.when(
+                                            data: (List<Product> data) {
+                                              return fieldWidget(
+                                                productUnitPriceController,
+                                                'Preço Unitário',
+                                                data[productSelected]
+                                                    .price
+                                                    .price
+                                                    .toString(),
+                                                context,
+                                                productSelected > -1
+                                                    ? Color(int.parse(
+                                                        data[productSelected]
+                                                            .secondaryColor))
+                                                    : Colors.transparent,
+                                              );
+                                            },
+                                            error: (err, stack) =>
+                                                const Text(''),
+                                            loading: () => const Text(''),
+                                          )),
                                     ],
                                   ),
                                 ),
@@ -439,7 +461,7 @@ class ProducQuickEdit extends HookConsumerWidget {
                       height: height,
                       child: AnimatedAlign(
                         duration: const Duration(milliseconds: 375),
-                        alignment: Alignment(-1.0, isActiveEdit ? 0 : -1),
+                        alignment: Alignment(-1.0, isActiveEdit ? -0.2 : -1),
                         child: Container(
                           height: 75.0,
                           width: 75.0,

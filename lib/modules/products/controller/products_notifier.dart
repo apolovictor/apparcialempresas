@@ -252,6 +252,20 @@ class ProductQuantityController extends StateNotifier<TextEditingController> {
   }
 }
 
+class ProductUnitPriceController extends StateNotifier<TextEditingController> {
+  ProductUnitPriceController() : super(productUnitPrice);
+  static TextEditingController productUnitPrice = TextEditingController();
+
+  fetchProductUnitPrice(TextEditingController productUnitPrice) {
+    state = productUnitPrice;
+    return state;
+  }
+
+  clear() {
+    state.clear();
+  }
+}
+
 class AddProductNameController extends StateNotifier<TextEditingController> {
   AddProductNameController() : super(productName);
   static TextEditingController productName = TextEditingController();
@@ -321,6 +335,9 @@ final productPromoProvider =
 final productQuantityProvider =
     StateNotifierProvider<ProductQuantityController, TextEditingController>(
         (ref) => ProductQuantityController());
+final productUnitPriceProvider =
+    StateNotifierProvider<ProductUnitPriceController, TextEditingController>(
+        (ref) => ProductUnitPriceController());
 final addProductNameProvider =
     StateNotifierProvider<AddProductNameController, TextEditingController>(
         (ref) => AddProductNameController());
