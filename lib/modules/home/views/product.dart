@@ -299,8 +299,9 @@ class BusinessListView extends HookConsumerWidget {
                                                     productIdDocument: product.documentId!,
                                                     productCategory: product.categories,
                                                     productName: product.name,
-                                                    photo_url: product.logo!,
+                                                    photo_url: product.logo,
                                                     price: product.price.price,
+                                                    avgUnitPrice: product.avgUnitPrice!,
                                                     quantity: 1,
                                                     isUnavailble: false));
                                       } else {
@@ -314,6 +315,8 @@ class BusinessListView extends HookConsumerWidget {
                                                 productName: product.name,
                                                 photo_url: product.logo!,
                                                 price: product.price.price,
+                                                avgUnitPrice:
+                                                    product.avgUnitPrice!,
                                                 quantity: 1,
                                                 isUnavailble: false));
                                       }

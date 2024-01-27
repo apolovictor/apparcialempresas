@@ -47,6 +47,7 @@ class DashboardDetailOrders {
   final String productPhoto;
   final String productCategory;
   final double price;
+  final double avgUnitPrice;
   final Timestamp createdAt;
   final dynamic finishedAt;
   final int status;
@@ -59,6 +60,7 @@ class DashboardDetailOrders {
     required this.productPhoto,
     required this.productCategory,
     required this.price,
+    required this.avgUnitPrice,
     required this.createdAt,
     this.finishedAt,
     required this.status,
@@ -73,6 +75,7 @@ class DashboardDetailOrders {
       productPhoto: doc.data()['productPhoto'],
       productCategory: doc.data()['productCategory'],
       price: doc.data()['price'],
+      avgUnitPrice: doc.data()['avgUnitPrice'],
       createdAt: doc.data()['createdAt'],
       finishedAt: doc.data()['finishedAt'],
       status: doc.data()['status'],
@@ -88,6 +91,7 @@ class DashboardDetailOrders {
       'productPhoto': productPhoto,
       'productCategory': productCategory,
       'price': price,
+      'avgUnitPrice': avgUnitPrice,
       'createdAt': createdAt,
       'finishedAt': finishedAt,
       'status': status,

@@ -76,11 +76,13 @@ class DragItemArea extends HookConsumerWidget {
                                           itemBorderRadius), //<-- Set the rounded corners
                                       right: Radius.circular(itemBorderRadius),
                                     ),
-                                    child: RemotePicture(
-                                      mapKey: item.photo_url,
-                                      imagePath:
-                                          'gs://appparcial-123.appspot.com/products/${item.photo_url}',
-                                    ),
+                                    child: item.photo_url != null
+                                        ? RemotePicture(
+                                            mapKey: item.photo_url!,
+                                            imagePath:
+                                                'gs://appparcial-123.appspot.com/products/${item.photo_url}',
+                                          )
+                                        : const SizedBox(),
                                   ),
                                 ),
                               ],

@@ -93,6 +93,7 @@ class RegisterOrder extends ChangeNotifier {
               'productName': item.productName,
               'productPhoto': item.photo_url,
               'price': item.price,
+              'avgUnitPrice': item.avgUnitPrice,
               'createdAt': FieldValue.serverTimestamp(),
               'finishedAt': '',
               'status': 1
@@ -202,6 +203,16 @@ class ItemListController extends StateNotifier<List<OrderItem>> {
       ...state.map(
         (e) => e.productIdDocument == item.productIdDocument
             ? e.copyWith(quantity: e.quantity + 1)
+            : e,
+      ),
+    ];
+  }
+
+  updateUnitPriceOfItem(int index, OrderItem item) {
+    state = [
+      ...state.map(
+        (e) => e.productIdDocument == item.productIdDocument
+            ? e.copyWith(avgUnitPrice: e.avgUnitPrice)
             : e,
       ),
     ];
@@ -469,10 +480,54 @@ class RecentOrdersNotifier extends StreamNotifier<List<DashboardDetailOrders>> {
     // });
   }
 
-  Future<bool> updateRecentOrder(String orderIdDocument) async {
+  Future<bool> updateRecentOrder(String orderIdDocument, String productDocument,
+      double avgUnitPrice) async {
     final businessCollection = _firestore.collection('business');
+    String idDocument = "bandiis";
+    var now = DateTime.now();
+
+    var lastMidnight = DateTime(now.year, now.month, now.day);
 
     try {
+      businessCollection
+          .doc(idDocument)
+          .collection("products")
+          .doc(productDocument)
+          .collection('stockTransactions')
+          .where('date', isGreaterThanOrEqualTo: lastMidnight)
+          .where('type', isEqualTo: 'out')
+          .limit(1)
+          .get()
+          .then((value) {
+        print(value.docs.isEmpty);
+
+        if (value.docs.isEmpty) {
+          businessCollection
+              .doc(idDocument)
+              .collection("products")
+              .doc(productDocument)
+              .collection('stockTransactions')
+              .add({
+            'date': FieldValue.serverTimestamp(),
+            'type': 'out',
+            'quantity': 1,
+            'unitPrice': avgUnitPrice
+          });
+        } else {
+          print(avgUnitPrice);
+          businessCollection
+              .doc(idDocument)
+              .collection("products")
+              .doc(productDocument)
+              .collection('stockTransactions')
+              .doc(value.docs.first.id)
+              .update({
+            'quantity': FieldValue.increment(1),
+            'unitPrice': avgUnitPrice
+          });
+        }
+      });
+
       await businessCollection
           .doc(ref.watch(idDocumentNotifier))
           .collection("detailOrders")

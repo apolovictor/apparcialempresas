@@ -122,7 +122,7 @@ class TableBill extends HookConsumerWidget {
                                   ],
                                 ),
                                 FinishOrderTabletButton(
-                                  buttonName: 'Fechar Pedido',
+                                  buttonName: 'Fechar Conta',
                                   listDetailOrders: snapshot.data!,
                                 ),
                               ],

@@ -63,7 +63,6 @@ class TablesListActive extends HookConsumerWidget {
                           onAccept: (DashboardTables data) {
                             Timestamp currentTimeStamp =
                                 Timestamp.fromDate(DateTime.now());
-                            print(currentTimeStamp);
                             ref
                                 .read(dragTableNotifier.notifier)
                                 .bookingOrderedByDraggable(data);

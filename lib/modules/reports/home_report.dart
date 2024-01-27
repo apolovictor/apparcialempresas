@@ -17,32 +17,32 @@ class ReportScreen extends HookConsumerWidget {
             alignment: const Alignment(-1, -1),
             child: Container(
               color: Colors.blueAccent,
-              height: height * 0.27,
-              width: width * 0.42,
+              height: height * 0.47,
+              width: width * 0.564,
             ),
           ),
           Align(
             alignment: const Alignment(1, -1),
             child: Container(
               color: Colors.grey[100],
-              height: height * 0.27,
-              width: width * 0.564,
+              height: height * 0.37,
+              width: width * 0.42,
             ),
           ),
           Align(
             alignment: const Alignment(-1, 1),
             child: Container(
               color: Colors.grey[100],
-              height: height * 0.70,
-              width: width * 0.42,
+              height: height * 0.50,
+              width: width * 0.564,
             ),
           ),
           Align(
             alignment: const Alignment(1, 1),
             child: Container(
               color: Colors.blueAccent,
-              height: height * 0.70,
-              width: width * 0.564,
+              height: height * 0.60,
+              width: width * 0.42,
             ),
           ),
         ],

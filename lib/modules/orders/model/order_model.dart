@@ -4,16 +4,18 @@ class OrderItem {
   final String productIdDocument;
   final String productCategory;
   final String productName;
-  final String photo_url;
+  final String? photo_url;
   final double price;
+  final double avgUnitPrice;
   final int quantity;
   final bool isUnavailble;
   OrderItem({
     required this.productIdDocument,
     required this.productCategory,
     required this.productName,
-    required this.photo_url,
+    this.photo_url,
     required this.price,
+    required this.avgUnitPrice,
     required this.quantity,
     required this.isUnavailble,
   });
@@ -24,6 +26,7 @@ class OrderItem {
     String? productName,
     String? photo_url,
     double? price,
+    double? avgUnitPrice,
     int? quantity,
     bool? isUnavailble,
   }) {
@@ -33,6 +36,7 @@ class OrderItem {
       productName: productName ?? this.productName,
       photo_url: photo_url ?? this.photo_url,
       price: price ?? this.price,
+      avgUnitPrice: avgUnitPrice ?? this.avgUnitPrice,
       quantity: quantity ?? this.quantity,
       isUnavailble: isUnavailble ?? this.isUnavailble,
     );
@@ -45,6 +49,7 @@ class OrderItem {
       productName: doc.data()['productName'],
       photo_url: doc.data()['photo_url'],
       price: doc.data()['price'],
+      avgUnitPrice: doc.data()['avgUnitPrice'],
       quantity: doc.data()['quantity'],
       isUnavailble: doc.data()['isUnavailble'],
     );

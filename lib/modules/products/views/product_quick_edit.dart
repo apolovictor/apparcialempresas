@@ -354,7 +354,7 @@ class ProducQuickEdit extends HookConsumerWidget {
                                                 productUnitPriceController,
                                                 'Preço Unitário',
                                                 data[productSelected]
-                                                    .unitPrice
+                                                    .avgUnitPrice
                                                     .toString(),
                                                 context,
                                                 productSelected > -1
