@@ -25,6 +25,7 @@ class Product {
   String name;
   Price price;
   double quantity;
+  double? unitPrice;
   String? description;
   String? logo;
   int status;
@@ -37,6 +38,7 @@ class Product {
     required this.name,
     required this.price,
     required this.quantity,
+    this.unitPrice,
     this.description,
     this.logo,
     required this.status,
@@ -51,6 +53,7 @@ class Product {
       'name': name,
       'price': price,
       'quantity': quantity,
+      'unitPrice': unitPrice,
       'description': description,
       'photo_url': logo,
       'status': status,
@@ -66,6 +69,7 @@ class Product {
       name: doc.data()!['name'],
       price: Price.fromDoc(doc.data()!['price']),
       quantity: doc.data()!['quantity'],
+      unitPrice: doc.data()!['unitPrice'],
       description: doc.data()!['description'],
       logo: doc.data()!['photo_url'],
       status: doc.data()!['status'],

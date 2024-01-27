@@ -50,7 +50,7 @@ class ProducQuickEdit extends HookConsumerWidget {
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           const begin = Offset(1.0, 0.0);
           const end = Offset.zero;
-          const curve = Curves.ease;
+          const curve = Curves.easeInOut;
 
           var tween =
               Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
@@ -354,8 +354,7 @@ class ProducQuickEdit extends HookConsumerWidget {
                                                 productUnitPriceController,
                                                 'Preço Unitário',
                                                 data[productSelected]
-                                                    .price
-                                                    .price
+                                                    .unitPrice
                                                     .toString(),
                                                 context,
                                                 productSelected > -1

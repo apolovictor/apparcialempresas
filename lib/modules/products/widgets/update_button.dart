@@ -42,7 +42,8 @@ class UpdateButton extends HookConsumerWidget {
             if (ref.watch(productNameProvider).text.isEmpty &&
                 ref.watch(productPriceProvider).text.isEmpty &&
                 ref.watch(productPromoProvider).text.isEmpty &&
-                ref.watch(productQuantityProvider).text.isEmpty) {
+                ref.watch(productQuantityProvider).text.isEmpty &&
+                ref.watch(productUnitPriceProvider).text.isEmpty) {
               Fluttertoast.showToast(
                   msg: "Nenhum campo foi modificado para ser atualizado.",
                   toastLength: Toast.LENGTH_LONG,
@@ -91,6 +92,13 @@ class UpdateButton extends HookConsumerWidget {
                     ref.watch(productQuantityProvider).text.isEmpty
                         ? product.quantity as int
                         : int.parse(ref.watch(productQuantityProvider).text),
+                    ref.watch(productUnitPriceProvider).text.isEmpty
+                        ? product.price.price
+                        : double.parse(ref
+                            .watch(productUnitPriceProvider)
+                            .text
+                            .replaceAll(',', '.')
+                            .replaceAll('R\$', '')),
                   );
 
               if (result) {
@@ -98,6 +106,7 @@ class UpdateButton extends HookConsumerWidget {
                 ref.read(productPriceProvider.notifier).clear();
                 ref.read(productPromoProvider.notifier).clear();
                 ref.read(productQuantityProvider.notifier).clear();
+                ref.read(productUnitPriceProvider.notifier).clear();
 
                 ref.read(isActiveEditNotifier.notifier).setIsActiveEdit(false);
 

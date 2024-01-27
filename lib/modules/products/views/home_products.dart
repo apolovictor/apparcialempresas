@@ -8,7 +8,7 @@ import 'categories_list.dart';
 import 'product_list.dart';
 
 class ProductScreen extends HookConsumerWidget {
-  ProductScreen({Key? key}) : super(key: key);
+  const ProductScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -117,7 +117,7 @@ class ProductScreen extends HookConsumerWidget {
                                               error: (err, stack) =>
                                                   Text('Error: $err'),
                                               loading: () =>
-                                                  CircularProgressIndicator(),
+                                                  const CircularProgressIndicator(),
                                             ),
                                           ],
                                         ),
@@ -169,7 +169,7 @@ class ProductScreen extends HookConsumerWidget {
                                         )
                                       ],
                                     ),
-                                    ProductsList(),
+                                    const ProductsList(),
                                   ])),
                         )
                       ]),

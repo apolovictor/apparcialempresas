@@ -24,7 +24,7 @@ Widget fieldWidget(TextEditingController controller, String fieldName,
             enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide.none,
                 borderRadius: BorderRadius.circular(12)),
-            hintText: hintText,
+            hintText: hintText == 'null' ? '' : hintText,
             fillColor: secondaryColor,
             // fillColor: const Color(0xFFD7D7F4),
             filled: true,
