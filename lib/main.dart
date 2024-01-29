@@ -13,7 +13,7 @@ import 'modules/products/controller/products_notifier.dart';
 import 'modules/products/views/home_products_impl.dart';
 import 'modules/products/views/product_details.dart';
 import 'modules/products/views/product_details_impl.dart';
-import 'modules/reports/home_reports_impl.dart';
+import 'modules/reports/views/home_reports_impl.dart';
 import 'modules/routes/controller/routes_controller.dart';
 import 'modules/routes/widgets/app_route_observer.dart';
 
