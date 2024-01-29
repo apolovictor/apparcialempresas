@@ -3,6 +3,8 @@ import 'package:apparcialempresas/modules/home/views/tables.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import 'stock_sales.dart';
+
 class ReportScreen extends HookConsumerWidget {
   const ReportScreen({super.key});
   @override
@@ -40,9 +42,9 @@ class ReportScreen extends HookConsumerWidget {
           Align(
             alignment: const Alignment(1, 1),
             child: Container(
-              color: Colors.blueAccent,
               height: height * 0.60,
               width: width * 0.42,
+              child: StockSales(),
             ),
           ),
         ],
