@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../routes/widgets/app_scaffold.dart';
+import '../../routes/widgets/app_scaffold.dart';
 import 'home_report.dart';
 
 class ReportsDashboard extends HookConsumerWidget {
