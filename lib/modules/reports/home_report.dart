@@ -44,7 +44,10 @@ class ReportScreen extends HookConsumerWidget {
             child: Container(
               height: height * 0.60,
               width: width * 0.42,
-              child: StockSales(),
+              child: LayoutBuilder(builder: (context, constraints) {
+                return StockSales(
+                    width: constraints.maxWidth, height: constraints.maxHeight);
+              }),
             ),
           ),
         ],
