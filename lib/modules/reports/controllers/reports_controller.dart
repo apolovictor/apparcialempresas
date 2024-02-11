@@ -2,13 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../models/reports_model.dart';
+
 FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-class StockSakes extends ChangeNotifier {
+class StockSales extends ChangeNotifier {
   static String idDocument = "bandiis";
   final _businessCollection = _firestore.collection('business');
 
-  Future<List<double>> getstockSales() async {
+  Future<List<double>> getStockSales() async {
     cmv() async {
       double total = 0;
       var now = DateTime.now();
@@ -77,14 +79,27 @@ class StockSakes extends ChangeNotifier {
     }
 
     try {
-      List<double> responses =
+      List<double> response =
           await Future.wait([cmv(), currentStock(), sales()]);
-      print('responses === $responses');
-      return responses;
+      print('response === $response');
+      return response;
+    } catch (e) {
+      return Future.error(e);
+    }
+  }
+
+  Future<List<SalesReport>> getSalesReport(Timestamp filter) async {
+    try {
+      return await _businessCollection
+          .doc(idDocument)
+          .collection('orders')
+          .where('finishedAt', isGreaterThanOrEqualTo: filter)
+          .get()
+          .then((e) => e.docs.map((e) => SalesReport.fromDoc(e)).toList());
     } catch (e) {
       return Future.error(e);
     }
   }
 }
 
-final stockSalesReportProvider = Provider((ref) => StockSakes());
+final salesReportProvider = Provider((ref) => StockSales());

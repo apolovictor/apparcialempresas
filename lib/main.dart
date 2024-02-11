@@ -3,6 +3,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'dart:html';
 
 import 'constants/route_names.dart';
@@ -41,6 +42,8 @@ class MyApp extends HookConsumerWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    initializeDateFormatting('pt_BR');
+
     // WidgetsBinding.instance.addPostFrameCallback((_) {
     //   ref
     //       .read(sizeLayoutNotifier.notifier)
