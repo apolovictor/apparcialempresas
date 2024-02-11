@@ -62,8 +62,6 @@ class StockSales extends HookConsumerWidget {
       stockSalesController.forward();
     });
 
-    // if (ref.watch(isProductsOpenedProvider))
-    //
     final listStockSales = ref.watch(stockSalesReportProvider).getstockSales();
 
     return FutureBuilder<List<double>>(
@@ -91,20 +89,28 @@ class StockSales extends HookConsumerWidget {
                         ),
                       ),
                       Align(
-                        alignment: Alignment(0, -0.6),
+                        alignment: const Alignment(0, -0.6),
                         child: Material(
                             color: Colors.transparent,
-                            child: Text('R\$ 45.000,00',
-                                style: TextStyle(
-                                    fontSize: 18,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600))),
+                            child: snapshot.hasData
+                                ? Text(
+                                    'R\$ ${snapshot.data![2].toStringAsFixed(2)}',
+                                    style: const TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600))
+                                : SizedBox(
+                                    width:
+                                        sequenceAnimation['widthCurrentStock']
+                                                .value *
+                                            0.2,
+                                    child: const LinearProgressIndicator())),
                       ),
                       const Align(
                         alignment: Alignment(0, -0.5),
                         child: Material(
                             color: Colors.transparent,
-                            child: Text('Receita Bruta',
+                            child: Text('Receita Vendas',
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.w600))),

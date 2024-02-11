@@ -546,6 +546,8 @@ class RecentOrdersNotifier extends StreamNotifier<List<DashboardDetailOrders>> {
     final businessCollection = _firestore.collection('business');
     var idDocument = ref.watch(idDocumentNotifier);
     final String idDocumentOrder = ref.watch(tableIdDocumentNotifier);
+    double totalOrder =
+        listDetailOrders.map((e) => e.price).reduce((a, b) => a + b);
 
     try {
       WriteBatch batch = _firestore.batch();
@@ -562,8 +564,11 @@ class RecentOrdersNotifier extends StreamNotifier<List<DashboardDetailOrders>> {
           .collection("detailOrders")
           .doc(idTable.toString());
 
-      batch.update(docRefOrders,
-          {'status': 2, 'finishedAt': FieldValue.serverTimestamp()});
+      batch.update(docRefOrders, {
+        'status': 2,
+        'total': totalOrder,
+        'finishedAt': FieldValue.serverTimestamp()
+      });
       batch.update(docRefTables, {'idDocument': '', 'status': 1});
 
       for (var item in listDetailOrders) {

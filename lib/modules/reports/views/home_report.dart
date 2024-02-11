@@ -3,6 +3,7 @@ import 'package:apparcialempresas/modules/home/views/tables.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import 'sales.dart';
 import 'stock_sales.dart';
 
 class ReportScreen extends HookConsumerWidget {
@@ -18,9 +19,10 @@ class ReportScreen extends HookConsumerWidget {
           Align(
             alignment: const Alignment(-1, -1),
             child: Container(
-              color: Colors.blueAccent,
+              color: Color(0xFF1c1727),
               height: height * 0.47,
               width: width * 0.564,
+              child: const Sales()
             ),
           ),
           Align(

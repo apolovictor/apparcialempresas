@@ -11,6 +11,9 @@ class StockSakes extends ChangeNotifier {
   Future<List<double>> getstockSales() async {
     cmv() async {
       double total = 0;
+      var now = DateTime.now();
+
+      var firstDayOfMonth = DateTime(now.year, now.month, 1);
 
       await _businessCollection
           .doc(idDocument)
@@ -24,6 +27,7 @@ class StockSakes extends ChangeNotifier {
               .doc(e.docs[i].id)
               .collection('stockTransactions')
               .where('type', isEqualTo: 'out')
+              .where('date', isGreaterThanOrEqualTo: firstDayOfMonth)
               .get()
               .then((value) {
             value.docs.forEach((element) {
@@ -55,7 +59,21 @@ class StockSakes extends ChangeNotifier {
     }
 
     sales() async {
-      return 3.0;
+      var now = DateTime.now();
+      double total = 0;
+
+      var firstDayOfMonth = DateTime(now.year, now.month, 1);
+      await _businessCollection
+          .doc(idDocument)
+          .collection('orders')
+          .where('finishedAt', isGreaterThanOrEqualTo: firstDayOfMonth)
+          .get()
+          .then((value) {
+        value.docs.forEach((element) {
+          total += element.data()['total'];
+        });
+      });
+      return total;
     }
 
     try {
