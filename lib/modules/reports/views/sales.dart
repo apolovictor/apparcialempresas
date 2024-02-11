@@ -103,7 +103,7 @@ class Sales extends HookConsumerWidget {
                       print("thekey ===> $thekey");
                       print("thevalue ===> $thevalue");
                       print("days.length ===> ${days.length}");
-                      for (var i = days.length - 1; i >= 0; i--) {
+                      for (var i = 0; i < days.length; i++) {
                         print("i ==== $i");
 
                         if (groupedAndSum.containsKey(
