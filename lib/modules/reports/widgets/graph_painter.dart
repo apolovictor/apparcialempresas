@@ -11,39 +11,21 @@ class GraphPainter extends CustomPainter {
   final double width;
   final double height;
   final List<SalesModel> points;
+  Path fullPath;
+  Path fillPath;
 
-  GraphPainter(this.percentage, this.height, this.width, this.points);
+  GraphPainter(this.percentage, this.height, this.width, this.points,
+      this.fullPath, this.fillPath);
 
   @override
   void paint(Canvas canvas, Size size) {
-    final fullPath = Path();
+    // final fullPath = Path();
 
     final paint = Paint()
       ..color = Colors.white
       ..strokeWidth = 3
       ..style = PaintingStyle.stroke;
 
-    // final points = [
-    //   Offset(36, height),
-    //   Offset(100, 50),
-    //   Offset(200, 100),
-    //   Offset(300, 70),
-    //   Offset(400, 135),
-    //   Offset(500, 30),
-    //   Offset(600, 168),
-    // ];
-
-    for (var i = 0; i < points.length - 1; i++) {
-      fullPath.moveTo(points[i].offset.dx, points[i].offset.dy);
-      fullPath.cubicTo(
-        (points[i].offset.dx + points[i + 1].offset.dx) / 2,
-        points[i].offset.dy,
-        (points[i].offset.dx + points[i + 1].offset.dx) / 2,
-        points[i + 1].offset.dy,
-        points[i + 1].offset.dx,
-        points[i + 1].offset.dy,
-      );
-    }
     for (var i = 0; i < points.length; i++) {
       drawTextCentered(
           canvas,
@@ -78,6 +60,18 @@ class GraphPainter extends CustomPainter {
       if (currentPathEnd >= pathEnd) break;
     }
     canvas.drawPath(path, paint);
+
+    // paint the gradient fill
+    paint.style = PaintingStyle.fill;
+    paint.shader = ui.Gradient.linear(
+      Offset.zero,
+      Offset(0.0, size.height),
+      [
+        Colors.white.withOpacity(0.95),
+        Colors.white.withOpacity(0.2),
+      ],
+    );
+    canvas.drawPath(fillPath, paint);
   }
 
   TextPainter measureText(

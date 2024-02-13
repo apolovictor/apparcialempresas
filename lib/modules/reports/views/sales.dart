@@ -11,6 +11,7 @@ import '../widgets/graph_painter.dart';
 
 class Sales extends HookConsumerWidget {
   const Sales({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final date = DateTime.now();
@@ -135,6 +136,35 @@ class Sales extends HookConsumerWidget {
                                         (thevalue * 1.2)
                                     : constraints.maxHeight)));
                       }
+                      Path drawPath(bool closePath) {
+                        final path = Path();
+                        for (var i = 0; i < salesList.length - 1; i++) {
+                          path.moveTo(
+                              salesList[i].offset.dx, salesList[i].offset.dy);
+                          path.cubicTo(
+                            (salesList[i].offset.dx +
+                                    salesList[i + 1].offset.dx) /
+                                2,
+                            salesList[i].offset.dy,
+                            (salesList[i].offset.dx +
+                                    salesList[i + 1].offset.dx) /
+                                2,
+                            salesList[i + 1].offset.dy,
+                            salesList[i + 1].offset.dx,
+                            salesList[i + 1].offset.dy,
+                          );
+
+                          // for the gradient fill, we want to close the path
+                          if (closePath) {
+                            path.lineTo(
+                                salesList[0].offset.dx, constraints.maxHeight);
+                            path.lineTo(
+                                salesList[i].offset.dx, salesList[i].offset.dy);
+                          }
+                        }
+                        return path;
+                      }
+
                       return AnimatedBuilder(
                           animation: salesController,
                           builder: (context, child) {
@@ -143,7 +173,9 @@ class Sales extends HookConsumerWidget {
                                   animation.value,
                                   constraints.maxHeight,
                                   constraints.maxWidth,
-                                  salesList),
+                                  salesList,
+                                  drawPath(false),
+                                  drawPath(true)),
                             );
                           });
                       //!! fazer o animation do background color gradient da receita de vendas em paralelo com os valores das proprias receitas do grafico.
