@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 class SalesModel {
   final Offset offset;
   final String weekDays;
+  final double? total;
 
-  SalesModel({required this.offset, required this.weekDays});
+  SalesModel({required this.offset, required this.weekDays, this.total});
 }
 
 class SalesReport {
