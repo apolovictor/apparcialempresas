@@ -20,7 +20,6 @@ class GraphPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    print("percentage ==== $percentage  ");
     double minHeight = height;
 
     final paint = Paint()

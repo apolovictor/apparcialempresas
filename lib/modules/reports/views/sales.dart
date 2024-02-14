@@ -88,28 +88,51 @@ class Sales extends HookConsumerWidget {
 
                       // print("groupByDate ==== $groupByDate");
                       print("groupedAndSum ==== $groupedAndSum");
-                      var thevalue = 0.0;
-                      var thekey;
+                      var max = 0.0;
+                      var theKey;
                       groupedAndSum.entries.forEach((element) {
-                        if (element.value['totalSum'] > thevalue) {
-                          thevalue = element.value['totalSum'];
-                          thekey = element.key;
+                        if (element.value['totalSum'] > max) {
+                          max = element.value['totalSum'];
+                          theKey = element.key;
                         }
                       });
+                      double intervaloTotal = max * 1.2;
+
+                      double calcularPorcentagens(dynamic points) {
+                        double deslocamentoRelativo = points;
+                        double posicaoRelativa =
+                            (deslocamentoRelativo / intervaloTotal) * 100;
+                        double posicaoRelativaEmPixels =
+                            ((100 - posicaoRelativa) / 100) *
+                                constraints.maxHeight;
+
+                        return posicaoRelativaEmPixels;
+                      }
 
                       WidgetsBinding.instance.addPostFrameCallback((_) {
                         salesController.forward();
                       });
 
                       for (var i = 0; i < days.length; i++) {
-                        if (groupedAndSum.containsKey(
-                            getDate(days[i]).toString().substring(0, 10))) {
-                          print(groupedAndSum.entries
-                              .firstWhere((element) =>
-                                  element.key ==
-                                  getDate(days[i]).toString().substring(0, 10))
-                              .value['totalSum']);
-                        }
+                        // if (groupedAndSum.containsKey(
+                        //     getDate(days[i]).toString().substring(0, 10))) {
+                        //   // print(groupedAndSum.entries
+                        //   //     .firstWhere((element) =>
+                        //   //         element.key ==
+                        //   //         getDate(days[i]).toString().substring(0, 10))
+                        //   //     .value['totalSum']);
+                        // }
+                        // print(getDate(days[i]));
+
+                        // print(groupedAndSum.entries
+                        //     .firstWhere((element) =>
+                        //         element.key ==
+                        //         getDate(days[i]).toString().substring(0, 10))
+                        //     .value['totalSum']);
+
+                        // print(
+                        //     "constraints.maxHeight === ${constraints.maxHeight}");
+
                         salesList.add(SalesModel(
                             weekDays: DateFormat('EEE', 'pt_BR')
                                 .format(getDate(days[i])),
@@ -117,20 +140,19 @@ class Sales extends HookConsumerWidget {
                                 ((constraints.maxWidth / (days.length - 1)) *
                                     i),
                                 groupedAndSum.containsKey(getDate(days[i]).toString().substring(0, 10))
-                                    ? (groupedAndSum.entries
-                                                .firstWhere((element) =>
-                                                    element.key ==
-                                                    getDate(days[i])
-                                                        .toString()
-                                                        .substring(0, 10))
-                                                .value['totalSum'] *
-                                            constraints.maxHeight) /
-                                        (thevalue * 1.2)
+                                    ? calcularPorcentagens(groupedAndSum.entries
+                                        .firstWhere((element) =>
+                                            element.key ==
+                                            getDate(days[i])
+                                                .toString()
+                                                .substring(0, 10))
+                                        .value['totalSum'])
                                     : constraints.maxHeight),
                             total: groupedAndSum.containsKey(getDate(days[i]).toString().substring(0, 10))
-                                    ? groupedAndSum.entries
-                                .firstWhere((element) => element.key == getDate(days[i]).toString().substring(0, 10))
-                                .value['totalSum'] : 0) );
+                                ? groupedAndSum.entries
+                                    .firstWhere((element) => element.key == getDate(days[i]).toString().substring(0, 10))
+                                    .value['totalSum']
+                                : 0));
                       }
                       Path drawPath(bool closePath) {
                         final path = Path();
@@ -153,13 +175,17 @@ class Sales extends HookConsumerWidget {
                           // for the gradient fill, we want to close the path
                           if (closePath) {
                             path.lineTo(
-                                salesList[0].offset.dx, constraints.maxHeight);
+                                constraints.maxWidth, constraints.maxHeight);
                             path.lineTo(
                                 salesList[i].offset.dx, salesList[i].offset.dy);
                           }
                         }
                         return path;
                       }
+
+                      salesList.forEach((value) {
+                        print('${value.offset.dy}  ========  ${value.total}');
+                      });
 
                       return AnimatedBuilder(
                           animation: salesController,
@@ -172,7 +198,7 @@ class Sales extends HookConsumerWidget {
                                   salesList,
                                   drawPath(false),
                                   drawPath(true),
-                                  thevalue * 1.2),
+                                  max * 1.2),
                             );
                           });
                       //!! fazer o animation do background color gradient da receita de vendas em paralelo com os valores das proprias receitas do grafico.
