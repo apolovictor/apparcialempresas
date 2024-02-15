@@ -21,20 +21,20 @@ class ProductCardImg extends HookConsumerWidget {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         // if (filter['category'].isEmpty) {
         List<Product>? products = ref.watch(productProvider).value;
-        if (products != null) {
-          ref.read(pictureProductListProvider.notifier).clear();
-          for (var i = 0; i < products.length; i++) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              ref.read(pictureProductListProvider.notifier).fetchPictureList(
-                  RemotePicture(
-                    mapKey: product.logo!,
-                    imagePath:
-                        'gs://appparcial-123.appspot.com/products/${product.logo!}',
-                  ),
-                  products.length);
-            });
-          }
-        }
+        // if (products != null) {
+        //   ref.read(pictureProductListProvider.notifier).clear();
+        //   for (var i = 0; i < products.length; i++) {
+        //     WidgetsBinding.instance.addPostFrameCallback((_) {
+        //       ref.read(pictureProductListProvider.notifier).fetchPictureList(
+        //           RemotePicture(
+        //             mapKey: product.logo!,
+        //             imagePath:
+        //                 'gs://appparcial-123.appspot.com/products/${product.logo!}',
+        //           ),
+        //           products.length);
+        //     });
+        //   }
+        // }
         ref.read(isReloagingImgNotifier.notifier).isReloadingImg(false);
         ref.read(lastProductNotifier.notifier).clearLastProduct();
       });

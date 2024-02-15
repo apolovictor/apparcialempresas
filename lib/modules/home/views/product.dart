@@ -2,12 +2,12 @@ import 'package:botecaria/modules/home/views/categories_list.dart';
 import 'package:cached_firestorage/lib.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../orders/controller/orders_notifier.dart';
 import '../../orders/model/order_model.dart';
+import '../../products/controller/products_notifier.dart';
 import '../../products/model/products_model.dart';
 import '../controller/product_notifier.dart';
 
@@ -26,7 +26,6 @@ class DashboardProduct extends HookConsumerWidget {
       products: products,
     );
 
-    print(products.length);
     return Scaffold(body: LayoutBuilder(builder: (context, constraints) {
       double height = constraints.maxHeight;
       double width = constraints.maxWidth;
@@ -112,18 +111,9 @@ class _ProductListState extends ConsumerState<ProductList> {
         _controller.forward();
       }
     });
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      for (var index = 0; index < _productDashboard.length; index++) {
-        ref.read(pictureProductListProvider.notifier).fetchPictureList(
-              RemotePicture(
-                mapKey: _productDashboard[index].logo!,
-                imagePath:
-                    'gs://appparcial-123.appspot.com/products/${_productDashboard[index].logo!}',
-              ),
-              _productDashboard.length,
-            );
-      }
-    });
+    final cachePictures = ref.watch(pictureProductListProvider);
+    print("cachePictures.length ======== ${cachePictures.length}");
+
     return Stack(
       children: [
         SizedBox(
@@ -151,6 +141,7 @@ class _ProductListState extends ConsumerState<ProductList> {
                   if (opacity < 0) {
                     opacity = 0.0;
                   }
+                  print(ref.watch(pictureProductListProvider).length);
                   return AnimatedBuilder(
                       animation: _controller,
                       builder: (context, child) {

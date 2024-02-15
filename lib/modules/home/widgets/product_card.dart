@@ -2,6 +2,7 @@ import 'package:botecaria/modules/products/model/products_model.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../products/controller/products_notifier.dart';
 import '../controller/product_notifier.dart';
 
 class ProductCardDashboard extends HookConsumerWidget {
@@ -47,22 +48,16 @@ class ProductCardDashboard extends HookConsumerWidget {
                   )
                 ],
               ),
-              ref
-                      .watch(pictureProductListProvider)
-                      .any((element) => element.mapKey == product.logo)
-                  ? ClipRRect(
-                      borderRadius: BorderRadius.circular(15.0),
-                      child: Container(
-                          color: Colors.transparent,
-                          padding: const EdgeInsets.all(12),
-                          width: 100,
-                          height: 100,
-                          child: ref
-                              .watch(pictureProductListProvider)
-                              .firstWhere(
-                                  (element) => element.mapKey == product.logo)),
-                    )
-                  : const SizedBox()
+              ClipRRect(
+                borderRadius: BorderRadius.circular(15.0),
+                child: Container(
+                    color: Colors.transparent,
+                    padding: const EdgeInsets.all(12),
+                    width: 100,
+                    height: 100,
+                    child: ref.watch(pictureProductListProvider).firstWhere(
+                        (element) => element.mapKey == product.logo)),
+              )
             ],
           ),
         ));

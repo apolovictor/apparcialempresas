@@ -107,19 +107,7 @@ class ProductNotifier extends StreamNotifier<List<Product>> {
   }
 }
 
-class PictureProductProvider extends StateNotifier<List<RemotePicture>> {
-  PictureProductProvider() : super([]);
 
-  fetchPictureList(RemotePicture img, int length) {
-    if (state.length < length) {
-      state = [...state, img];
-    }
-  }
-
-  void clear() {
-    state.clear();
-  }
-}
 
 class TopContainerValueProvider extends StateNotifier<double> {
   TopContainerValueProvider() : super(value);
@@ -150,9 +138,7 @@ class AnimationPageController extends StateNotifier<ScrollController> {
 final filteredProductDashboardProvider =
     StateNotifierProvider<ProductDashboardProvider, List<Product>>(
         (ref) => ProductDashboardProvider());
-final pictureProductListProvider =
-    StateNotifierProvider<PictureProductProvider, List<RemotePicture>>(
-        (ref) => PictureProductProvider());
+
 final categoryProductDashboardNotifier =
     StateNotifierProvider<CategoryProductDashboardController, String>(
         (ref) => CategoryProductDashboardController());

@@ -57,6 +57,7 @@ dependencies:
   dotted_border: ^2.1.0
   collection: ^1.17.2
   riverpod_annotation: ^2.3.4
+  flutter_riverpod: ^2.4.10
 
 dev_dependencies:
   flutter_test:

@@ -3,9 +3,12 @@ import 'package:cloud_firestore/cloud_firestore.dart' as cloudFirestore;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../model/products_model.dart';
 import 'product_list.notifier.dart';
+
+part 'products_notifier.g.dart';
 
 cloudFirestore.FirebaseFirestore _firestore =
     cloudFirestore.FirebaseFirestore.instance;
@@ -63,17 +66,16 @@ final filteredProductsProvider =
       : products;
 });
 
-class PictureProductProvider extends StateNotifier<List<RemotePicture>> {
-  PictureProductProvider() : super([]);
+@Riverpod(keepAlive: true)
+class PictureProductList extends _$PictureProductList {
+  @override
+  List<RemotePicture> build() => state = [];
 
-  fetchPictureList(RemotePicture img, int length) {
+  add(RemotePicture img, int length) async {
     if (state.length < length) {
       state = [...state, img];
     }
-  }
-
-  void clear() {
-    state.clear();
+    return state;
   }
 }
 
@@ -89,9 +91,6 @@ class PictureCategoriesProvider extends StateNotifier<List<RemotePicture>> {
 
 final idDocumentNotifier = StateNotifierProvider<IdDocumentProvider, String>(
     (ref) => IdDocumentProvider());
-final pictureProductListProvider =
-    StateNotifierProvider<PictureProductProvider, List<RemotePicture>>(
-        (ref) => PictureProductProvider());
 final pictureCategoriesListProvider =
     StateNotifierProvider<PictureCategoriesProvider, List<RemotePicture>>(
         (ref) => PictureCategoriesProvider());
