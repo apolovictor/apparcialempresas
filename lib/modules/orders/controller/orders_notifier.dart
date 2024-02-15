@@ -349,7 +349,7 @@ AnimationController dragItemAreaController(WidgetRef ref) {
 AnimationController orderWidgetController(WidgetRef ref) {
   final controller =
       useAnimationController(duration: const Duration(milliseconds: 500));
-  // final isOpened = ref.watch(isOpenProvider);
+  final isOpened = ref.watch(isOpenProvider);
 
   final orderStateWidget = ref.watch(currentOrderStateProvider);
   final dragValue = ref.watch(dragValueProvider);

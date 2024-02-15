@@ -62,7 +62,7 @@ class StockSales extends HookConsumerWidget {
       stockSalesController.forward();
     });
 
-    final listStockSales = ref.watch(salesReportProvider).getStockSales();
+    final listStockSales = ref.watch(salesReportNotifier).getStockSales();
 
     return FutureBuilder<List<double>>(
         future: listStockSales,

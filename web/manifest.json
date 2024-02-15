@@ -1,12 +1,12 @@
 {
-    "name": "apparcialempresas",
-    "short_name": "apparcialempresas",
+    "name": "botecaria",
+    "short_name": "botecaria",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
     "description": "A new Flutter project.",
-    "orientation": "any",
+    "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
         {

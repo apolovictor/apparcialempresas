@@ -2,8 +2,7 @@ import 'package:cached_firestorage/lib.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'dart:html';
-import 'dart:ui_web' as ui;
+// import 'dart:ui_web' as ui;
 
 import '../controller/product_register.dart';
 import '../controller/products_notifier.dart';

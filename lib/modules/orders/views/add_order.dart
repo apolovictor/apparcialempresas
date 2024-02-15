@@ -34,8 +34,11 @@ class AddOrderWidget extends HookConsumerWidget {
     final idDocument = ref.watch(tableIdDocumentNotifier);
     AnimationController controller = orderWidgetController(ref);
 
+    print(controller.value);
+
     // final orderListState = ref.watch(orderStateListProvider);
     final currentOrderState = ref.watch(currentOrderStateProvider);
+    print(currentOrderState);
     final double widthPadding = minWidth * 0.01;
     double minHeight = currentOrderState == OrderStateWidget.onResume ||
             currentOrderState == OrderStateWidget.dragUpdate ||

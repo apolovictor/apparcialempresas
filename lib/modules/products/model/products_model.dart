@@ -12,8 +12,8 @@ class Price {
 
   static Price fromDoc(Map<String, dynamic> doc) {
     return Price(
-      price: doc['price']!,
-      promo: doc['promo'],
+      price: doc['price']!.toDouble(),
+      promo: doc['promo'].toDouble(),
     );
   }
 }
@@ -68,8 +68,8 @@ class Product {
       secondaryColor: doc.data()!['secondaryColor'],
       name: doc.data()!['name'],
       price: Price.fromDoc(doc.data()!['price']),
-      quantity: doc.data()!['quantity'],
-      avgUnitPrice: doc.data()!['avgUnitPrice'],
+      quantity: doc.data()!['quantity'].toDouble(),
+      avgUnitPrice: doc.data()!['avgUnitPrice'].toDouble(),
       description: doc.data()!['description'],
       logo: doc.data()!['photo_url'],
       status: doc.data()!['status'],
@@ -147,7 +147,7 @@ class ProductItem {
     return ProductItem(
       index: doc.data()['index'],
       product: doc.data()['product'],
-      offset: doc.data()['offset'],
+      offset: doc.data()['offset'].toDouble(),
       isActive: doc.data()['isActive'],
     );
   }

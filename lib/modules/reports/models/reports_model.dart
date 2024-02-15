@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 class SalesModel {
   final Offset offset;
   final String weekDays;
-  final double? total;
+  final double total;
 
-  SalesModel({required this.offset, required this.weekDays, this.total});
+  SalesModel(
+      {required this.offset, required this.weekDays, required this.total});
 }
 
 class SalesReport {
@@ -17,7 +18,7 @@ class SalesReport {
 
   static SalesReport fromDoc(DocumentSnapshot<Map<String, dynamic>> doc) {
     return SalesReport(
-      total: doc.data()!['total'],
+      total: doc.data()!['total'].toDouble(),
       date: doc.data()!['finishedAt'],
     );
   }

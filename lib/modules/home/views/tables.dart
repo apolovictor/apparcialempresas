@@ -1,4 +1,4 @@
-import 'package:apparcialempresas/modules/home/views/tables_active_list.dart';
+import 'package:botecaria/modules/home/views/tables_active_list.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 

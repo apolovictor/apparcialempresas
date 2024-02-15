@@ -1,5 +1,5 @@
-import 'package:apparcialempresas/modules/home/views/overview.dart';
-import 'package:apparcialempresas/modules/home/views/tables.dart';
+import 'package:botecaria/modules/home/views/overview.dart';
+import 'package:botecaria/modules/home/views/tables.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 

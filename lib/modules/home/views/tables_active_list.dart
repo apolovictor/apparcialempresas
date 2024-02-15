@@ -1,4 +1,4 @@
-import 'package:apparcialempresas/modules/home/model/tables_model.dart';
+import 'package:botecaria/modules/home/model/tables_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';

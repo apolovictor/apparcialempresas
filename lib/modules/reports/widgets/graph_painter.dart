@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:intl/intl.dart';
 import 'dart:ui' as ui;
 
@@ -11,15 +12,38 @@ class GraphPainter extends CustomPainter {
   final double width;
   final double height;
   final List<SalesModel> points;
-  Path fullPath;
-  Path fillPath;
+
   final double max;
 
-  GraphPainter(this.percentage, this.height, this.width, this.points,
-      this.fullPath, this.fillPath, this.max);
+  GraphPainter(this.percentage, this.height, this.width, this.points, this.max);
 
   @override
   void paint(Canvas canvas, Size size) {
+    Path drawPath(bool closePath) {
+      final path = Path();
+      for (var i = 0; i < points.length - 1; i++) {
+        path.moveTo(points[i].offset.dx,
+            points.length == i ? height : points[i].offset.dy);
+        path.cubicTo(
+          (points[i].offset.dx + points[i + 1].offset.dx) / 2,
+          points[i].offset.dy,
+          (points[i].offset.dx + points[i + 1].offset.dx) / 2,
+          points[i + 1].offset.dy,
+          points[i + 1].offset.dx,
+          points[i + 1].offset.dy,
+        );
+
+        // for the gradient fill, we want to close the path
+        if (closePath) {
+          path.lineTo(width, height);
+          // if (i <= points.length - 1) {
+          // path.lineTo(points[i].offset.dx, points[i].offset.dy);
+          // }
+        }
+      }
+      return path;
+    }
+
     double minHeight = height;
 
     final paint = Paint()
@@ -27,26 +51,21 @@ class GraphPainter extends CustomPainter {
       ..strokeWidth = 2
       ..style = PaintingStyle.stroke;
 
-    final labels = _computeValues();
+    // List<String> labels = [];
+    // labels = _computeValues();
 
     for (var i = 0; i < points.length; i++) {
       drawTextCentered(
           canvas,
-          Offset(i == 0 ? points[i].offset.dx + 10 : points[i].offset.dx,
-              height + 10),
+          Offset(points[i].offset.dx, height + 10),
           points[i].weekDays,
           const TextStyle(color: Colors.white, fontSize: 12),
           width);
-      final labele = labels[i];
+      final labele = points[i].total!.toStringAsFixed(2);
+
       drawTextCentered(
           canvas,
-          Offset(
-              i == 0
-                  ? points[i].offset.dx + 20
-                  : i == (points.length - 1)
-                      ? points[i].offset.dx - 20
-                      : points[i].offset.dx,
-              points[i].offset.dy - 25),
+          Offset(points[i].offset.dx, points[i].offset.dy - 25),
           labele,
           const TextStyle(
               color: Colors.white, fontSize: 16, fontWeight: FontWeight.w700),
@@ -66,7 +85,7 @@ class GraphPainter extends CustomPainter {
     final resultPoints = _computePoints(points, height / max);
 
     final path = Path();
-    final metrics = fullPath.computeMetrics().toList();
+    final metrics = drawPath(false).computeMetrics().toList();
     final fullPathLength = metrics.fold(
       0.0,
       (prev, metric) => prev + metric.length,
@@ -89,6 +108,7 @@ class GraphPainter extends CustomPainter {
       }
       if (currentPathEnd >= pathEnd) break;
     }
+
     canvas.drawPath(path, paint);
 
     // paint the gradient fill
@@ -101,7 +121,7 @@ class GraphPainter extends CustomPainter {
         Colors.white.withOpacity(0.2),
       ],
     );
-    canvas.drawPath(fillPath, paint);
+    canvas.drawPath(drawPath(true), paint);
 
     resultPoints.forEach((p) {
       canvas.drawCircle(
@@ -143,7 +163,6 @@ class GraphPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return true;
-  }
+  bool shouldRepaint(GraphPainter oldDelegate) => true;
+  // percentage != oldDelegate.percentage;
 }

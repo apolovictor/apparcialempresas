@@ -1,21 +1,17 @@
 // ignore_for_file: prefer_for_elements_to_map_fromiterable
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'dart:html';
 
 import 'constants/route_names.dart';
 import 'modules/home/controller/home_notifier.dart';
 import 'modules/home/views/dashboard_impl.dart';
-import 'modules/products/controller/product_list.notifier.dart';
-import 'modules/products/controller/products_notifier.dart';
 import 'modules/products/views/home_products_impl.dart';
-import 'modules/products/views/product_details.dart';
 import 'modules/products/views/product_details_impl.dart';
 import 'modules/reports/views/home_reports_impl.dart';
-import 'modules/routes/controller/routes_controller.dart';
 import 'modules/routes/widgets/app_route_observer.dart';
 
 Future main() async {
@@ -42,7 +38,14 @@ class MyApp extends HookConsumerWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    initializeDateFormatting('pt_BR');
+    if (kIsWeb) {
+      // running on the web!
+      initializeDateFormatting('pt_BR');
+    } else {
+      // NOT running on the web! You can check for additional platforms here.
+      // Intl.defaultLocale = 'pt_BR';
+      initializeDateFormatting('pt_BR');
+    }
 
     // WidgetsBinding.instance.addPostFrameCallback((_) {
     //   ref

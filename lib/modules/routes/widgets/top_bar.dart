@@ -1,4 +1,4 @@
-import 'package:apparcialempresas/modules/routes/widgets/top_bar_item.dart';
+import 'package:botecaria/modules/routes/widgets/top_bar_item.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
