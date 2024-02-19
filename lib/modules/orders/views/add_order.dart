@@ -34,8 +34,6 @@ class AddOrderWidget extends HookConsumerWidget {
     final idDocument = ref.watch(tableIdDocumentNotifier);
     AnimationController controller = orderWidgetController(ref);
 
-    print(controller.value);
-
     // final orderListState = ref.watch(orderStateListProvider);
     final currentOrderState = ref.watch(currentOrderStateProvider);
     print(currentOrderState);
@@ -543,17 +541,6 @@ class SheetHeader3 extends HookConsumerWidget {
                               text: 'Detalhado',
                             ),
                           ],
-                          // : <Widget>[
-                          //     Tab(
-                          //       icon: Icon(Icons.add_circle),
-                          //     ),
-                          //     Tab(
-                          //       icon: Icon(Icons.check_circle),
-                          //     ),
-                          //     Tab(
-                          //       icon: Icon(Icons.cancel_rounded),
-                          //     ),
-                          //   ],
                           indicator: ShapeDecoration(
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.all(

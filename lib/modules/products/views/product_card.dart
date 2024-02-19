@@ -26,6 +26,7 @@ class ProductCard extends HookConsumerWidget {
     int selected = ref.watch(selectedProductNotifier);
 
     bool isActiveProductRegister = ref.watch(isProductsOpenedProvider);
+    List<Product>? products = ref.watch(productProvider).value;
 
     // List<Product> filteredProducts = ref.watch(filteredProductListProvider);
     // List<Product>? products = ref.watch(exampleProvider).value;
@@ -73,8 +74,14 @@ class ProductCard extends HookConsumerWidget {
                         children: [
                           Column(
                             children: [
-                              ProductCardImg(
-                                product: product,
+                              products != null
+                                  ? ProductCardImage(
+                                      product: product,
+                                      productLength: products.length,
+                                    )
+                                  : const SizedBox(),
+                              const SizedBox(
+                                height: 10,
                               ),
                               Text(
                                 product.name,

@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "900861690548",
+    "project_id": "appparcial-123",
+    "storage_bucket": "appparcial-123.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:900861690548:android:0c7893d377f16ca4b28de1",
+        "android_client_info": {
+          "package_name": "com.botecaria.botecariaempresas"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "900861690548-474ir9nf33j04o4dv52ug6kb18hif1nm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8_fvPMdMLRv6pnorsrLRRLiQkn5Y41LQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "900861690548-474ir9nf33j04o4dv52ug6kb18hif1nm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:900861690548:android:6f4a3461d141f130b28de1",
+        "android_client_info": {
+          "package_name": "com.example.botecaria"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "900861690548-474ir9nf33j04o4dv52ug6kb18hif1nm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8_fvPMdMLRv6pnorsrLRRLiQkn5Y41LQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "900861690548-474ir9nf33j04o4dv52ug6kb18hif1nm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

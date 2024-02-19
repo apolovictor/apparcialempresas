@@ -1,10 +1,10 @@
-import 'package:cached_firestorage/lib.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_sequence_animation/flutter_sequence_animation.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../products/controller/products_notifier.dart';
 import '../../products/model/products_model.dart';
 import '../controller/product_notifier.dart';
 import '../widgets/categories_button.dart';
@@ -15,21 +15,7 @@ class CategoriesScroller extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final categories = ref.watch(categoriesDashboardNotifier).value;
-
-    if (categories != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        for (var i = 0; i < categories.length; i++) {
-          ref.read(pictureCategoriesListProvider.notifier).fetchCategoriesList(
-              RemotePicture(
-                mapKey: categories[i].documentId,
-                imagePath:
-                    'gs://appparcial-123.appspot.com/categories_icons/${categories[i].documentId}.png',
-              ),
-              categories.length);
-        }
-      });
-    }
+    final categories = ref.watch(categoriesNotifier).value;
 
     AnimationController productController =
         useAnimationController(duration: const Duration(milliseconds: 0));

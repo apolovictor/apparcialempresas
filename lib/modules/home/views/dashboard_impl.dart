@@ -1,8 +1,6 @@
-import 'package:cached_firestorage/remote_picture.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../products/controller/products_notifier.dart';
 import '../../routes/widgets/app_scaffold.dart';
 import 'dashboard.dart';
 
@@ -13,14 +11,12 @@ class HomeDashboard extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final cachePictures = ref.watch(pictureProductListProvider);
-    print("cachePictures.length ======== ${cachePictures.length}");
     return AppScaffold(
       pageTitle: "Dashboard",
       body: MaterialApp(
         debugShowCheckedModeBanner: false,
         routes: {
-          '/': (context) => Dashboard(),
+          '/': (context) => const Dashboard(),
         },
         theme: ThemeData(
           appBarTheme: const AppBarTheme(

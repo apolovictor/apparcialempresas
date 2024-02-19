@@ -1,6 +1,8 @@
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_sequence_animation/flutter_sequence_animation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -101,6 +103,10 @@ class ProducQuickEdit extends HookConsumerWidget {
     editController.forward();
     AsyncValue<List<Product>> filteredProducts =
         ref.watch(filteredProductsProvider(products));
+
+    List<dynamic> cachePictures = kIsWeb
+        ? ref.watch(pictureProductListProvider)
+        : ref.watch(pictureProductListAndroidProvider);
 
     return productSelected > -1 && isActiveEdit
         ? AnimatedContainer(
@@ -215,13 +221,77 @@ class ProducQuickEdit extends HookConsumerWidget {
                                             child: productSelected > -1
                                                 ? filteredProducts.when(
                                                     data: (List<Product> data) {
-                                                      return ref
-                                                          .watch(
-                                                              pictureProductListProvider)
-                                                          .firstWhere((element) =>
-                                                              element.mapKey ==
-                                                              data[productSelected]
-                                                                  .logo);
+                                                      return kIsWeb
+                                                          ? cachePictures.contains(<
+                                                                      RemotePicture>(e) =>
+                                                                  e.mapKey ==
+                                                                  data[productSelected]
+                                                                      .logo!)
+                                                              ? ClipRRect(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              15.0),
+                                                                  child: Container(
+                                                                      color: Colors
+                                                                          .transparent,
+                                                                      padding: const EdgeInsets
+                                                                          .all(
+                                                                          12),
+                                                                      width: double
+                                                                          .infinity,
+                                                                      height: height <
+                                                                              750
+                                                                          ? 100
+                                                                          : 150,
+                                                                      child: cachePictures.firstWhere(<
+                                                                              RemotePicture>(e) =>
+                                                                          e.mapKey ==
+                                                                          data[productSelected]
+                                                                              .logo!)
+                                                                      //  HtmlElementView(
+                                                                      //   viewType: 'example',
+                                                                      // )
+                                                                      //
+                                                                      ),
+                                                                )
+                                                              : const SizedBox()
+                                                          : cachePictures
+                                                                  .isNotEmpty
+                                                              ? ClipRRect(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              15.0),
+                                                                  child: Container(
+                                                                      color: Colors.transparent,
+                                                                      padding: const EdgeInsets.all(12),
+                                                                      width: double.infinity,
+                                                                      height: height < 750 ? 100 : 150,
+                                                                      child: StreamBuilder<FileResponse>(
+                                                                        stream: ref
+                                                                            .watch(pictureProductListAndroidProvider.notifier)
+                                                                            .downLoadFile(data[productSelected].logo!),
+                                                                        builder:
+                                                                            (_, snapshot) {
+                                                                          if (snapshot
+                                                                              .hasData) {
+                                                                            FileInfo
+                                                                                fileInfo =
+                                                                                snapshot.data as FileInfo;
+                                                                            return Image.file(
+                                                                              fileInfo.file,
+                                                                              fit: BoxFit.scaleDown,
+                                                                            );
+                                                                          } else {
+                                                                            return const Center(
+                                                                              child: CircularProgressIndicator(),
+                                                                            );
+                                                                          }
+                                                                        },
+                                                                      )),
+                                                                )
+                                                              : const SizedBox();
                                                     },
                                                     error: (err, stack) =>
                                                         const Text(''),

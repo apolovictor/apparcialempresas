@@ -35,7 +35,6 @@ class ActiveTableWidget extends HookConsumerWidget {
     final itemOrderList = ref
         .read(recentOrdersDashboardProvider.notifier)
         .getDetailOrdersByIdDocumentTable(dashboardTable.documentId!);
-    print("dashboardTable.documentId! === ${dashboardTable.documentId!}");
     return AnimationLimiter(
         key: GlobalKey<AnimatedListState>(debugLabel: i.toString()),
         child: AnimationConfiguration.staggeredList(

@@ -1,4 +1,6 @@
 import 'package:botecaria/modules/products/model/products_model.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -21,7 +23,9 @@ class CircularSoftButton extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // print(ref.watch(filterNotifier));
+    List<dynamic> cacheCategoryPic = kIsWeb
+        ? ref.watch(pictureCategoryListProvider)
+        : ref.watch(pictureCategoriesListAndroidProvider);
     return Stack(
       children: [
         Container(
@@ -61,13 +65,23 @@ class CircularSoftButton extends HookConsumerWidget {
             padding: EdgeInsets.all(padding),
             child: ClipRRect(
                 borderRadius: BorderRadius.circular(15.0),
-                child: ref
-                        .watch(pictureCategoriesListProvider)
-                        .map((e) => e.mapKey)
-                        .contains(category.documentId)
-                    ? ref.watch(pictureCategoriesListProvider).firstWhere(
-                        (element) => element.mapKey == category.documentId)
-                    : SizedBox()),
+                child: kIsWeb
+                    ? cacheCategoryPic
+                            .map(<RemotePicture>(e) => e.mapKey)
+                            .contains(category.documentId)
+                        ? cacheCategoryPic.firstWhere(
+                            (element) => element.mapKey == category.documentId)
+                        : const SizedBox()
+                    : cacheCategoryPic
+                            .map(<NetworkImage>(e) => e.url.split('/').last)
+                            .contains('${category.documentId}.png')
+                        ? Image(
+                            image: CachedNetworkImageProvider(cacheCategoryPic
+                                .firstWhere(<NetworkImage>(e) =>
+                                    e.url.split('/').last ==
+                                    '${category.documentId}.png')
+                                .url))
+                        : const SizedBox()),
           ),
         )
       ],

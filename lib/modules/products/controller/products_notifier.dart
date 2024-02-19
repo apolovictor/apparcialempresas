@@ -1,6 +1,8 @@
 import 'package:cached_firestorage/lib.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' as cloudFirestore;
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -79,21 +81,81 @@ class PictureProductList extends _$PictureProductList {
   }
 }
 
-class PictureCategoriesProvider extends StateNotifier<List<RemotePicture>> {
-  PictureCategoriesProvider() : super([]);
+@Riverpod(keepAlive: true)
+class PictureProductListAndroid extends _$PictureProductListAndroid {
+  @override
+  List<Stream<FileResponse>> build() => state = [];
 
-  fetchCategoriesList(RemotePicture img, int length) {
+//    Stream<FileResponse>  getImageFile(String url, {
+//     String key,
+//     Map<String, String> headers,
+//     bool withProgress,
+//     int maxHeight,  // This is extra
+//     int maxWidth,   // This is extra as well
+// })
+
+  add(String imgId, int length) async {
+    // final storage = FirebaseStorage.instance;
+    // var storageReference = storage.ref('products/$imgId');
+    Stream<FileResponse>? fileStream;
+
+    fileStream = DefaultCacheManager().getFileStream(
+      'https://storage.googleapis.com/appparcial-123.appspot.com/products/$imgId',
+      key: imgId,
+    );
+
+    if (state.length < length) {
+      state = [...state, fileStream];
+    }
+    return state;
+  }
+
+  Stream<FileResponse> downLoadFile(String imgId) {
+    var result = DefaultCacheManager().getImageFile(
+      'https://storage.googleapis.com/appparcial-123.appspot.com/products/$imgId',
+    );
+    return result;
+  }
+}
+
+@Riverpod(keepAlive: true)
+class PictureCategoryList extends _$PictureCategoryList {
+  @override
+  List<RemotePicture> build() => state = [];
+
+  add(RemotePicture img, int length) async {
     if (state.length < length) {
       state = [...state, img];
     }
+    return state;
   }
+}
+
+@Riverpod(keepAlive: true)
+class PictureCategoriesListAndroid extends _$PictureCategoriesListAndroid {
+  @override
+  List<NetworkImage> build() => state = [];
+
+  add(String imgId, int length) async {
+    // final storage = FirebaseStorage.instance;
+    // var storageReference = storage.ref('products/$imgId');
+
+    var imgNetworkWidget = NetworkImage(
+      "https://storage.googleapis.com/appparcial-123.appspot.com/categories_icons/$imgId.png",
+    );
+
+    if (state.length < length) {
+      state = [...state, imgNetworkWidget];
+    }
+    return state;
+  }
+
+  donwloadFile(String imgId) =>
+      DefaultCacheManager().getFileStream(imgId, withProgress: true);
 }
 
 final idDocumentNotifier = StateNotifierProvider<IdDocumentProvider, String>(
     (ref) => IdDocumentProvider());
-final pictureCategoriesListProvider =
-    StateNotifierProvider<PictureCategoriesProvider, List<RemotePicture>>(
-        (ref) => PictureCategoriesProvider());
 final filteredProductListProvider =
     StateNotifierProvider<FilteredProductProvider, List<Product>>(
         (ref) => FilteredProductProvider());

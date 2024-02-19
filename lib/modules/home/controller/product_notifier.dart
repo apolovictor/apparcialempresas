@@ -18,15 +18,6 @@ class IdDocumentProvider extends StateNotifier<String> {
   fetchIdDocument(String idDocument) => state = idDocument;
 }
 
-final categoriesDashboardNotifier = StreamProvider<List<Categories>>((ref) {
-  return _businessCollection
-      .doc(ref.watch(idDocumentNotifier))
-      .collection("categories")
-      .snapshots()
-      .map((snapshot) =>
-          snapshot.docs.map((doc) => Categories.fromDoc(doc)).toList());
-});
-
 class CategoryProductDashboardController extends StateNotifier<String> {
   CategoryProductDashboardController() : super(categoryProduct);
   static String categoryProduct = "";
@@ -38,16 +29,6 @@ class CategoryProductDashboardController extends StateNotifier<String> {
 
   clear() {
     state = "";
-  }
-}
-
-class PictureCategoriesProvider extends StateNotifier<List<RemotePicture>> {
-  PictureCategoriesProvider() : super([]);
-
-  fetchCategoriesList(RemotePicture img, int length) {
-    if (state.length < length) {
-      state = [...state, img];
-    }
   }
 }
 
@@ -107,8 +88,6 @@ class ProductNotifier extends StreamNotifier<List<Product>> {
   }
 }
 
-
-
 class TopContainerValueProvider extends StateNotifier<double> {
   TopContainerValueProvider() : super(value);
 
@@ -142,9 +121,6 @@ final filteredProductDashboardProvider =
 final categoryProductDashboardNotifier =
     StateNotifierProvider<CategoryProductDashboardController, String>(
         (ref) => CategoryProductDashboardController());
-final pictureCategoriesListProvider =
-    StateNotifierProvider<PictureCategoriesProvider, List<RemotePicture>>(
-        (ref) => PictureCategoriesProvider());
 final topContainerProvider =
     StateNotifierProvider<TopContainerValueProvider, double>(
         (ref) => TopContainerValueProvider());

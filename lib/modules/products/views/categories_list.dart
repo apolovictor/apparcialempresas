@@ -1,5 +1,6 @@
 import 'package:cached_firestorage/lib.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_sequence_animation/flutter_sequence_animation.dart';
@@ -10,12 +11,12 @@ import '../controller/product_list.notifier.dart';
 import '../controller/products_notifier.dart';
 import '../widgets/soft_control.dart';
 
-Future<String> downloadUrl(icon) async {
-  var downloadUrl =
-      storage.ref("categories_icons").child(icon).getDownloadURL();
+// Future<String> downloadUrl(icon) async {
+//   var downloadUrl =
+//       storage.ref("categories_icons").child(icon).getDownloadURL();
 
-  return downloadUrl;
-}
+//   return downloadUrl;
+// }
 
 // GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
 final storage = FirebaseStorage.instance;
@@ -51,19 +52,22 @@ class CategoriesList extends HookConsumerWidget {
         .animate(categoriesController);
     categoriesController.forward();
 
-    if (categories != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        for (var i = 0; i < categories.length; i++) {
-          ref.read(pictureCategoriesListProvider.notifier).fetchCategoriesList(
-              RemotePicture(
-                mapKey: categories[i].documentId,
-                imagePath:
-                    'gs://appparcial-123.appspot.com/categories_icons/${categories[i].documentId}.png',
-              ),
-              categories.length);
-        }
-      });
-    }
+    // if (categories != null) {
+    //   WidgetsBinding.instance.addPostFrameCallback((_) {
+    //     for (var i = 0; i < categories.length; i++) {
+    //       ref.read(pictureCategoriesListProvider.notifier).fetchCategoriesList(
+    //           RemotePicture(
+    //             mapKey: categories[i].documentId,
+    //             imagePath:
+    //                 'gs://appparcial-123.appspot.com/categories_icons/${categories[i].documentId}.png',
+    //           ),
+    //           categories.length);
+    //     }
+    //   });
+    // }
+    List<dynamic> cacheCategoryPic = kIsWeb
+        ? ref.watch(pictureCategoryListProvider)
+        : ref.watch(pictureCategoriesListAndroidProvider);
 
     return Container(
       width: MediaQuery.of(context).size.width,

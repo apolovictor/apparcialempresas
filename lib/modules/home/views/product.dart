@@ -1,6 +1,9 @@
 import 'package:botecaria/modules/home/views/categories_list.dart';
 import 'package:cached_firestorage/lib.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -102,17 +105,17 @@ class _ProductListState extends ConsumerState<ProductList> {
       end: .0,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
+    _controller.forward();
     var _productDashboard = ref.watch(filteredProductDashboardProvider);
     useValueChanged(_productDashboard, (_, __) async {
-      if (_controller.isDismissed) {
-        _controller.forward();
-      } else {
+      if (!_controller.isDismissed) {
         _controller.reset();
         _controller.forward();
       }
     });
-    final cachePictures = ref.watch(pictureProductListProvider);
-    print("cachePictures.length ======== ${cachePictures.length}");
+    List<dynamic> cachePictures = kIsWeb
+        ? ref.watch(pictureProductListProvider)
+        : ref.watch(pictureProductListAndroidProvider);
 
     return Stack(
       children: [
@@ -141,7 +144,7 @@ class _ProductListState extends ConsumerState<ProductList> {
                   if (opacity < 0) {
                     opacity = 0.0;
                   }
-                  print(ref.watch(pictureProductListProvider).length);
+
                   return AnimatedBuilder(
                       animation: _controller,
                       builder: (context, child) {
@@ -219,40 +222,145 @@ class _ProductListState extends ConsumerState<ProductList> {
                                                   ],
                                                 ),
                                               ),
-                                              ref
-                                                      .watch(
-                                                          pictureProductListProvider)
-                                                      .any((element) =>
-                                                          element.mapKey ==
-                                                          _productDashboard[
-                                                                  index]
-                                                              .logo)
-                                                  ? Expanded(
-                                                      flex: 1,
-                                                      child: ClipRRect(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(15.0),
-                                                        child: Container(
-                                                            color: Colors
-                                                                .transparent,
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .all(12),
-                                                            width: 100,
-                                                            height: 100,
-                                                            child: ref
-                                                                .watch(
-                                                                    pictureProductListProvider)
-                                                                .firstWhere((element) =>
+                                              kIsWeb
+                                                  ? cachePictures.any(
+                                                          <RemotePicture>(element) =>
+                                                              element.mapKey ==
+                                                              _productDashboard[
+                                                                      index]
+                                                                  .logo)
+                                                      ? Expanded(
+                                                          flex: 1,
+                                                          child: ClipRRect(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        15.0),
+                                                            child: Container(
+                                                                color: Colors
+                                                                    .transparent,
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                        .all(
+                                                                        12),
+                                                                width: 100,
+                                                                height: 100,
+                                                                child: cachePictures.firstWhere(<
+                                                                        RemotePicture>(element) =>
                                                                     element
                                                                         .mapKey ==
                                                                     _productDashboard[
                                                                             index]
                                                                         .logo)),
-                                                      ),
-                                                    )
-                                                  : const SizedBox()
+                                                          ),
+                                                        )
+                                                      : const SizedBox()
+                                                  : cachePictures.isNotEmpty
+                                                      ? Expanded(
+                                                          flex: 1,
+                                                          child: ClipRRect(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        15.0),
+                                                            child: Container(
+                                                                color: Colors
+                                                                    .transparent,
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                        .all(
+                                                                        12),
+                                                                width: 100,
+                                                                height: 100,
+                                                                child: StreamBuilder<
+                                                                    FileResponse>(
+                                                                  stream: ref
+                                                                      .watch(pictureProductListAndroidProvider
+                                                                          .notifier)
+                                                                      .downLoadFile(
+                                                                          _productDashboard[index]
+                                                                              .logo!),
+                                                                  builder: (_,
+                                                                      snapshot) {
+                                                                    if (snapshot
+                                                                        .hasData) {
+                                                                      FileInfo
+                                                                          fileInfo =
+                                                                          snapshot.data
+                                                                              as FileInfo;
+                                                                      // print(
+                                                                      //     "fileInfo ===== ${fileInfo.source}");
+                                                                      return Image
+                                                                          .file(
+                                                                        fileInfo
+                                                                            .file,
+                                                                        fit: BoxFit
+                                                                            .scaleDown,
+                                                                      );
+                                                                      // SingleChildScrollView(
+                                                                      //   child:
+                                                                      //       Column(
+                                                                      //     mainAxisAlignment:
+                                                                      //         MainAxisAlignment.spaceEvenly,
+                                                                      //     children: [
+                                                                      //       Image.file(
+                                                                      //         fileInfo.file,
+                                                                      //         fit: BoxFit.fill,
+                                                                      //       ),
+                                                                      //       Text("Original Url:${fileInfo.originalUrl}"),
+                                                                      //       Text("Valid Till:${fileInfo.validTill}"),
+                                                                      //       Text("File address:${fileInfo.file}"),
+                                                                      //       Text("File source:${fileInfo.source}"),
+                                                                      //       Text("Hash code:${fileInfo.hashCode}"),
+                                                                      //       Text("Type:${fileInfo.runtimeType}"),
+                                                                      //     ],
+                                                                      //   ),
+                                                                      // );
+                                                                    } else {
+                                                                      return Center(
+                                                                        child: Text(
+                                                                            "Uploading..."),
+                                                                      );
+                                                                    }
+                                                                  },
+                                                                )
+                                                                //  Image(
+                                                                //                                                       image:
+                                                                //                                                       ref
+                                                                // .read(pictureProductListAndroidProvider.notifier)
+                                                                // .downLoadFile(_productDashboard[index]
+                                                                //                                                                       .logo)
+                                                                // .first
+                                                                // .then((value) => value)
+                                                                //                                                       //  CachedNetworkImageProvider(
+
+                                                                //                                                       //     cachePictures
+                                                                //                                                       //         .firstWhere(<NetworkImage>(element) =>
+                                                                //                                                       //             element.url.split('/').last ==
+                                                                //                                                       //             _productDashboard[index]
+                                                                //                                                       //                 .logo)
+                                                                //                                                       //         .url,
+                                                                //                                                       //     maxHeight:
+                                                                //                                                       //         100,
+                                                                //                                                       //     maxWidth:
+                                                                //                                                       //         100),
+                                                                //                                                       loadingBuilder:
+                                                                //                                                           (context,
+                                                                //                                                               child,
+                                                                //                                                               loadingProgress) {
+                                                                //                                                         if (loadingProgress ==
+                                                                //                                                             null) {
+                                                                //                                                           return child;
+                                                                //                                                         }
+                                                                //                                                         return const Center(
+                                                                //                                                             child:
+                                                                //                                                                 CircularProgressIndicator());
+                                                                //                                                       },
+                                                                //                                                     ),
+                                                                ),
+                                                          ),
+                                                        )
+                                                      : const SizedBox()
                                             ],
                                           ),
                                         )),

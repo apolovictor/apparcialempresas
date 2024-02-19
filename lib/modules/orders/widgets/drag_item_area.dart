@@ -1,10 +1,13 @@
 import 'package:cached_firestorage/lib.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
+
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../home/controller/product_notifier.dart';
+import '../../products/controller/products_notifier.dart';
 import '../controller/orders_notifier.dart';
 import '../model/order_model.dart';
 import '../views/add_order.dart';
@@ -29,6 +32,10 @@ class DragItemArea extends HookConsumerWidget {
         lerpProvider(MyParameter(min: min, max: max, value: controller.value)));
 
     double itemBorderRadius = lerp(8, 24); //<-- increase item border radius
+
+    List<dynamic> cachePictures = kIsWeb
+        ? ref.watch(pictureProductListProvider)
+        : ref.watch(pictureProductListAndroidProvider);
 
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
@@ -77,11 +84,34 @@ class DragItemArea extends HookConsumerWidget {
                                       right: Radius.circular(itemBorderRadius),
                                     ),
                                     child: item.photo_url != null
-                                        ? RemotePicture(
-                                            mapKey: item.photo_url!,
-                                            imagePath:
-                                                'gs://appparcial-123.appspot.com/products/${item.photo_url}',
-                                          )
+                                        ? kIsWeb
+                                            ? RemotePicture(
+                                                mapKey: item.photo_url!,
+                                                imagePath:
+                                                    'gs://appparcial-123.appspot.com/products/${item.photo_url}',
+                                              )
+                                            : Image(
+                                                image: CachedNetworkImageProvider(
+                                                    cachePictures
+                                                        .firstWhere(
+                                                            <NetworkImage>(element) =>
+                                                                element.url
+                                                                    .split('/')
+                                                                    .last ==
+                                                                item.photo_url!)
+                                                        .url,
+                                                    maxHeight: 100,
+                                                    maxWidth: 100),
+                                                loadingBuilder: (context, child,
+                                                    loadingProgress) {
+                                                  if (loadingProgress == null) {
+                                                    return child;
+                                                  }
+                                                  return const Center(
+                                                      child:
+                                                          CircularProgressIndicator());
+                                                },
+                                              )
                                         : const SizedBox(),
                                   ),
                                 ),
