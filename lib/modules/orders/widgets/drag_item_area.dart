@@ -2,6 +2,7 @@ import 'package:cached_firestorage/lib.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -78,42 +79,68 @@ class DragItemArea extends HookConsumerWidget {
                                       iconEndSize), //<-- Specify icon's size
                                   width: lerp(iconStartSize, iconEndSize),
                                   child: ClipRRect(
-                                    borderRadius: BorderRadius.horizontal(
-                                      left: Radius.circular(
-                                          itemBorderRadius), //<-- Set the rounded corners
-                                      right: Radius.circular(itemBorderRadius),
-                                    ),
-                                    child: item.photo_url != null
-                                        ? kIsWeb
-                                            ? RemotePicture(
-                                                mapKey: item.photo_url!,
-                                                imagePath:
-                                                    'gs://appparcial-123.appspot.com/products/${item.photo_url}',
-                                              )
-                                            : Image(
-                                                image: CachedNetworkImageProvider(
-                                                    cachePictures
-                                                        .firstWhere(
-                                                            <NetworkImage>(element) =>
-                                                                element.url
-                                                                    .split('/')
-                                                                    .last ==
-                                                                item.photo_url!)
-                                                        .url,
-                                                    maxHeight: 100,
-                                                    maxWidth: 100),
-                                                loadingBuilder: (context, child,
-                                                    loadingProgress) {
-                                                  if (loadingProgress == null) {
-                                                    return child;
-                                                  }
-                                                  return const Center(
-                                                      child:
-                                                          CircularProgressIndicator());
-                                                },
-                                              )
-                                        : const SizedBox(),
-                                  ),
+                                      borderRadius: BorderRadius.horizontal(
+                                        left: Radius.circular(
+                                            itemBorderRadius), //<-- Set the rounded corners
+                                        right:
+                                            Radius.circular(itemBorderRadius),
+                                      ),
+                                      child: item.photo_url != null
+                                          ? kIsWeb
+                                              ? RemotePicture(
+                                                  mapKey: item.photo_url!,
+                                                  imagePath:
+                                                      'gs://appparcial-123.appspot.com/products/${item.photo_url}',
+                                                )
+                                              : cachePictures.isNotEmpty
+                                                  ? ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              15.0),
+                                                      child: Container(
+                                                          color: Colors
+                                                              .transparent,
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(12),
+                                                          width:
+                                                              double.infinity,
+                                                          height: height < 750
+                                                              ? 100
+                                                              : 150,
+                                                          child: StreamBuilder<
+                                                              FileResponse>(
+                                                            stream: ref
+                                                                .watch(
+                                                                    pictureProductListAndroidProvider
+                                                                        .notifier)
+                                                                .downLoadFile(item
+                                                                    .photo_url!),
+                                                            builder:
+                                                                (_, snapshot) {
+                                                              if (snapshot
+                                                                  .hasData) {
+                                                                FileInfo
+                                                                    fileInfo =
+                                                                    snapshot.data
+                                                                        as FileInfo;
+                                                                return Image
+                                                                    .file(
+                                                                  fileInfo.file,
+                                                                  fit: BoxFit
+                                                                      .scaleDown,
+                                                                );
+                                                              } else {
+                                                                return const Center(
+                                                                  child:
+                                                                      CircularProgressIndicator(),
+                                                                );
+                                                              }
+                                                            },
+                                                          )),
+                                                    )
+                                                  : const SizedBox()
+                                          : const SizedBox()),
                                 ),
                               ],
                             ),
@@ -223,7 +250,7 @@ class ExpandedEventItem extends HookConsumerWidget {
                       )),
                 ),
                 Text(
-                  '${quantity.toString()} / ${productList.firstWhere((e) => e.documentId == item.productIdDocument).quantity}',
+                  '${quantity.toString()} / ${itemsCart.firstWhere((e) => e.productIdDocument == item.productIdDocument).quantity}',
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 18,

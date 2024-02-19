@@ -113,11 +113,9 @@ class MyApp extends ConsumerWidget {
         initializeDateFormatting('pt_BR');
       }
     }
-    List<Stream<FileResponse>> cachePictures =
-        // = kIsWeb
-        //     ? ref.watch(pictureProductListProvider)
-        // :
-        ref.watch(pictureProductListAndroidProvider);
+    List<dynamic> cachePictures = kIsWeb
+        ? ref.watch(pictureProductListProvider)
+        : ref.watch(pictureProductListAndroidProvider);
 
     // print("cachePictures.length === ${cachePictures.length}");
 
@@ -125,14 +123,6 @@ class MyApp extends ConsumerWidget {
     //   print(elemen);
     // });
 
-    // if (products != null) {
-    //   for (var product in products)
-    //     print(ref
-    //         .read(pictureProductListAndroidProvider.notifier)
-    //         .downLoadFile(product.logo!)
-    //         .first
-    //         .then((value) => print(value.originalUrl)));
-    // }
     return products != null
         ? cachePictures.length == products.length
             ?

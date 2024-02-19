@@ -117,6 +117,8 @@ class _ProductListState extends ConsumerState<ProductList> {
         ? ref.watch(pictureProductListProvider)
         : ref.watch(pictureProductListAndroidProvider);
 
+    print("cachePictures.length === ${cachePictures.length}");
+
     return Stack(
       children: [
         SizedBox(
@@ -323,41 +325,7 @@ class _ProductListState extends ConsumerState<ProductList> {
                                                                       );
                                                                     }
                                                                   },
-                                                                )
-                                                                //  Image(
-                                                                //                                                       image:
-                                                                //                                                       ref
-                                                                // .read(pictureProductListAndroidProvider.notifier)
-                                                                // .downLoadFile(_productDashboard[index]
-                                                                //                                                                       .logo)
-                                                                // .first
-                                                                // .then((value) => value)
-                                                                //                                                       //  CachedNetworkImageProvider(
-
-                                                                //                                                       //     cachePictures
-                                                                //                                                       //         .firstWhere(<NetworkImage>(element) =>
-                                                                //                                                       //             element.url.split('/').last ==
-                                                                //                                                       //             _productDashboard[index]
-                                                                //                                                       //                 .logo)
-                                                                //                                                       //         .url,
-                                                                //                                                       //     maxHeight:
-                                                                //                                                       //         100,
-                                                                //                                                       //     maxWidth:
-                                                                //                                                       //         100),
-                                                                //                                                       loadingBuilder:
-                                                                //                                                           (context,
-                                                                //                                                               child,
-                                                                //                                                               loadingProgress) {
-                                                                //                                                         if (loadingProgress ==
-                                                                //                                                             null) {
-                                                                //                                                           return child;
-                                                                //                                                         }
-                                                                //                                                         return const Center(
-                                                                //                                                             child:
-                                                                //                                                                 CircularProgressIndicator());
-                                                                //                                                       },
-                                                                //                                                     ),
-                                                                ),
+                                                                )),
                                                           ),
                                                         )
                                                       : const SizedBox()

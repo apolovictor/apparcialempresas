@@ -50,7 +50,7 @@ class ProductCardImage extends HookConsumerWidget {
         : ref.watch(pictureProductListAndroidProvider);
 
     return kIsWeb
-        ? cachePictures.contains(<RemotePicture>(e) => e.mapKey == product.logo)
+        ? cachePictures.any(<RemotePicture>(e) => e.mapKey == product.logo)
             ? ClipRRect(
                 borderRadius: BorderRadius.circular(15.0),
                 child: Container(

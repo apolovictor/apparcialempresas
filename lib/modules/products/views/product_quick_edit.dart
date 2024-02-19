@@ -222,7 +222,7 @@ class ProducQuickEdit extends HookConsumerWidget {
                                                 ? filteredProducts.when(
                                                     data: (List<Product> data) {
                                                       return kIsWeb
-                                                          ? cachePictures.contains(<
+                                                          ? cachePictures.any(<
                                                                       RemotePicture>(e) =>
                                                                   e.mapKey ==
                                                                   data[productSelected]
