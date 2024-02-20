@@ -7,6 +7,8 @@ import 'sales.dart';
 import 'sales_impl.dart';
 import 'stock_sales.dart';
 
+var timeToFilterNotifier = StateProvider((_) => 7);
+
 class ReportScreen extends HookConsumerWidget {
   const ReportScreen({super.key});
   @override
@@ -20,9 +22,10 @@ class ReportScreen extends HookConsumerWidget {
           Align(
             alignment: const Alignment(-1, -1),
             child: Container(
-                color: Color(0xFF1c1727),
                 height: height * 0.47,
                 width: width * 0.564,
+                decoration:
+                    BoxDecoration(color: Colors.white, border: Border()),
                 child: const SalesImpl()),
           ),
           Align(

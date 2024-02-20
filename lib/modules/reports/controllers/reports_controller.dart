@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -97,32 +98,64 @@ class StockSales extends ChangeNotifier {
 }
 
 @riverpod
-Future<List<SalesReport>> getSalesReport(GetSalesReportRef ref) async {
-  int timeToFilter = ref.watch(timeToFilterNotifier);
+void getSalesReport(GetSalesReportRef ref) async {
   final date = DateTime.now();
-  final timeStamp =
-      dateTimetoTimeStamp(date.subtract(Duration(days: timeToFilter)));
+
   final daysToGenerate =
-      date.difference(date.subtract(Duration(days: timeToFilter))).inDays;
+      date.difference(date.subtract(Duration(days: 32))).inDays;
   var days = List.generate(
       daysToGenerate, (i) => getDate(date.subtract(Duration(days: i))));
   days = days.reversed.toList();
+  final timeStamp = dateTimetoTimeStamp(date.subtract(Duration(days: 32)));
 
   try {
-    print("idDocument ========= $idDocument");
-    List<SalesReport> response = await _businessCollection
+    await _businessCollection
         .doc(idDocument)
         .collection('orders')
         .where('finishedAt', isGreaterThanOrEqualTo: timeStamp)
         .get()
         .then((e) {
-      print("e ========== ${e.docs}");
-      print("eeeee ========== ${e.docs.map((e) => SalesReport.fromDoc(e))}}");
+      var result = e.docs.map((e) => SalesReport.fromDoc(e)).toList();
+      var groupByDate = groupBy(result,
+          (obj) => timeStampToDate(obj.date).toString().substring(0, 10));
+      Map groupedAndSum = {};
+
+      groupByDate.forEach((k, v) {
+        groupedAndSum[k] = {
+          'list': v,
+          'totalSum': v.fold(0.00, (prev, element) {
+            return prev + element.total;
+          }),
+        };
+      });
+
+      var max = 0.0;
+      var theKey;
+      groupedAndSum.entries.forEach((element) {
+        if (element.value['totalSum'] > max) {
+          max = element.value['totalSum'];
+          theKey = element.key;
+        }
+      });
+
+      for (var i = 0; i < days.length; i++) {
+        print(getDate(days[i]));
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          ref.read(salesListNotifier.notifier).addItem(SalesModel(
+              dateTime: getDate(days[i]),
+              total: groupedAndSum
+                      .containsKey(getDate(days[i]).toString().substring(0, 10))
+                  ? groupedAndSum.entries
+                      .firstWhere((element) =>
+                          element.key ==
+                          getDate(days[i]).toString().substring(0, 10))
+                      .value['totalSum']
+                  : 0));
+        });
+      }
 
       return e.docs.map((e) => SalesReport.fromDoc(e)).toList();
     });
-
-    return response;
   } catch (e) {
     print("e ======= $e");
     return Future.error(e);

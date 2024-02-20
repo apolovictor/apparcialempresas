@@ -2,12 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class SalesModel {
-  final Offset offset;
-  final String weekDays;
+  final DateTime dateTime;
   final double total;
 
-  SalesModel(
-      {required this.offset, required this.weekDays, required this.total});
+  SalesModel({required this.dateTime, required this.total});
 }
 
 class SalesReport {

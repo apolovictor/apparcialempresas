@@ -1,168 +1,195 @@
-import 'dart:math';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:intl/intl.dart';
+import 'dart:math' as math;
 import 'dart:ui' as ui;
 
+import 'package:botecaria/services/date_services.dart';
 import 'package:flutter/material.dart';
-
+import 'package:intl/intl.dart';
 import '../models/reports_model.dart';
+import 'package:tuple/tuple.dart';
 
-class GraphPainter extends CustomPainter {
-  final double percentage;
-  final double width;
-  final double height;
-  final List<SalesModel> points;
+class ChartPainter extends CustomPainter {
+  final List<SalesModel> entries;
+  final double drawingHeight;
+  final double drawingWidth;
+  final int numberOfDays;
 
-  final double max;
+  ChartPainter({
+    required this.entries,
+    required this.drawingHeight,
+    required this.drawingWidth,
+    required this.numberOfDays,
+  });
 
-  GraphPainter(this.percentage, this.height, this.width, this.points, this.max);
+  static int NUMBER_OF_HORIZONTAL_LINES = 4;
 
   @override
   void paint(Canvas canvas, Size size) {
-    Path drawPath(bool closePath) {
-      final path = Path();
-      for (var i = 0; i < points.length - 1; i++) {
-        path.moveTo(points[i].offset.dx,
-            points.length == i ? height : points[i].offset.dy);
-        path.cubicTo(
-          (points[i].offset.dx + points[i + 1].offset.dx) / 2,
-          points[i].offset.dy,
-          (points[i].offset.dx + points[i + 1].offset.dx) / 2,
-          points[i + 1].offset.dy,
-          points[i + 1].offset.dx,
-          points[i + 1].offset.dy,
-        );
+    double leftOffsetStart = size.width * 0.05;
+    double topOffsetEnd = size.height * 0.9;
 
-        // for the gradient fill, we want to close the path
-        if (closePath) {
-          path.lineTo(width, height);
-          // if (i <= points.length - 1) {
-          // path.lineTo(points[i].offset.dx, points[i].offset.dy);
-          // }
-        }
-      }
-      return path;
+    // double drawingHeight = topOffsetEnd;
+
+    Tuple2<int, int> borderLineValues = _getMinAndMaxValues(entries);
+    _drawHorizontalLinesAndLabels(canvas, size, borderLineValues.item1,
+        borderLineValues.item2, leftOffsetStart);
+    _drawBottomLabels(canvas, size, leftOffsetStart);
+    _drawLines(canvas, borderLineValues.item1, borderLineValues.item2,
+        leftOffsetStart);
+  }
+
+  double get _calculateHorizontalOffsetStep {
+    return drawingHeight / (NUMBER_OF_HORIZONTAL_LINES - 1);
+  }
+
+  /// Draws horizontal lines and labels informing about weight values attached to those lines
+  void _drawHorizontalLinesAndLabels(Canvas canvas, Size size, int minLineValue,
+      int maxLineValue, double leftOffsetStart) {
+    final paint = Paint()..color = Colors.black;
+    int lineStep = _calculateHorizontalLineStep(maxLineValue, minLineValue);
+    double offsetStep = _calculateHorizontalOffsetStep;
+    print("offsetStep === $offsetStep");
+    for (int line = 0; line < NUMBER_OF_HORIZONTAL_LINES; line++) {
+      double yOffset = line * offsetStep;
+      _drawHorizontalLabel(
+          maxLineValue, line, lineStep, canvas, yOffset, leftOffsetStart);
+      _drawHorizontalLine(canvas, yOffset, size, paint, leftOffsetStart);
     }
+  }
 
-    double minHeight = height;
+  // Calculates weight difference between horizontal lines.
+  ///
+  /// e.g. every line should increment weight by 5
+  int _calculateHorizontalLineStep(int maxLineValue, int minLineValue) {
+    return (maxLineValue - minLineValue) ~/ (NUMBER_OF_HORIZONTAL_LINES - 1);
+  }
 
+  /// Calculates offset difference between horizontal lines.
+  ///
+  /// e.g. between every line should be 100px space.
+
+  void _drawHorizontalLine(ui.Canvas canvas, double yOffset, ui.Size size,
+      ui.Paint paint, double leftOffsetStart) {
+    canvas.drawLine(
+      Offset(leftOffsetStart, 5 + yOffset),
+      Offset(size.width, 5 + yOffset),
+      paint,
+    );
+  }
+
+  void _drawHorizontalLabel(int maxLineValue, int line, int lineStep,
+      ui.Canvas canvas, double yOffset, double leftOffsetStart) {
+    ui.Paragraph paragraph = _buildParagraphForLeftLabel(
+        maxLineValue, line, lineStep, leftOffsetStart);
+    canvas.drawParagraph(
+        paragraph, Offset(0.0, yOffset - (drawingHeight * 0.02)));
+  }
+
+  ///Builds text paragraph for label placed on the left side of a chart (weights)
+  ui.Paragraph _buildParagraphForLeftLabel(
+      int maxLineValue, int line, int lineStep, double leftOffsetStart) {
+    ui.ParagraphBuilder builder = ui.ParagraphBuilder(
+      ui.ParagraphStyle(
+        fontSize: 20.0,
+        textAlign: TextAlign.right,
+      ),
+    )
+      ..pushStyle(ui.TextStyle(color: Colors.black))
+      ..addText((maxLineValue - line * lineStep).toString());
+    final ui.Paragraph paragraph = builder.build()
+      ..layout(ui.ParagraphConstraints(width: leftOffsetStart - 4));
+    return paragraph;
+  }
+
+  void _drawBottomLabels(Canvas canvas, Size size, double leftOffsetStart) {
+    for (int daysFromStart = numberOfDays;
+        daysFromStart >= 0;
+        daysFromStart -= numberOfDays == 32 ? 6 : 2) {
+      double offsetXbyDay = drawingWidth / (numberOfDays);
+      double offsetX = leftOffsetStart + offsetXbyDay * daysFromStart;
+      ui.Paragraph paragraph = _buildParagraphForBottomLabel(daysFromStart);
+      canvas.drawParagraph(
+        paragraph,
+        Offset(offsetX - 50.0, 10.0 + drawingHeight),
+      );
+    }
+  }
+
+  ///Builds paragraph for label placed on the bottom (dates)
+  ui.Paragraph _buildParagraphForBottomLabel(int daysFromStart) {
+    ui.ParagraphBuilder builder = ui.ParagraphBuilder(
+        ui.ParagraphStyle(fontSize: 20.0, textAlign: TextAlign.right))
+      ..pushStyle(ui.TextStyle(color: Colors.black))
+      ..addText(DateFormat('d MMM').format(DateTime.now()
+          .subtract(Duration(days: numberOfDays - daysFromStart))));
+    final ui.Paragraph paragraph = builder.build()
+      ..layout(ui.ParagraphConstraints(width: 75.0));
+    return paragraph;
+  }
+
+  void _drawLines(ui.Canvas canvas, int minLineValue, int maxLineValue,
+      double leftOffsetStart) {
     final paint = Paint()
-      ..color = Colors.white54
-      ..strokeWidth = 2
-      ..style = PaintingStyle.stroke;
-
-    // List<String> labels = [];
-    // labels = _computeValues();
-
-    for (var i = 0; i < points.length; i++) {
-      drawTextCentered(
-          canvas,
-          Offset(points[i].offset.dx, height + 10),
-          points[i].weekDays,
-          const TextStyle(color: Colors.white, fontSize: 12),
-          width);
-      final labele = points[i].total!.toStringAsFixed(2);
-
-      drawTextCentered(
-          canvas,
-          Offset(points[i].offset.dx, points[i].offset.dy - 25),
-          labele,
-          const TextStyle(
-              color: Colors.white, fontSize: 16, fontWeight: FontWeight.w700),
-          width);
-    }
-
-    List<Offset> _computePoints(List<SalesModel> points, double hr) {
-      List<Offset> _points = [];
-      points.forEach((yp) {
-        final dp = Offset(yp.offset.dx, yp.offset.dy);
-        _points.add(dp);
-      });
-
-      return _points;
-    }
-
-    final resultPoints = _computePoints(points, height / max);
-
-    final path = Path();
-    final metrics = drawPath(false).computeMetrics().toList();
-    final fullPathLength = metrics.fold(
-      0.0,
-      (prev, metric) => prev + metric.length,
-    );
-    final pathEnd = percentage * fullPathLength;
-    double currentPathEnd = 0;
-    const step = 2;
-    for (var metric in metrics) {
-      final metricStart = currentPathEnd;
-      final metricEnd = currentPathEnd + metric.length;
-      while (currentPathEnd != metricEnd) {
-        final upcomingPathEnd = min(currentPathEnd + step, metricEnd);
-        final segment = metric.extractPath(
-          currentPathEnd - metricStart,
-          upcomingPathEnd - metricStart,
-        );
-        path.addPath(segment, Offset.zero);
-        currentPathEnd = upcomingPathEnd;
-        if (currentPathEnd >= pathEnd) break;
+      ..color = Colors.blue[400]!
+      ..strokeWidth = 4.0;
+    DateTime beginningOfChart = _getStartDateOfChart();
+    for (int i = 0; i < entries.length - 1; i++) {
+      if (entries[i].dateTime.isAfter(beginningOfChart)) {
+        // print("entries ==== ${entries[i].dateTime} ===== ${entries[i].weight}");
+        Offset startEntryOffset = _getEntryOffset(entries[i], beginningOfChart,
+            minLineValue, maxLineValue, leftOffsetStart);
+        Offset endEntryOffset = _getEntryOffset(entries[i + 1],
+            beginningOfChart, minLineValue, maxLineValue, leftOffsetStart);
+        canvas.drawLine(startEntryOffset, endEntryOffset, paint);
+        canvas.drawCircle(endEntryOffset, 5.0, paint);
       }
-      if (currentPathEnd >= pathEnd) break;
     }
+    // canvas.drawRect(
+    //     Rect.fromCenter(center: Offset.zero, width: 50, height: 0), paint);
 
-    canvas.drawPath(path, paint);
-
-    // paint the gradient fill
-    paint.style = PaintingStyle.fill;
-    paint.shader = ui.Gradient.linear(
-      Offset.zero,
-      Offset(0.0, size.height),
-      [
-        Colors.white.withOpacity(percentage),
-        Colors.white.withOpacity(0.2),
-      ],
-    );
-    canvas.drawPath(drawPath(true), paint);
-
-    resultPoints.forEach((p) {
-      canvas.drawCircle(
-          p,
-          5,
-          Paint()
-            ..color = Colors.black87
-            ..style = PaintingStyle.fill
-            ..strokeWidth = 1.0);
-
-      canvas.drawCircle(
-          p,
-          5,
-          Paint()
-            ..color = Colors.white
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 1.0);
-    });
+    canvas.drawCircle(
+        _getEntryOffset(entries.first, beginningOfChart, minLineValue,
+            maxLineValue, leftOffsetStart),
+        5.0,
+        paint);
   }
 
-  List<String> _computeValues() {
-    return points.map((e) => e.total!.toStringAsFixed(2)).toList();
+  /// Calculates offset at which given entry should be painted
+  Offset _getEntryOffset(SalesModel entry, DateTime beginningOfChart,
+      int minLineValue, int maxLineValue, double leftOffsetStart) {
+    // print(entry.weight);
+    int daysFromBeginning = entry.dateTime.difference(beginningOfChart).inDays;
+    double relativeXposition = daysFromBeginning / numberOfDays;
+    double xOffset = leftOffsetStart + relativeXposition * drawingWidth;
+    double relativeYposition =
+        (entry.total - minLineValue) / (maxLineValue - minLineValue);
+    double yOffset = 5 + drawingHeight - relativeYposition * drawingHeight;
+    return Offset(xOffset, yOffset);
   }
 
-  TextPainter measureText(
-      String s, TextStyle style, double maxWidth, TextAlign align) {
-    final span = TextSpan(text: s, style: style);
-    final tp = TextPainter(
-        text: span, textAlign: align, textDirection: ui.TextDirection.ltr);
-    tp.layout(minWidth: 0, maxWidth: maxWidth);
-    return tp;
+  Tuple2<int, int> _getMinAndMaxValues(List<SalesModel> entries) {
+    double maxWeight = entries.map((entry) => entry.total).reduce(math.max);
+    double minWeight = entries.map((entry) => entry.total).reduce(math.min);
+
+    int maxLineValue = (maxWeight * 1.1).ceil();
+
+    int difference = maxLineValue - minWeight.floor();
+    int toSubtract = (NUMBER_OF_HORIZONTAL_LINES - 1) -
+        (difference % (NUMBER_OF_HORIZONTAL_LINES - 1));
+    if (toSubtract == NUMBER_OF_HORIZONTAL_LINES - 1) {
+      toSubtract = 0;
+    }
+    int minLineValue = minWeight.floor() - toSubtract;
+
+    return Tuple2(minLineValue, maxLineValue);
   }
 
-  void drawTextCentered(
-      Canvas canvas, Offset c, String text, TextStyle style, double maxWidth) {
-    final tp = measureText(text, style, maxWidth, TextAlign.center);
-    final offset = c + Offset(-tp.width / 2, 0);
-    tp.paint(canvas, offset);
+  DateTime _getStartDateOfChart() {
+    DateTime now = DateTime.now();
+    DateTime beginningOfChart = now.subtract(
+        Duration(days: numberOfDays + 1, hours: now.hour, minutes: now.minute));
+    return beginningOfChart;
   }
 
   @override
-  bool shouldRepaint(GraphPainter oldDelegate) => true;
-  // percentage != oldDelegate.percentage;
+  bool shouldRepaint(ChartPainter oldDelegate) => true;
 }
