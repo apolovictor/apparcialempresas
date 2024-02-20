@@ -1,13 +1,8 @@
-import 'package:botecaria/services/date_services.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../controllers/reports_controller.dart';
-import '../models/reports_model.dart';
 import '../widgets/graph_painter.dart';
-import 'sales_impl.dart';
 
 class Sales extends StatefulHookConsumerWidget {
   const Sales({
@@ -47,10 +42,10 @@ class SalesState extends ConsumerState<Sales>
 
   @override
   Widget build(BuildContext context) {
-    final salesList = ref.watch(salesListNotifier);
+    final salesList = ref.watch(salesListProvider);
 
     salesList.forEach((element) {
-      print("element =========== ${element.dateTime} === ${element.total}");
+      print("item ==== ${element.dateTime} = ${element.total}");
     });
 
     return LayoutBuilder(builder: (context, constraints) {

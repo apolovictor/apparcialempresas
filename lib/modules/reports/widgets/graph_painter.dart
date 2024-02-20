@@ -47,7 +47,6 @@ class ChartPainter extends CustomPainter {
     final paint = Paint()..color = Colors.black;
     int lineStep = _calculateHorizontalLineStep(maxLineValue, minLineValue);
     double offsetStep = _calculateHorizontalOffsetStep;
-    print("offsetStep === $offsetStep");
     for (int line = 0; line < NUMBER_OF_HORIZONTAL_LINES; line++) {
       double yOffset = line * offsetStep;
       _drawHorizontalLabel(
@@ -134,7 +133,6 @@ class ChartPainter extends CustomPainter {
     DateTime beginningOfChart = _getStartDateOfChart();
     for (int i = 0; i < entries.length - 1; i++) {
       if (entries[i].dateTime.isAfter(beginningOfChart)) {
-        // print("entries ==== ${entries[i].dateTime} ===== ${entries[i].weight}");
         Offset startEntryOffset = _getEntryOffset(entries[i], beginningOfChart,
             minLineValue, maxLineValue, leftOffsetStart);
         Offset endEntryOffset = _getEntryOffset(entries[i + 1],

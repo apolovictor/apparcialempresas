@@ -12,7 +12,7 @@ class TablesDashboard extends HookConsumerWidget {
     return Scaffold(
       body: LayoutBuilder(builder: (context, constraints) {
         return SizedBox(
-          height: double.infinity,
+          height: constraints.maxHeight,
           child: Column(
             children: <Widget>[
               const Row(

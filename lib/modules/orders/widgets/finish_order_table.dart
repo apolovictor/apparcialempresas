@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../home/model/orders_model.dart';
+import '../../reports/controllers/reports_controller.dart';
 import '../controller/orders_notifier.dart';
 
 class FinishOrderTabletButton extends HookConsumerWidget {
@@ -47,9 +50,30 @@ class FinishOrderTabletButton extends HookConsumerWidget {
             } else {
               order.first.then((value) {
                 print(value.idTable);
-                ref
+                var result = ref
                     .read(recentOrdersDashboardProvider.notifier)
                     .finishOrder(value.idTable, listDetailOrders);
+                result.then((value) async {
+                  if (value) {
+                    // WidgetsBinding.instance.addPostFrameCallback((_) {
+                    ref.read(isAddingItemProvider.notifier).toogle(false);
+                    ref.read(itemListProvider.notifier).clearItemList();
+                    ref.read(currentOrderStateProvider.notifier).state =
+                        OrderStateWidget.close;
+                    if (ref.watch(currentOrderStateProvider) ==
+                            OrderStateWidget.close &&
+                        ref.watch(isOpenProvider) == false) {
+                      ref.read(salesListProvider.notifier).clear();
+                      ref.invalidate(getSalesReportProvider);
+                    }
+
+                    // });
+                  }
+                });
+                // ref.watch(getSalesReportProvider);
+                //   ref.read(getSalesReportProvider.notifier).updateSalesList();
+                // WidgetsBinding.instance.addPostFrameCallback((_) {
+                // });
               });
               Fluttertoast.showToast(
                   msg: "Conta finalizada com sucesso!",

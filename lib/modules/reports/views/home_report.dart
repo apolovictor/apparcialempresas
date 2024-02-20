@@ -3,6 +3,8 @@ import 'package:botecaria/modules/home/views/tables.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../controllers/reports_controller.dart';
+import 'products_reports.dart';
 import 'sales.dart';
 import 'sales_impl.dart';
 import 'stock_sales.dart';
@@ -16,6 +18,8 @@ class ReportScreen extends HookConsumerWidget {
     return LayoutBuilder(builder: (context, constraints) {
       double height = constraints.maxHeight;
       double width = constraints.maxWidth;
+      // ref.watch(getSalesReportProvider);
+      // ref.read(getSalesReportProvider.notifier).updateSalesList();
 
       return Stack(
         children: [
@@ -42,6 +46,7 @@ class ReportScreen extends HookConsumerWidget {
               color: Colors.grey[100],
               height: height * 0.50,
               width: width * 0.564,
+              child: ProductsReport(),
             ),
           ),
           Align(
@@ -50,7 +55,7 @@ class ReportScreen extends HookConsumerWidget {
               height: height * 0.60,
               width: width * 0.42,
               child: LayoutBuilder(builder: (context, constraints) {
-                return StockSales(
+                return StockSalesReport(
                     width: constraints.maxWidth, height: constraints.maxHeight);
               }),
             ),

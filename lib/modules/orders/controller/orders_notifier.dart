@@ -589,10 +589,6 @@ class RecentOrdersNotifier extends StreamNotifier<List<DashboardDetailOrders>> {
 
       batch.commit();
 
-      ref.read(isAddingItemProvider.notifier).toogle(false);
-      ref.read(itemListProvider.notifier).clearItemList();
-      ref.read(currentOrderStateProvider.notifier).state =
-          OrderStateWidget.close;
       return true;
     } catch (e) {
       // print(e.message);

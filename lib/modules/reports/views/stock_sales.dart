@@ -5,8 +5,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../controllers/reports_controller.dart';
 
-class StockSales extends HookConsumerWidget {
-  const StockSales({super.key, required this.width, required this.height});
+class StockSalesReport extends HookConsumerWidget {
+  const StockSalesReport(
+      {super.key, required this.width, required this.height});
 
   final double width;
   final double height;
