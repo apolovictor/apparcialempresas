@@ -7,6 +7,7 @@ import '../../../constants/route_names.dart';
 import '../../home/controller/product_notifier.dart';
 import '../../products/controller/product_list.notifier.dart';
 import '../../products/controller/products_notifier.dart';
+import '../../reports/controllers/reports_controller.dart';
 import '../controller/routes_controller.dart';
 
 class TopBarItem extends HookConsumerWidget {
@@ -73,6 +74,10 @@ class TopBarItem extends HookConsumerWidget {
                   : route.title == '/produtos'
                       ? 1
                       : 2);
+
+          ref.invalidate(productListReportsProvider);
+          ref.invalidate(cogsReportProvider);
+
           Navigator.pushNamed(context, route.title);
         },
         child: Stack(

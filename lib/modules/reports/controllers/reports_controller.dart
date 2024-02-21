@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -18,13 +20,14 @@ class StockSales extends ChangeNotifier {
   // static String idDocument = "bandiis";
   // final _businessCollection = _firestore.collection('business');
 
-  Future<List<double>> getStockSales() async {
-    cmv() async {
-      double total = 0;
+  Future<List<dynamic>> getStockSales() async {
+    cogs() async {
+      // double total = 0;
       var now = DateTime.now();
 
-      var firstDayOfMonth = DateTime(now.year, now.month, 1);
+      final timeStamp = dateTimetoTimeStamp(now.subtract(Duration(days: 32)));
 
+      List<Cogs> response = [];
       await _businessCollection
           .doc(idDocument)
           .collection('products')
@@ -37,59 +40,57 @@ class StockSales extends ChangeNotifier {
               .doc(e.docs[i].id)
               .collection('stockTransactions')
               .where('type', isEqualTo: 'out')
-              .where('date', isGreaterThanOrEqualTo: firstDayOfMonth)
+              .where('date', isGreaterThanOrEqualTo: timeStamp)
               .get()
-              .then((value) {
-            value.docs.forEach((element) {
-              // print('element.data() ==== ${element.data()}');
-              total += element.data()['unitPrice'] * element.data()['quantity'];
-            });
-            return total;
+              .then((value) async {
+            var result = value.docs.map((e) => Cogs.fromDoc(e)).toList();
+
+            result.forEach((e) => response.add(e));
           });
         }
-        return total;
       });
-      return total;
+      return response;
     }
 
     currentStock() async {
-      double total = 0;
-      await _businessCollection
+      List<Product> response = await _businessCollection
           .doc(idDocument)
           .collection('products')
           .where('quantity', isGreaterThan: 0)
           .get()
-          .then((value) {
-        value.docs.forEach((element) {
-          total +=
-              element.data()['quantity'] * element.data()['price']['price'];
-        });
-      });
-      return total;
+          .then((value) => value.docs.map((e) => Product.fromDoc(e)).toList());
+
+      // value.docs.forEach((e) {
+      //   print(e.data());
+      //   total += e.data()['quantity'] * e.data()['price']['price'];
+      // });
+      return response;
     }
 
     sales() async {
       var now = DateTime.now();
+
+      final timeStamp = dateTimetoTimeStamp(now.subtract(Duration(days: 32)));
       double total = 0;
 
-      var firstDayOfMonth = DateTime(now.year, now.month, 1);
       await _businessCollection
           .doc(idDocument)
           .collection('orders')
-          .where('finishedAt', isGreaterThanOrEqualTo: firstDayOfMonth)
+          .where('finishedAt', isGreaterThanOrEqualTo: timeStamp)
           .get()
           .then((value) {
-        value.docs.forEach((element) {
-          total += element.data()['total'];
+        value.docs.forEach((e) {
+          // print(e.data());
+          total += e.data()['total'];
         });
       });
       return total;
     }
 
     try {
-      List<double> response =
-          await Future.wait([cmv(), currentStock(), sales()]);
-      print('response === $response');
+      List<dynamic> response =
+          await Future.wait([cogs(), currentStock(), sales()]);
+      // print(response);
       return response;
     } catch (e) {
       return Future.error(e);
@@ -101,14 +102,14 @@ class StockSales extends ChangeNotifier {
 class GetSalesReport<bool> extends _$GetSalesReport {
   @override
   build() async {
-    final date = DateTime.now();
+    final now = DateTime.now();
 
     final daysToGenerate =
-        date.difference(date.subtract(Duration(days: 32))).inDays;
+        now.difference(now.subtract(Duration(days: 32))).inDays;
     var days = List.generate(
-        daysToGenerate, (i) => getDate(date.subtract(Duration(days: i))));
+        daysToGenerate, (i) => getDate(now.subtract(Duration(days: i))));
     days = days.reversed.toList();
-    final timeStamp = dateTimetoTimeStamp(date.subtract(Duration(days: 32)));
+    final timeStamp = dateTimetoTimeStamp(now.subtract(Duration(days: 32)));
     try {
       var response = await _businessCollection
           .doc(idDocument)
@@ -239,74 +240,6 @@ class GetSalesReport<bool> extends _$GetSalesReport {
       return Future.error(e);
     }
   }
-
-  // updateSalesList() async {
-  //   final date = DateTime.now();
-
-  //   final daysToGenerate =
-  //       date.difference(date.subtract(Duration(days: 32))).inDays;
-  //   var days = List.generate(
-  //       daysToGenerate, (i) => getDate(date.subtract(Duration(days: i))));
-  //   days = days.reversed.toList();
-  //   final timeStamp = dateTimetoTimeStamp(date.subtract(Duration(days: 32)));
-  //   ref.read(salesListProvider.notifier).clear();
-
-  //   try {
-  //     var response = await _businessCollection
-  //         .doc(idDocument)
-  //         .collection('orders')
-  //         .where('finishedAt', isGreaterThanOrEqualTo: timeStamp)
-  //         .get()
-  //         .then((e) {
-  //       var result = e.docs.map((e) => SalesReport.fromDoc(e)).toList();
-  //       var groupByDate = groupBy(result,
-  //           (obj) => timeStampToDate(obj.date).toString().substring(0, 10));
-  //       Map groupedAndSum = {};
-
-  //       groupByDate.forEach((k, v) {
-  //         groupedAndSum[k] = {
-  //           'list': v,
-  //           'totalSum': v.fold(0.00, (prev, element) {
-  //             return prev + element.total;
-  //           }),
-  //         };
-  //       });
-
-  //       var max = 0.0;
-  //       var theKey;
-  //       groupedAndSum.entries.forEach((element) {
-  //         if (element.value['totalSum'] > max) {
-  //           max = element.value['totalSum'];
-  //           theKey = element.key;
-  //         }
-  //       });
-
-  //       for (var i = 0; i < days.length; i++) {
-  //         WidgetsBinding.instance.addPostFrameCallback((_) {
-  //           print(
-  //               "item === ${getDate(days[i])} == ${groupedAndSum.containsKey(getDate(days[i]).toString().substring(0, 10)) ? groupedAndSum.entries.firstWhere((element) => element.key == getDate(days[i]).toString().substring(0, 10)).value['totalSum'] : 0}");
-
-  //           ref.refresh(salesListProvider.notifier).add(SalesModel(
-  //               dateTime: getDate(days[i]),
-  //               total: groupedAndSum.containsKey(
-  //                       getDate(days[i]).toString().substring(0, 10))
-  //                   ? groupedAndSum.entries
-  //                       .firstWhere((element) =>
-  //                           element.key ==
-  //                           getDate(days[i]).toString().substring(0, 10))
-  //                       .value['totalSum']
-  //                   : 0));
-  //         });
-  //       }
-
-  //       return e.docs.map((e) => SalesReport.fromDoc(e)).toList();
-  //     });
-  //     return response;
-  //   } catch (e) {
-  //     print("e ======= $e");
-  //     return Future.error(e);
-  //   }
-  // }
 }
 
 @Riverpod()
@@ -323,6 +256,66 @@ class SalesList extends _$SalesList {
 
   void clear() => state.clear();
 }
+
+@Riverpod()
+class ProductListReports extends _$ProductListReports {
+  @override
+  List<Product> build() => state = [];
+
+  add(Product item) async {
+    // if (state.length < length) {
+    state = [...state, item];
+    // }
+    return state;
+  }
+
+  void clear() => state = [];
+}
+
+@Riverpod()
+class CogsReport extends _$CogsReport {
+  @override
+  List<Cogs> build() => state = [];
+
+  add(Cogs item) async {
+    // if (state.length < length) {
+    state = [...state, item];
+    // }
+    return state;
+  }
+
+  void clear() => state = [];
+}
+
+@Riverpod()
+class TotalSalesReport extends _$TotalSalesReport {
+  @override
+  double build() => state = 0.0;
+
+  add(double total) async {
+    // if (state.length < length) {
+    state = total;
+    // }
+    return state;
+  }
+
+  void clear() => state = 0.0;
+}
+
+// @Riverpod()
+// class ProductsReports extends _$ProductsReports {
+//   @override
+//   List<Product> build() => state = [];
+
+// add(Product item) async {
+//   // if (state.length < length) {
+//   state = [...state, item];
+//   // }
+//   return state;
+// }
+
+// void clear() => state.clear();
+// }
 
 final salesReportNotifier = Provider((ref) => StockSales());
 

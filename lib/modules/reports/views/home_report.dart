@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../controllers/reports_controller.dart';
+import '../models/reports_model.dart';
 import 'products_reports.dart';
 import 'sales.dart';
 import 'sales_impl.dart';
@@ -18,8 +19,28 @@ class ReportScreen extends HookConsumerWidget {
     return LayoutBuilder(builder: (context, constraints) {
       double height = constraints.maxHeight;
       double width = constraints.maxWidth;
-      // ref.watch(getSalesReportProvider);
-      // ref.read(getSalesReportProvider.notifier).updateSalesList();
+      final listStockSales = ref.watch(salesReportNotifier).getStockSales();
+
+      listStockSales.then((value, {onError}) {
+        List<Cogs> cogsList = value[0];
+        List<Product> productList = value[1];
+        double totalSales = value[2];
+
+        if (cogsList.isNotEmpty && ref.watch(cogsReportProvider).isEmpty) {
+          cogsList.forEach((e) {
+            ref.read(cogsReportProvider.notifier).add(e);
+          });
+        }
+        if (productList.isNotEmpty &&
+            ref.watch(productListReportsProvider).isEmpty) {
+          productList.forEach((e) {
+            ref.read(productListReportsProvider.notifier).add(e);
+          });
+        }
+        if (ref.watch(totalSalesReportProvider) == 0.0) {
+          ref.read(totalSalesReportProvider.notifier).add(totalSales);
+        }
+      });
 
       return Stack(
         children: [
@@ -29,13 +50,13 @@ class ReportScreen extends HookConsumerWidget {
                 height: height * 0.47,
                 width: width * 0.564,
                 decoration:
-                    BoxDecoration(color: Colors.white, border: Border()),
+                    const BoxDecoration(color: Colors.white, border: Border()),
                 child: const SalesImpl()),
           ),
           Align(
             alignment: const Alignment(1, -1),
             child: Container(
-              color: Colors.grey[100],
+              color: Colors.grey[50],
               height: height * 0.37,
               width: width * 0.42,
             ),
@@ -43,7 +64,7 @@ class ReportScreen extends HookConsumerWidget {
           Align(
             alignment: const Alignment(-1, 1),
             child: Container(
-              color: Colors.grey[100],
+              color: Colors.white,
               height: height * 0.50,
               width: width * 0.564,
               child: ProductsReport(),

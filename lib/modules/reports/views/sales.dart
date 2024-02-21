@@ -44,9 +44,9 @@ class SalesState extends ConsumerState<Sales>
   Widget build(BuildContext context) {
     final salesList = ref.watch(salesListProvider);
 
-    salesList.forEach((element) {
-      print("item ==== ${element.dateTime} = ${element.total}");
-    });
+    // salesList.forEach((element) {
+    //   print("item ==== ${element.dateTime} = ${element.total}");
+    // });
 
     return LayoutBuilder(builder: (context, constraints) {
       return GestureDetector(
@@ -63,15 +63,17 @@ class SalesState extends ConsumerState<Sales>
           },
           onDoubleTap: () => setState(
               () => numberOfDays > 15 ? numberOfDays = 7 : numberOfDays = 32),
-          child: CustomPaint(
-            size: Size(constraints.maxWidth, constraints.maxHeight),
-            painter: ChartPainter(
-              entries: salesList,
-              drawingHeight: constraints.maxHeight * 0.9,
-              drawingWidth: constraints.maxWidth * 0.94,
-              numberOfDays: numberOfDays,
-            ),
-          ));
+          child: salesList.isNotEmpty
+              ? CustomPaint(
+                  size: Size(constraints.maxWidth, constraints.maxHeight),
+                  painter: ChartPainter(
+                    entries: salesList,
+                    drawingHeight: constraints.maxHeight * 0.9,
+                    drawingWidth: constraints.maxWidth * 0.94,
+                    numberOfDays: numberOfDays,
+                  ),
+                )
+              : const SizedBox());
     });
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter_sequence_animation/flutter_sequence_animation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../controllers/reports_controller.dart';
+import '../models/reports_model.dart';
 
 class StockSalesReport extends HookConsumerWidget {
   const StockSalesReport(
@@ -14,8 +15,6 @@ class StockSalesReport extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    print(width);
-    print(height);
     AnimationController stockSalesController = useAnimationController();
     SequenceAnimation sequenceAnimation = SequenceAnimationBuilder()
         .addAnimatable(
@@ -55,147 +54,135 @@ class StockSalesReport extends HookConsumerWidget {
             to: const Duration(milliseconds: 250),
             tag: 'heightCmv')
         .animate(stockSalesController);
-    // useValueChanged(ref.watch(isProductsOpenedProvider), (_, __) async {
-    //   stockSalesController.forward();
-    // });
-    Future.delayed(const Duration(milliseconds: 100), () {});
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      stockSalesController.forward();
-    });
 
-    final listStockSales = ref.watch(salesReportNotifier).getStockSales();
+    List<Cogs> cogsList = ref.watch(cogsReportProvider);
+    List<Product> productList = ref.watch(productListReportsProvider);
+    double totalSales = ref.watch(totalSalesReportProvider);
 
-    return FutureBuilder<List<double>>(
-        future: listStockSales,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {}
+    if (productList.isNotEmpty && cogsList.isNotEmpty) {
+      // print("productList ==== ${productList.length}");
 
-          return AnimatedBuilder(
-              animation: stockSalesController,
-              builder: (context, child) {
-                return Container(
-                  height: height,
-                  width: width,
-                  child: Stack(
-                    children: [
-                      Align(
-                        alignment: const Alignment(0, -1),
-                        child: Container(
-                          width: sequenceAnimation['widthSales'].value,
-                          height: sequenceAnimation['heightSales'].value,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.blueAccent,
-                          ),
-                        ),
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        stockSalesController.forward();
+      });
+
+      double stockTotal = 0.0;
+      double cogsTotal = 0.0;
+
+      cogsList.forEach((e) {
+        cogsTotal += e.quantity * e.unitPrice;
+      });
+      productList.forEach((e) {
+        // print("element from stockSales ====  ${e.name}");
+        stockTotal += e.quantity * e.price.price;
+      });
+      return AnimatedBuilder(
+          animation: stockSalesController,
+          builder: (context, child) {
+            return Container(
+              height: height,
+              width: width,
+              child: Stack(
+                children: [
+                  Align(
+                    alignment: const Alignment(0, -1),
+                    child: Container(
+                      width: sequenceAnimation['widthSales'].value,
+                      height: sequenceAnimation['heightSales'].value,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.blueAccent,
                       ),
-                      Align(
-                        alignment: const Alignment(0, -0.6),
-                        child: Material(
-                            color: Colors.transparent,
-                            child: snapshot.hasData
-                                ? Text(
-                                    'R\$ ${snapshot.data![2].toStringAsFixed(2)}',
-                                    style: const TextStyle(
-                                        fontSize: 18,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w600))
-                                : SizedBox(
-                                    width:
-                                        sequenceAnimation['widthCurrentStock']
-                                                .value *
-                                            0.2,
-                                    child: const LinearProgressIndicator())),
-                      ),
-                      const Align(
-                        alignment: Alignment(0, -0.5),
-                        child: Material(
-                            color: Colors.transparent,
-                            child: Text('Receita Vendas',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600))),
-                      ),
-                      Align(
-                        alignment: const Alignment(-1, 0.3),
-                        child: Container(
-                          width: sequenceAnimation['widthCurrentStock'].value,
-                          height: sequenceAnimation['heightCurrentStock'].value,
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.grey[100],
-                              border:
-                                  Border.all(width: 2, color: Colors.white)),
-                        ),
-                      ),
-                      Align(
-                        alignment: const Alignment(-0.5, 0),
-                        child: Material(
-                            color: Colors.transparent,
-                            child: snapshot.hasData
-                                ? Text(
-                                    'R\$ ${snapshot.data![1].toStringAsFixed(2)}',
-                                    style: const TextStyle(
-                                        fontSize: 18,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w600))
-                                : SizedBox(
-                                    width:
-                                        sequenceAnimation['widthCurrentStock']
-                                                .value *
-                                            0.2,
-                                    child: const LinearProgressIndicator())),
-                      ),
-                      const Align(
-                        alignment: Alignment(-0.5, 0.1),
-                        child: Material(
-                            color: Colors.transparent,
-                            child: Text('Estoque atual',
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w600))),
-                      ),
-                      Align(
-                        alignment: const Alignment(0, 1),
-                        child: Container(
-                          width: sequenceAnimation['widthCmv'].value,
-                          height: sequenceAnimation['heightCmv'].value,
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.black,
-                              border:
-                                  Border.all(width: 2, color: Colors.white)),
-                        ),
-                      ),
-                      Align(
-                        alignment: const Alignment(0, 0.5),
-                        child: Material(
-                            color: Colors.transparent,
-                            child: snapshot.hasData
-                                ? Text(
-                                    'R\$ ${snapshot.data![0].toStringAsFixed(2)}',
-                                    style: const TextStyle(
-                                        fontSize: 18,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w600))
-                                : SizedBox(
-                                    width: sequenceAnimation['widthCmv'].value *
-                                        0.2,
-                                    child: const LinearProgressIndicator())),
-                      ),
-                      Align(
-                        alignment: Alignment(0, 0.6),
-                        child: Material(
-                            color: Colors.transparent,
-                            child: Text('CMV',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600))),
-                      ),
-                    ],
+                    ),
                   ),
-                );
-              });
-        });
+                  Align(
+                    alignment: const Alignment(0, -0.6),
+                    child: Material(
+                        color: Colors.transparent,
+                        child: Text('R\$ ${totalSales.toStringAsFixed(2)}',
+                            style: const TextStyle(
+                                fontSize: 26,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600))),
+                  ),
+                  const Align(
+                    alignment: Alignment(0, -0.5),
+                    child: Material(
+                        color: Colors.transparent,
+                        child: Text('Receita Vendas',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 22,
+                                fontWeight: FontWeight.w600))),
+                  ),
+                  Align(
+                    alignment: const Alignment(-1, 0.3),
+                    child: Container(
+                      width: sequenceAnimation['widthCurrentStock'].value,
+                      height: sequenceAnimation['heightCurrentStock'].value,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.black87,
+                          border: Border.all(width: 2, color: Colors.white)),
+                    ),
+                  ),
+                  Align(
+                    alignment: const Alignment(-0.5, 0),
+                    child: Material(
+                        color: Colors.transparent,
+                        child: Text('R\$ ${stockTotal.toStringAsFixed(2)}',
+                            style: const TextStyle(
+                                fontSize: 26,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600))),
+                  ),
+                  const Align(
+                    alignment: Alignment(-0.5, 0.1),
+                    child: Material(
+                        color: Colors.transparent,
+                        child: Text('Estoque atual',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 22,
+                                fontWeight: FontWeight.w600))),
+                  ),
+                  Align(
+                    alignment: const Alignment(0, 1),
+                    child: Container(
+                      width: sequenceAnimation['widthCmv'].value,
+                      height: sequenceAnimation['heightCmv'].value,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.grey[200],
+                          border: Border.all(width: 2, color: Colors.white)),
+                    ),
+                  ),
+                  Align(
+                    alignment: const Alignment(0, 0.5),
+                    child: Material(
+                        color: Colors.transparent,
+                        child: Text('R\$ ${cogsTotal.toStringAsFixed(2)}',
+                            style: const TextStyle(
+                                fontSize: 26,
+                                color: Colors.black,
+                                fontWeight: FontWeight.w600))),
+                  ),
+                  const Align(
+                    alignment: Alignment(0, 0.6),
+                    child: Material(
+                        color: Colors.transparent,
+                        child: Text('CMV',
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 22,
+                                fontWeight: FontWeight.w600))),
+                  ),
+                ],
+              ),
+            );
+          });
+    } else {
+      return const SizedBox();
+    }
   }
 }

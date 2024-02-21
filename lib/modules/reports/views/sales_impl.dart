@@ -16,7 +16,7 @@ class SalesImpl extends HookConsumerWidget {
     return result.runtimeType == bool
         ? result
             ? Sales()
-            : SizedBox()
-        : SizedBox();
+            : const SizedBox()
+        : const SizedBox();
   }
 }

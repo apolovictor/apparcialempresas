@@ -49,7 +49,6 @@ class FinishOrderTabletButton extends HookConsumerWidget {
               return;
             } else {
               order.first.then((value) {
-                print(value.idTable);
                 var result = ref
                     .read(recentOrdersDashboardProvider.notifier)
                     .finishOrder(value.idTable, listDetailOrders);
