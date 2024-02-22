@@ -99,7 +99,12 @@ class ProductsReportState extends ConsumerState<ProductsReport>
                                             borderRadius:
                                                 BorderRadius.circular(15.0),
                                             child: Container(
-                                                color: Colors.transparent,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          15.0),
+                                                  color: Colors.transparent,
+                                                ),
                                                 padding:
                                                     const EdgeInsets.all(12),
                                                 width: double.infinity,
@@ -118,9 +123,17 @@ class ProductsReportState extends ConsumerState<ProductsReport>
                                                       FileInfo fileInfo =
                                                           snapshot.data
                                                               as FileInfo;
-                                                      return Image.file(
-                                                        fileInfo.file,
-                                                        fit: BoxFit.scaleDown,
+                                                      return ClipOval(
+                                                        child:
+                                                            SizedBox.fromSize(
+                                                          size: Size.fromRadius(
+                                                              60),
+                                                          child: Image.file(
+                                                            fileInfo.file,
+                                                            fit: BoxFit
+                                                                .scaleDown,
+                                                          ),
+                                                        ),
                                                       );
                                                     } else {
                                                       return const Center(
@@ -236,15 +249,22 @@ class _BarsState extends ConsumerState<Bars> with OverLayStateMixin {
         });
       }
 
+      double masterWidth = MediaQuery.of(context).size.width;
+
       // print(
       //     "item == ${widget.product.documentId} == $cogsAmount == $stockCostAmount == $stockForSaleAmount == $productSalesAmount == $totalAmounts == $profitProjection");
-
+      print(MediaQuery.of(context).size.width);
       return Container(
         height: height,
         width: width,
         color: Colors.white,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 45),
+          padding: EdgeInsets.symmetric(
+              horizontal: masterWidth > 2000.0
+                  ? 75
+                  : masterWidth > 1500.0
+                      ? 60
+                      : 45),
           child: AnimatedBuilder(
               animation: widget.controller,
               builder: (context, child) {
@@ -282,8 +302,7 @@ class _BarsState extends ConsumerState<Bars> with OverLayStateMixin {
                                   sales: productSalesAmount,
                                   stockForSales: stockForSaleAmount,
                                   price: widget.product.price.price,
-                                  quantity: int.parse(
-                                      widget.product.quantity.toString()),
+                                  quantity: widget.product.quantity,
                                   avgUnitPrice: widget.product.avgUnitPrice,
                                   profitProjection: profitProjection,
                                   stockCostAmount: stockCostAmount,

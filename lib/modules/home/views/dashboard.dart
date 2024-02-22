@@ -23,7 +23,6 @@ class Dashboard extends HookConsumerWidget {
               .filteredList(products, "");
         });
       }
-
       return Stack(
         children: [
           Align(
