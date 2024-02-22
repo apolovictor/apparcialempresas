@@ -85,5 +85,22 @@ final totalSalesReportProvider =
 );
 
 typedef _$TotalSalesReport = AutoDisposeNotifier<double>;
+String _$productSalesReportHash() =>
+    r'c67d4cefb1ca099a8d5224fd64e16b1c9f39edf9';
+
+/// See also [ProductSalesReport].
+@ProviderFor(ProductSalesReport)
+final productSalesReportProvider = AutoDisposeNotifierProvider<
+    ProductSalesReport, List<ProductsSold>>.internal(
+  ProductSalesReport.new,
+  name: r'productSalesReportProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$productSalesReportHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$ProductSalesReport = AutoDisposeNotifier<List<ProductsSold>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

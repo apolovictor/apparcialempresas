@@ -159,3 +159,26 @@ class Cogs {
     );
   }
 }
+
+class ProductsSold {
+  String productName;
+  String productDocument;
+  double price;
+  DateTime? date;
+
+  ProductsSold({
+    required this.productName,
+    required this.productDocument,
+    required this.price,
+    required this.date,
+  });
+
+  static ProductsSold fromDoc(DocumentSnapshot<Map<String, dynamic>> doc) {
+    return ProductsSold(
+      productName: doc['productName'],
+      productDocument: doc['productDocument'],
+      price: doc['price']!.toDouble(),
+      date: timeStampToDate(doc['finishedAt']),
+    );
+  }
+}

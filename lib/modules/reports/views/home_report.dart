@@ -25,6 +25,7 @@ class ReportScreen extends HookConsumerWidget {
         List<Cogs> cogsList = value[0];
         List<Product> productList = value[1];
         double totalSales = value[2];
+        List<ProductsSold> productSalesList = value[3];
 
         if (cogsList.isNotEmpty && ref.watch(cogsReportProvider).isEmpty) {
           cogsList.forEach((e) {
@@ -39,6 +40,11 @@ class ReportScreen extends HookConsumerWidget {
         }
         if (ref.watch(totalSalesReportProvider) == 0.0) {
           ref.read(totalSalesReportProvider.notifier).add(totalSales);
+        }
+        if (ref.watch(productSalesReportProvider).isEmpty) {
+          productSalesList.forEach((e) {
+            ref.read(productSalesReportProvider.notifier).add(e);
+          });
         }
       });
 

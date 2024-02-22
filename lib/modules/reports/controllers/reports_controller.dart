@@ -87,10 +87,28 @@ class StockSales extends ChangeNotifier {
       return total;
     }
 
+    productSales() async {
+      var now = DateTime.now();
+
+      final timeStamp = dateTimetoTimeStamp(now.subtract(Duration(days: 32)));
+      double total = 0;
+
+      List<ProductsSold> response = [];
+      await _businessCollection
+          .doc(idDocument)
+          .collection('detailOrders')
+          .where('finishedAt', isGreaterThanOrEqualTo: timeStamp)
+          .get()
+          .then((value) {
+        var result = value.docs.map((e) => ProductsSold.fromDoc(e)).toList();
+        result.forEach((e) => response.add(e));
+      });
+      return response;
+    }
+
     try {
       List<dynamic> response =
-          await Future.wait([cogs(), currentStock(), sales()]);
-      // print(response);
+          await Future.wait([cogs(), currentStock(), sales(), productSales()]);
       return response;
     } catch (e) {
       return Future.error(e);
@@ -300,6 +318,21 @@ class TotalSalesReport extends _$TotalSalesReport {
   }
 
   void clear() => state = 0.0;
+}
+
+@Riverpod()
+class ProductSalesReport extends _$ProductSalesReport {
+  @override
+  List<ProductsSold> build() => state = [];
+
+  add(ProductsSold item) async {
+    // if (state.length < length) {
+    state = [...state, item];
+    // }
+    return state;
+  }
+
+  void clear() => state = [];
 }
 
 // @Riverpod()
