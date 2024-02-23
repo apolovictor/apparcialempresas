@@ -68,7 +68,7 @@ class ReportScreen extends HookConsumerWidget {
           }
         }),
         listStockSales.then(
-            (value) => ref.read(totalSalesReportProvider.notifier).add(value0))
+            (value) => ref.read(totalSalesReportProvider.notifier).add(value))
       ]);
 
       // listStockSales.then((value, {onError}) {
