@@ -1,3 +1,4 @@
+import 'package:botecaria/modules/reports/models/reports_model.dart';
 import 'package:cached_firestorage/lib.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';

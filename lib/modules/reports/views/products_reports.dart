@@ -1,26 +1,17 @@
 import 'package:botecaria/modules/reports/models/reports_model.dart';
-import 'package:cached_firestorage/remote_picture.dart';
+import 'package:botecaria/modules/reports/views/animated_bars.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../products/controller/products_notifier.dart';
 import '../controllers/reports_controller.dart';
 import '../widgets/overlay_mixin.dart';
 
-class ProductsReport extends StatefulHookConsumerWidget {
+class ProductsReport extends HookConsumerWidget {
   const ProductsReport({super.key});
 
   @override
-  ConsumerState<ProductsReport> createState() => ProductsReportState();
-}
-
-class ProductsReportState extends ConsumerState<ProductsReport>
-    with SingleTickerProviderStateMixin {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final controller = ScrollController();
 
     List<Product> productList = ref.watch(productListReportsProvider);
@@ -34,9 +25,8 @@ class ProductsReportState extends ConsumerState<ProductsReport>
     List<GlobalKey> stickKey = [
       for (var i = 0; i < productList.length; i++) GlobalKey()
     ];
-    List<dynamic> cachePictures = kIsWeb
-        ? ref.watch(pictureProductListProvider)
-        : ref.watch(pictureProductListAndroidProvider);
+
+    print("productList.length === ${productList.length}");
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: LayoutBuilder(builder: (context, constraints) {
@@ -62,7 +52,7 @@ class ProductsReportState extends ConsumerState<ProductsReport>
                     children: [
                       Expanded(
                         flex: 9,
-                        child: Bars(
+                        child: Bar(
                             controller: controller,
                             stickKey: stickKey.firstWhere(
                                 (e) => stickKey.indexOf(e) == index),
@@ -72,93 +62,11 @@ class ProductsReportState extends ConsumerState<ProductsReport>
                             newMapProductSales: newMapProductSales),
                       ),
                       Expanded(
-                        flex: 3,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            productList[index].logo != null
-                                ? kIsWeb
-                                    ? Container(
-                                        width: width / 6,
-                                        height: height * 0.15,
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(15.0),
-                                          color: Colors.transparent,
-                                        ),
-                                        padding:
-                                            const EdgeInsets.only(bottom: 10),
-                                        child: RemotePicture(
-                                          mapKey: productList[index].logo!,
-                                          imagePath:
-                                              'gs://appparcial-123.appspot.com/products/${productList[index].logo}',
-                                        ),
-                                      )
-                                    : cachePictures.isNotEmpty
-                                        ? ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(15.0),
-                                            child: Container(
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          15.0),
-                                                  color: Colors.transparent,
-                                                ),
-                                                padding:
-                                                    const EdgeInsets.all(12),
-                                                width: double.infinity,
-                                                height: 100,
-                                                child:
-                                                    StreamBuilder<FileResponse>(
-                                                  stream: ref
-                                                      .watch(
-                                                          pictureProductListAndroidProvider
-                                                              .notifier)
-                                                      .downLoadFile(
-                                                          productList[index]
-                                                              .logo!),
-                                                  builder: (_, snapshot) {
-                                                    if (snapshot.hasData) {
-                                                      FileInfo fileInfo =
-                                                          snapshot.data
-                                                              as FileInfo;
-                                                      return ClipOval(
-                                                        child:
-                                                            SizedBox.fromSize(
-                                                          size: Size.fromRadius(
-                                                              60),
-                                                          child: Image.file(
-                                                            fileInfo.file,
-                                                            fit: BoxFit
-                                                                .scaleDown,
-                                                          ),
-                                                        ),
-                                                      );
-                                                    } else {
-                                                      return const Center(
-                                                        child:
-                                                            CircularProgressIndicator(),
-                                                      );
-                                                    }
-                                                  },
-                                                )),
-                                          )
-                                        : const SizedBox()
-                                : const SizedBox(),
-                            Expanded(
-                              child: Material(
-                                child: Text(
-                                  productList[index].name,
-                                  style: const TextStyle(
-                                      color: Colors.black87, fontSize: 16),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                          flex: 3,
+                          child: AnimatedBars(
+                              product: productList[index],
+                              width: width,
+                              height: height)),
                     ],
                   ),
                 );
@@ -169,8 +77,190 @@ class ProductsReportState extends ConsumerState<ProductsReport>
   }
 }
 
-class Bars extends StatefulHookConsumerWidget {
-  const Bars({
+// class ProductsReport2 extends StatefulHookConsumerWidget {
+//   const ProductsReport2({super.key});
+
+//   @override
+//   ConsumerState<ProductsReport> createState() => ProductsReportState();
+// }
+
+// class ProductsReportState extends ConsumerState<ProductsReport>
+//     with SingleTickerProviderStateMixin {
+//   late AnimationController productController;
+//   late Animation<double> productanimation;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     productController = AnimationController(
+//         vsync: this, duration: const Duration(milliseconds: 5000));
+//     // productanimation = Tween(begin: .0, end: 1.0).animate(
+//     //     CurvedAnimation(parent: productController, curve: Curves.ease));
+//     productanimation =
+//         Tween<double>(begin: .0, end: 1.0).animate(CurvedAnimation(
+//       parent: productController,
+//       curve: Curves.ease,
+//     ));
+//     productController.forward();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final controller = ScrollController();
+
+//     // List<Product> productList = ref.watch(productListReportsProvider);
+//     // List<Cogs> cogsList = ref.watch(cogsReportProvider);
+//     // List<ProductsSold> productSalesList = ref.watch(productSalesReportProvider);
+
+//     var newMapCogs = groupBy(cogsList, (Cogs obj) => obj.idDocument);
+//     var newMapProductSales =
+//         groupBy(productSalesList, (ProductsSold obj) => obj.productDocument);
+
+//     List<GlobalKey> stickKey = [
+//       for (var i = 0; i < productList.length; i++) GlobalKey()
+//     ];
+//     List<dynamic> cachePictures = kIsWeb
+//         ? ref.watch(pictureProductListProvider)
+//         : ref.watch(pictureProductListAndroidProvider);
+
+//     print("productList.length === ${productList.length}");
+//     return Padding(
+//       padding: const EdgeInsets.all(10.0),
+//       child: LayoutBuilder(builder: (context, constraints) {
+//         double width = constraints.maxWidth;
+//         double height = constraints.maxHeight;
+
+//         return SizedBox(
+//           width: width,
+//           height: height,
+//           child: ListView.builder(
+//               physics: const BouncingScrollPhysics(),
+//               scrollDirection: Axis.horizontal,
+//               controller: controller,
+//               itemCount: productList.length,
+//               itemBuilder: (context, index) {
+//                 return Container(
+//                   width: width / 5,
+//                   height: height,
+//                   color: Colors.white,
+//                   child: Column(
+//                     crossAxisAlignment: CrossAxisAlignment.center,
+//                     mainAxisAlignment: MainAxisAlignment.end,
+//                     children: [
+//                       Expanded(
+//                         flex: 9,
+//                         child: Bar(
+//                             controller: controller,
+//                             stickKey: stickKey.firstWhere(
+//                                 (e) => stickKey.indexOf(e) == index),
+//                             product: productList[index],
+//                             index: index,
+//                             newMapCogs: newMapCogs,
+//                             newMapProductSales: newMapProductSales),
+//                       ),
+//                       Expanded(
+//                         flex: 3,
+//                         child: ScaleTransition(
+//                           scale: productanimation,
+//                           child: Column(
+//                             mainAxisAlignment: MainAxisAlignment.start,
+//                             children: [
+//                               productList[index].logo != null
+//                                   ? kIsWeb
+//                                       ? Container(
+//                                           width: width / 6,
+//                                           height: height * 0.15,
+//                                           decoration: BoxDecoration(
+//                                             borderRadius:
+//                                                 BorderRadius.circular(15.0),
+//                                             color: Colors.transparent,
+//                                           ),
+//                                           padding:
+//                                               const EdgeInsets.only(bottom: 10),
+//                                           child: RemotePicture(
+//                                             mapKey: productList[index].logo!,
+//                                             imagePath:
+//                                                 'gs://appparcial-123.appspot.com/products/${productList[index].logo}',
+//                                           ),
+//                                         )
+//                                       : cachePictures.isNotEmpty
+//                                           ? ClipRRect(
+//                                               borderRadius:
+//                                                   BorderRadius.circular(15.0),
+//                                               child: Container(
+//                                                   decoration: BoxDecoration(
+//                                                     borderRadius:
+//                                                         BorderRadius.circular(
+//                                                             15.0),
+//                                                     color: Colors.transparent,
+//                                                   ),
+//                                                   padding:
+//                                                       const EdgeInsets.all(12),
+//                                                   width: double.infinity,
+//                                                   height: 100,
+//                                                   child: StreamBuilder<
+//                                                       FileResponse>(
+//                                                     stream: ref
+//                                                         .watch(
+//                                                             pictureProductListAndroidProvider
+//                                                                 .notifier)
+//                                                         .downLoadFile(
+//                                                             productList[index]
+//                                                                 .logo!),
+//                                                     builder: (_, snapshot) {
+//                                                       if (snapshot.hasData) {
+//                                                         FileInfo fileInfo =
+//                                                             snapshot.data
+//                                                                 as FileInfo;
+//                                                         return ClipOval(
+//                                                           child:
+//                                                               SizedBox.fromSize(
+//                                                             size: const Size
+//                                                                 .fromRadius(60),
+//                                                             child: Image.file(
+//                                                               fileInfo.file,
+//                                                               fit: BoxFit
+//                                                                   .scaleDown,
+//                                                             ),
+//                                                           ),
+//                                                         );
+//                                                       } else {
+//                                                         return const Center(
+//                                                           child:
+//                                                               CircularProgressIndicator(),
+//                                                         );
+//                                                       }
+//                                                     },
+//                                                   )),
+//                                             )
+//                                           : const SizedBox()
+//                                   : const SizedBox(),
+//                               Expanded(
+//                                 child: Material(
+//                                   child: Text(
+//                                     productList[index].name,
+//                                     style: const TextStyle(
+//                                         color: Colors.black87, fontSize: 16),
+//                                     textAlign: TextAlign.center,
+//                                   ),
+//                                 ),
+//                               ),
+//                             ],
+//                           ),
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 );
+//               }),
+//         );
+//       }),
+//     );
+//   }
+// }
+
+class Bar extends StatefulHookConsumerWidget {
+  const Bar({
     super.key,
     required this.controller,
     required this.stickKey,
@@ -188,10 +278,10 @@ class Bars extends StatefulHookConsumerWidget {
   final Map<String, List<ProductsSold>> newMapProductSales;
 
   @override
-  ConsumerState<Bars> createState() => _BarsState();
+  ConsumerState<Bar> createState() => _BarsState();
 }
 
-class _BarsState extends ConsumerState<Bars> with OverLayStateMixin {
+class _BarsState extends ConsumerState<Bar> with OverLayStateMixin {
   double get cogsAmount =>
       widget.newMapCogs.entries.any((e) => e.key == widget.product.documentId)
           ? widget.newMapCogs.entries
@@ -253,7 +343,7 @@ class _BarsState extends ConsumerState<Bars> with OverLayStateMixin {
 
       // print(
       //     "item == ${widget.product.documentId} == $cogsAmount == $stockCostAmount == $stockForSaleAmount == $productSalesAmount == $totalAmounts == $profitProjection");
-      print(MediaQuery.of(context).size.width);
+      // print(MediaQuery.of(context).size.width);
       return Container(
         height: height,
         width: width,
@@ -487,22 +577,22 @@ class _OverlayUIState extends State<OverlayUI> {
               style: Theme.of(context)
                   .textTheme
                   .bodyMedium
-                  ?.copyWith(color: Colors.black)),
+                  ?.copyWith(color: Colors.black, fontSize: 22)),
           Text('Preço Venda: ${widget.price.toStringAsFixed(2)}',
               style: Theme.of(context)
                   .textTheme
                   .bodyMedium
-                  ?.copyWith(color: Colors.black)),
+                  ?.copyWith(color: Colors.black, fontSize: 22)),
           Text('Preço Estoque: ${widget.avgUnitPrice!.toStringAsFixed(2)}',
               style: Theme.of(context)
                   .textTheme
                   .bodyMedium
-                  ?.copyWith(color: Colors.black)),
+                  ?.copyWith(color: Colors.black, fontSize: 22)),
           Text('Quantidade: ${widget.quantity}',
               style: Theme.of(context)
                   .textTheme
                   .bodyMedium
-                  ?.copyWith(color: Colors.black)),
+                  ?.copyWith(color: Colors.black, fontSize: 22)),
           const Divider(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -511,41 +601,41 @@ class _OverlayUIState extends State<OverlayUI> {
                   style: Theme.of(context)
                       .textTheme
                       .bodyMedium
-                      ?.copyWith(color: Colors.black)),
+                      ?.copyWith(color: Colors.black, fontSize: 22)),
               Text(widget.cogs.toStringAsFixed(2),
                   style: Theme.of(context)
                       .textTheme
                       .bodyMedium
-                      ?.copyWith(color: Colors.black)),
+                      ?.copyWith(color: Colors.black, fontSize: 22)),
             ],
           ),
           Text('Vendas: ${widget.sales.toStringAsFixed(2)}',
               style: Theme.of(context)
                   .textTheme
                   .bodyMedium
-                  ?.copyWith(color: Colors.black)),
+                  ?.copyWith(color: Colors.black, fontSize: 22)),
           Text(
               'Lucro Bruto: ${(widget.sales - widget.cogs).toStringAsFixed(2)}',
               style: Theme.of(context)
                   .textTheme
                   .bodyMedium
-                  ?.copyWith(color: Colors.black)),
+                  ?.copyWith(color: Colors.black, fontSize: 22)),
           Text('Estoque Atual: ${widget.stockForSales.toStringAsFixed(2)}',
               style: Theme.of(context)
                   .textTheme
                   .bodyMedium
-                  ?.copyWith(color: Colors.black)),
+                  ?.copyWith(color: Colors.black, fontSize: 22)),
           Text('Projeção Vendas: ${widget.profitProjection.toStringAsFixed(2)}',
               style: Theme.of(context)
                   .textTheme
                   .bodyMedium
-                  ?.copyWith(color: Colors.black)),
+                  ?.copyWith(color: Colors.black, fontSize: 22)),
           Text(
               'Projeção Lucro: ${(widget.profitProjection - widget.stockCostAmount - widget.cogs).toStringAsFixed(2)}',
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium
-                  ?.copyWith(color: Colors.black, fontWeight: FontWeight.bold)),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Colors.black,
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold)),
           // MaterialButton(
           //   onPressed: () {
           //     print("tapped");

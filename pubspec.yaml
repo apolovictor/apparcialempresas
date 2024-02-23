@@ -61,7 +61,7 @@ dependencies:
   flutter_riverpod: ^2.4.10
   firebase_app_check: ^0.2.1+13
   tuple: ^2.0.2
-  
+  touchable: ^1.0.2
 
 dev_dependencies:
   flutter_test:

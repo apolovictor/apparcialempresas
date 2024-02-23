@@ -62,8 +62,7 @@ class FinishOrderTabletButton extends HookConsumerWidget {
                     if (ref.watch(currentOrderStateProvider) ==
                             OrderStateWidget.close &&
                         ref.watch(isOpenProvider) == false) {
-                      ref.read(salesListProvider.notifier).clear();
-                      ref.invalidate(getSalesReportProvider);
+                      // ref.read(getSalesReportProvider);
                     }
 
                     // });

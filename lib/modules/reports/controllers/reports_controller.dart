@@ -20,100 +20,119 @@ class StockSales extends ChangeNotifier {
   // static String idDocument = "bandiis";
   // final _businessCollection = _firestore.collection('business');
 
-  Future<List<dynamic>> getStockSales() async {
-    cogs() async {
-      // double total = 0;
-      var now = DateTime.now();
+  Future<List<ProductsSold>> getProductsSold() async {
+    var now = DateTime.now();
 
-      final timeStamp = dateTimetoTimeStamp(now.subtract(Duration(days: 32)));
+    final timeStamp = dateTimetoTimeStamp(now.subtract(Duration(days: 32)));
+    double total = 0;
 
-      List<Cogs> response = [];
-      await _businessCollection
-          .doc(idDocument)
-          .collection('products')
-          .get()
-          .then((e) async {
-        for (var i = 0; i < e.docs.length; i++) {
-          await _businessCollection
-              .doc(idDocument)
-              .collection('products')
-              .doc(e.docs[i].id)
-              .collection('stockTransactions')
-              .where('type', isEqualTo: 'out')
-              .where('date', isGreaterThanOrEqualTo: timeStamp)
-              .get()
-              .then((value) async {
-            var result = value.docs.map((e) => Cogs.fromDoc(e)).toList();
-
-            result.forEach((e) => response.add(e));
-          });
-        }
-      });
-      return response;
-    }
-
-    currentStock() async {
-      List<Product> response = await _businessCollection
-          .doc(idDocument)
-          .collection('products')
-          .where('quantity', isGreaterThan: 0)
-          .get()
-          .then((value) => value.docs.map((e) => Product.fromDoc(e)).toList());
-
-      // value.docs.forEach((e) {
-      //   print(e.data());
-      //   total += e.data()['quantity'] * e.data()['price']['price'];
-      // });
-      return response;
-    }
-
-    sales() async {
-      var now = DateTime.now();
-
-      final timeStamp = dateTimetoTimeStamp(now.subtract(Duration(days: 32)));
-      double total = 0;
-
-      await _businessCollection
-          .doc(idDocument)
-          .collection('orders')
-          .where('finishedAt', isGreaterThanOrEqualTo: timeStamp)
-          .get()
-          .then((value) {
-        value.docs.forEach((e) {
-          // print(e.data());
-          total += e.data()['total'];
-        });
-      });
-      return total;
-    }
-
-    productSales() async {
-      var now = DateTime.now();
-
-      final timeStamp = dateTimetoTimeStamp(now.subtract(Duration(days: 32)));
-      double total = 0;
-
-      List<ProductsSold> response = [];
-      await _businessCollection
-          .doc(idDocument)
-          .collection('detailOrders')
-          .where('finishedAt', isGreaterThanOrEqualTo: timeStamp)
-          .get()
-          .then((value) {
-        var result = value.docs.map((e) => ProductsSold.fromDoc(e)).toList();
-        result.forEach((e) => response.add(e));
-      });
-      return response;
-    }
-
-    try {
-      List<dynamic> response =
-          await Future.wait([cogs(), currentStock(), sales(), productSales()]);
-      return response;
-    } catch (e) {
-      return Future.error(e);
-    }
+    List<ProductsSold> response = [];
+    await _businessCollection
+        .doc(idDocument)
+        .collection('detailOrders')
+        .where('finishedAt', isGreaterThanOrEqualTo: timeStamp)
+        .get()
+        .then((value) {
+      var result = value.docs.map((e) => ProductsSold.fromDoc(e)).toList();
+      result.forEach((e) => response.add(e));
+    });
+    return response;
   }
+
+  Future<List<Product>> getProducts() async {
+    List<Product> response = [];
+    await _businessCollection
+        .doc(idDocument)
+        .collection('products')
+        .get()
+        .then((value) {
+      var result = value.docs.map((e) => Product.fromDoc(e)).toList();
+      result.forEach((e) => response.add(e));
+    });
+
+    return response;
+  }
+
+  Future<List<Cogs>> getCogs() async {
+    var now = DateTime.now();
+
+    final timeStamp = dateTimetoTimeStamp(now.subtract(Duration(days: 32)));
+    double total = 0;
+
+    List<Cogs> response = [];
+    await _businessCollection
+        .doc(idDocument)
+        .collection('products')
+        .get()
+        .then((e) async {
+      for (var i = 0; i < e.docs.length; i++) {
+        await _businessCollection
+            .doc(idDocument)
+            .collection('products')
+            .doc(e.docs[i].id)
+            .collection('stockTransactions')
+            .where('type', isEqualTo: 'out')
+            .where('date', isGreaterThanOrEqualTo: timeStamp)
+            .get()
+            .then((value) async {
+          var result = value.docs.map((e) => Cogs.fromDoc(e)).toList();
+
+          result.forEach((e) => response.add(e));
+        });
+      }
+    });
+    return response;
+  }
+
+//
+
+  Future<double> getStockSales() async {
+    var now = DateTime.now();
+
+    final timeStamp = dateTimetoTimeStamp(now.subtract(Duration(days: 32)));
+    double total = 0;
+
+    await _businessCollection
+        .doc(idDocument)
+        .collection('orders')
+        .where('finishedAt', isGreaterThanOrEqualTo: timeStamp)
+        .get()
+        .then((value) {
+      value.docs.forEach((e) {
+        // print(e.data());
+        total += e.data()['total'];
+      });
+    });
+    return total;
+  }
+//   Future<List<dynamic>> getStockSales() async {
+//     sales() async {
+//       var now = DateTime.now();
+
+//       final timeStamp = dateTimetoTimeStamp(now.subtract(Duration(days: 32)));
+//       double total = 0;
+
+//       await _businessCollection
+//           .doc(idDocument)
+//           .collection('orders')
+//           .where('finishedAt', isGreaterThanOrEqualTo: timeStamp)
+//           .get()
+//           .then((value) {
+//         value.docs.forEach((e) {
+//           // print(e.data());
+//           total += e.data()['total'];
+//         });
+//       });
+//       return total;
+//     }
+
+//     try {
+//       List<dynamic> response = await Future.wait([sales()]);
+//       return response;
+//     } catch (e) {
+//       return Future.error(e);
+//     }
+//   }
 }
 
 @Riverpod()
@@ -180,7 +199,7 @@ class GetSalesReport<bool> extends _$GetSalesReport {
       });
       // response.forEach((element) => print(element.total));
 
-      print("response.length =========== ${response.length}");
+      // print("response.length =========== ${response.length}");
       state = response.isNotEmpty ? true : false;
       // return response.isNotEmpty ? true : false;
     } catch (e) {
@@ -250,7 +269,7 @@ class GetSalesReport<bool> extends _$GetSalesReport {
       });
       // response.forEach((element) => print(element.total));
 
-      print("response.length =========== ${response.length}");
+      // print("response.length =========== ${response.length}");
       state = response.isNotEmpty ? true : false;
       // return response.isNotEmpty ? true : false;
     } catch (e) {
@@ -280,10 +299,10 @@ class ProductListReports extends _$ProductListReports {
   @override
   List<Product> build() => state = [];
 
-  add(Product item) async {
-    // if (state.length < length) {
-    state = [...state, item];
-    // }
+  add(Product item, int length) async {
+    if (state.length < length) {
+      state = [...state, item];
+    }
     return state;
   }
 
@@ -295,10 +314,10 @@ class CogsReport extends _$CogsReport {
   @override
   List<Cogs> build() => state = [];
 
-  add(Cogs item) async {
-    // if (state.length < length) {
-    state = [...state, item];
-    // }
+  add(Cogs item, int length) async {
+    if (state.length < length) {
+      state = [...state, item];
+    }
     return state;
   }
 
@@ -325,14 +344,14 @@ class ProductSalesReport extends _$ProductSalesReport {
   @override
   List<ProductsSold> build() => state = [];
 
-  add(ProductsSold item) async {
-    // if (state.length < length) {
-    state = [...state, item];
-    // }
+  add(ProductsSold item, int length) async {
+    if (state.length < length) {
+      state = [...state, item];
+    }
     return state;
   }
 
-  void clear() => state = [];
+  void clear() => state.clear();
 }
 
 // @Riverpod()

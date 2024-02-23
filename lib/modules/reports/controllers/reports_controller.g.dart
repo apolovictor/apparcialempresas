@@ -6,7 +6,7 @@ part of 'reports_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$getSalesReportHash() => r'fae01888d93477fc50f1f7c93d2cbb54d58a663c';
+String _$getSalesReportHash() => r'34adb855aef9d96fdf6a640b0c7d36f93ff1868c';
 
 /// See also [GetSalesReport].
 @ProviderFor(GetSalesReport)
@@ -38,7 +38,7 @@ final salesListProvider =
 
 typedef _$SalesList = AutoDisposeNotifier<List<SalesModel>>;
 String _$productListReportsHash() =>
-    r'7ec6dabe2e0291ba01337c193b9352bab5cf090d';
+    r'b6270b3c9f7d36c10e747ad95d562ac81ebbeb7e';
 
 /// See also [ProductListReports].
 @ProviderFor(ProductListReports)
@@ -54,7 +54,7 @@ final productListReportsProvider =
 );
 
 typedef _$ProductListReports = AutoDisposeNotifier<List<Product>>;
-String _$cogsReportHash() => r'66c509f45cd04242a87a0fa35240b6a4b47e8ea6';
+String _$cogsReportHash() => r'88890145df3df5cf4fb6e93da5a47c94128b41a4';
 
 /// See also [CogsReport].
 @ProviderFor(CogsReport)
@@ -86,7 +86,7 @@ final totalSalesReportProvider =
 
 typedef _$TotalSalesReport = AutoDisposeNotifier<double>;
 String _$productSalesReportHash() =>
-    r'c67d4cefb1ca099a8d5224fd64e16b1c9f39edf9';
+    r'507bf16da73cff4796419051aec4b0e5d65b9d30';
 
 /// See also [ProductSalesReport].
 @ProviderFor(ProductSalesReport)

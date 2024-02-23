@@ -126,12 +126,14 @@ class Cogs {
 class ProductsSold {
   String productName;
   String productDocument;
+  String productCategory;
   double price;
   DateTime? date;
 
   ProductsSold({
     required this.productName,
     required this.productDocument,
+    required this.productCategory,
     required this.price,
     required this.date,
   });
@@ -140,8 +142,20 @@ class ProductsSold {
     return ProductsSold(
       productName: doc['productName'],
       productDocument: doc['productDocument'],
+      productCategory: doc['productCategory'],
       price: doc['price']!.toDouble(),
       date: timeStampToDate(doc['finishedAt']),
     );
   }
+}
+
+class CategoriesReportModel {
+  final double total;
+  final String productCategory;
+  final Color color;
+  CategoriesReportModel({
+    required this.total,
+    required this.productCategory,
+    required this.color,
+  });
 }

@@ -508,6 +508,7 @@ class RecentOrdersNotifier extends StreamNotifier<List<DashboardDetailOrders>> {
               .doc(productDocument)
               .collection('stockTransactions')
               .add({
+            'idDocument': productDocument,
             'date': FieldValue.serverTimestamp(),
             'type': 'out',
             'quantity': 1,
