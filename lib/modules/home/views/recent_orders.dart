@@ -35,14 +35,22 @@ class RecentOrdersState extends ConsumerState<RecentOrders> {
           for (var i = 0; i < widget.recentOrders.length; i++)
             Builder(builder: (context) {
               return LayoutBuilder(builder: (context, constraints) {
-                DateTime startAt = cacheProducts
-                    .firstWhere((ProductInServiceModel e) =>
-                        e.key == widget.recentOrders[i].id)
-                    .serviceStartedIn;
-                int avgServiceTime = cacheProducts
-                    .firstWhere((ProductInServiceModel e) =>
-                        e.key == widget.recentOrders[i].id)
-                    .avgServiceTime;
+                DateTime startAt = cacheProducts.any(
+                        (ProductInServiceModel e) =>
+                            e.key == widget.recentOrders[i].id)
+                    ? cacheProducts
+                        .firstWhere((ProductInServiceModel e) =>
+                            e.key == widget.recentOrders[i].id)
+                        .serviceStartedIn
+                    : widget.recentOrders[i].createdAt;
+                int avgServiceTime = cacheProducts.any(
+                        (ProductInServiceModel e) =>
+                            e.key == widget.recentOrders[i].id)
+                    ? cacheProducts
+                        .firstWhere((ProductInServiceModel e) =>
+                            e.key == widget.recentOrders[i].id)
+                        .avgServiceTime
+                    : widget.recentOrders[i].avgServiceTime;
 
                 var now = DateTime.now();
                 final difference = now.difference(startAt).inSeconds;
@@ -104,7 +112,7 @@ class _PeriodicTimerWidgetState extends State<PeriodicTimerWidget> {
   @override
   void initState() {
     super.initState();
-    const oneSecond = Duration(seconds: 1);
+    const oneSecond = Duration(milliseconds: 500);
     _periodicTimer = Timer.periodic(oneSecond, (Timer timer) {
       setState(() {
         widget.currentTime++;

@@ -20,6 +20,28 @@
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"
+        },
+        {
+            "name": "Android",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
+            "deviceId": "RX2W7010R8R"
+
+        },
+        {
+            "name": "web",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
+            "deviceId": "chrome"
+
+        }
+    ],
+    "compounds": [
+        {
+            "name": "All Devices (release mode)",
+            "configurations": ["Android", "web"],
         }
     ]
 }

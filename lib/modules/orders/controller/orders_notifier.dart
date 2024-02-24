@@ -96,6 +96,7 @@ class RegisterOrder extends ChangeNotifier {
               'productName': item.productName,
               'productPhoto': item.photo_url,
               'price': item.price,
+              'avgServiceTime': item.avgServiceTime ?? 0,
               'avgUnitPrice': item.avgUnitPrice,
               'createdAt': FieldValue.serverTimestamp(),
               'finishedAt': '',
