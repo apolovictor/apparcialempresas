@@ -180,6 +180,7 @@ class ActiveTableWidget extends HookConsumerWidget {
                         builder: (ctx,
                             AsyncSnapshot<List<DashboardDetailOrders>>
                                 snapshot) {
+                          print("snapshot.hasData == ${snapshot.hasData}");
                           if (!snapshot.hasData) {
                             return const Center(
                               child: CircularProgressIndicator(),

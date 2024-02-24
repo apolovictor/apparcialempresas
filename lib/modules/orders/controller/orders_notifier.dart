@@ -470,6 +470,9 @@ class RecentOrdersNotifier extends StreamNotifier<List<DashboardDetailOrders>> {
         DashboardDetailOrders detailOrdersTableBill =
             DashboardDetailOrders.fromDoc(doc);
 
+        print(
+            "detailOrdersTableBill == ${detailOrdersTableBill.avgServiceTime}");
+
         return detailOrdersTableBill;
       }).toList();
     });

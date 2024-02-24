@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:botecaria/modules/home/model/orders_model.dart';
+import 'package:botecaria/services/date_services.dart';
 import 'package:cached_firestorage/lib.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -42,7 +43,7 @@ class RecentOrdersState extends ConsumerState<RecentOrders> {
                         .firstWhere((ProductInServiceModel e) =>
                             e.key == widget.recentOrders[i].id)
                         .serviceStartedIn
-                    : widget.recentOrders[i].createdAt;
+                    : timeStampToDate(widget.recentOrders[i].createdAt);
                 int avgServiceTime = cacheProducts.any(
                         (ProductInServiceModel e) =>
                             e.key == widget.recentOrders[i].id)
@@ -54,8 +55,8 @@ class RecentOrdersState extends ConsumerState<RecentOrders> {
 
                 var now = DateTime.now();
                 final difference = now.difference(startAt).inSeconds;
-                print(difference);
-                print("constraints.maxWidth == ${constraints.maxWidth}");
+                // print(difference);
+                // print("constraints.maxWidth == ${constraints.maxWidth}");
                 return Container(
                     // margin: const EdgeInsets.only(bottom: 10),
                     padding: const EdgeInsets.all(10),
@@ -128,8 +129,8 @@ class _PeriodicTimerWidgetState extends State<PeriodicTimerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    print(
-        "widget.currentTime == ${widget.currentTime / widget.avgServiceTime}");
+    // print(
+    //     "widget.currentTime == ${widget.currentTime / widget.avgServiceTime}");
 
     //!! activate the shake function in the container to obtain atention of the user
     if (widget.currentTime / widget.avgServiceTime >= 1) {
@@ -152,7 +153,7 @@ class _PeriodicTimerWidgetState extends State<PeriodicTimerWidget> {
                 height: 75,
                 decoration: BoxDecoration(
                     color: color,
-                    borderRadius: BorderRadius.only(
+                    borderRadius: const BorderRadius.only(
                       topRight: Radius.circular(20.0),
                       bottomRight: Radius.circular(20.0),
                     )),
@@ -167,7 +168,7 @@ class _PeriodicTimerWidgetState extends State<PeriodicTimerWidget> {
                 height: 75,
                 decoration: BoxDecoration(
                     color: color2,
-                    borderRadius: BorderRadius.only(
+                    borderRadius: const BorderRadius.only(
                       topRight: Radius.circular(20.0),
                       bottomRight: Radius.circular(20.0),
                     )),
