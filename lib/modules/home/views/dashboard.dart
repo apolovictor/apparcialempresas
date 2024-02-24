@@ -3,6 +3,8 @@ import 'package:botecaria/modules/home/views/tables.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../cache/model/products_cache_model.dart';
+import '../../../cache/services.dart';
 import '../controller/product_notifier.dart';
 import 'ordered_list.dart';
 import 'product.dart';

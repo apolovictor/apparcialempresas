@@ -5,9 +5,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:equatable/equatable.dart';
 
+import '../../../cache/model/products_cache_model.dart';
+import '../../../cache/services.dart';
 import '../../home/controller/product_notifier.dart';
 import '../../home/model/orders_model.dart';
 import '../../home/model/tables_model.dart';
@@ -98,6 +101,11 @@ class RegisterOrder extends ChangeNotifier {
               'finishedAt': '',
               'status': 1
             });
+            ProductInServices().addProduct(
+                docRef.id,
+                ProductInServiceModel(
+                    serviceStartedIn: DateTime.now(),
+                    avgServiceTime: item.avgServiceTime ?? 0));
           }
           return true;
         } else {

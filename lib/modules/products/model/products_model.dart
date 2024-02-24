@@ -28,6 +28,7 @@ class Product {
   double? avgUnitPrice;
   String? description;
   String? logo;
+  int? avgServiceTime;
   int status;
   String? documentId;
 
@@ -41,6 +42,7 @@ class Product {
     this.avgUnitPrice,
     this.description,
     this.logo,
+    this.avgServiceTime,
     required this.status,
     this.documentId,
   });
@@ -56,6 +58,7 @@ class Product {
       'avgUnitPrice': avgUnitPrice,
       'description': description,
       'photo_url': logo,
+      'avgServiceTime': avgServiceTime,
       'status': status,
       'documentId': documentId,
     };
@@ -72,6 +75,7 @@ class Product {
       avgUnitPrice: doc.data()!['avgUnitPrice'].toDouble(),
       description: doc.data()!['description'],
       logo: doc.data()!['photo_url'],
+      avgServiceTime: doc.data()!['avgServiceTime'],
       status: doc.data()!['status'],
       documentId: doc.id,
     );

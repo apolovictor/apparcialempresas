@@ -12,6 +12,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
+import 'cache/model/products_cache_model.dart';
 import 'constants/route_names.dart';
 import 'firebase_options.dart';
 import 'modules/home/controller/home_notifier.dart';
@@ -23,11 +24,20 @@ import 'modules/products/views/home_products_impl.dart';
 import 'modules/products/views/product_details_impl.dart';
 import 'modules/reports/views/home_reports_impl.dart';
 import 'modules/routes/widgets/app_route_observer.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 Future main() async {
   CachedNetworkImage.logLevel = CacheManagerLogLevel.debug;
   // CachedNetworkImage.logLevel = CacheManagerLogLevel.verbose;
   WidgetsFlutterBinding.ensureInitialized();
+  //Initialize Hive
+  await Hive.initFlutter();
+
+  // Registering the adapter
+  Hive.registerAdapter(ProductInServiceModelAdapter());
+
+  //Open Hive Box for Key-value entries
+  await Hive.openBox<ProductInServiceModel>('productsInService');
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,

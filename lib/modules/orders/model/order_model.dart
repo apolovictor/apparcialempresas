@@ -6,6 +6,7 @@ class OrderItem {
   final String productName;
   final String? photo_url;
   final double price;
+  final int? avgServiceTime;
   final double avgUnitPrice;
   final int quantity;
   final bool isUnavailble;
@@ -15,6 +16,7 @@ class OrderItem {
     required this.productName,
     this.photo_url,
     required this.price,
+    this.avgServiceTime,
     required this.avgUnitPrice,
     required this.quantity,
     required this.isUnavailble,
@@ -49,6 +51,7 @@ class OrderItem {
       productName: doc.data()['productName'],
       photo_url: doc.data()['photo_url'],
       price: doc.data()['price'],
+      avgServiceTime: doc.data()['avgServiceTime'],
       avgUnitPrice: doc.data()['avgUnitPrice'],
       quantity: doc.data()['quantity'],
       isUnavailble: doc.data()['isUnavailble'],

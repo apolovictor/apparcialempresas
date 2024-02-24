@@ -394,6 +394,10 @@ class _ProductListState extends ConsumerState<ProductList> {
                                                               index]
                                                           .price
                                                           .price,
+                                                      avgServiceTime:
+                                                          _productDashboard[
+                                                                  index]
+                                                              .avgServiceTime,
                                                       avgUnitPrice:
                                                           _productDashboard[
                                                                   index]
