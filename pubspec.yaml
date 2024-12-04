@@ -35,10 +35,10 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-  cloud_firestore: ^4.9.3
-  firebase_core: ^2.17.0
+  cloud_firestore: ^5.5.0
+  firebase_core: ^3.8.0
   hooks_riverpod: ^2.4.3
-  firebase_storage: ^11.2.8
+  firebase_storage: ^12.3.6
   flutter_svg: ^2.0.7
   googleapis_auth: ^1.4.1
   gcloud: ^0.8.11
@@ -46,20 +46,20 @@ dependencies:
   flutter_staggered_animations: ^1.1.1
   flutter_hooks: ^0.20.3
   flutter_sequence_animation: ^4.0.0
-  cached_firestorage: ^0.2.0
+  cached_firestorage: ^0.3.0
   flutter_cache_manager: ^3.3.1
   fluttertoast: ^8.2.4
   image_picker: ^1.0.4
-  camera: ^0.10.5+5
+  camera: ^0.11.0+2
   universal_html: ^2.2.4
-  currency_text_input_formatter: ^2.1.13
+  currency_text_input_formatter: ^2.2.3
   equatable: ^2.0.5
   intl: ^0.19.0
   dotted_border: ^2.1.0
   collection: ^1.17.2
   riverpod_annotation: ^2.3.4
   flutter_riverpod: ^2.4.10
-  firebase_app_check: ^0.2.1+13
+  firebase_app_check: ^0.3.1+6
   tuple: ^2.0.2
   touchable: ^1.0.2
   hive_flutter: ^1.1.0
@@ -74,7 +74,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^3.0.1
+  flutter_lints: ^4.0.0
   riverpod_generator: ^2.3.11
   build_runner: ^2.4.8
 

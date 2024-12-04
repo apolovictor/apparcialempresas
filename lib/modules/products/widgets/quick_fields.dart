@@ -8,7 +8,7 @@ Widget fieldWidget(TextEditingController controller, String fieldName,
           fieldName == 'Preço Unitário'
       ? TextFormField(
           inputFormatters: [
-              CurrencyTextInputFormatter(
+              CurrencyTextInputFormatter.currency(
                   locale: 'pt_Br', symbol: 'R\$', decimalDigits: 2)
             ],
           controller: controller,

@@ -68,13 +68,13 @@ final filteredProductsProvider =
       : products;
 });
 
-@Riverpod(keepAlive: true)
+@Riverpod(keepAlive: false)
 class PictureProductList extends _$PictureProductList {
   @override
   List<RemotePicture> build() => state = [];
 
-  add(RemotePicture img, int length) async {
-    if (state.length < length) {
+  add(RemotePicture img) async {
+    if (!state.any((e) => e.mapKey == img.mapKey)) {
       state = [...state, img];
     }
     return state;
@@ -97,6 +97,7 @@ class PictureProductListAndroid extends _$PictureProductListAndroid {
   add(String imgId, int length) async {
     // final storage = FirebaseStorage.instance;
     // var storageReference = storage.ref('products/$imgId');
+
     Stream<FileResponse>? fileStream;
 
     fileStream = DefaultCacheManager().getFileStream(
@@ -216,6 +217,21 @@ class ProductNotifier extends StreamNotifier<List<Product>> {
         loading: (e) {});
   }
 }
+
+final productsStreamProvider =
+    StreamProvider.autoDispose<List<Product>>((ref) => _businessCollection
+            .doc(ref.watch(idDocumentNotifier))
+            .collection("products")
+
+            // .where('status', isEqualTo: ref.watch(statusNotifier))
+            .snapshots()
+            .map((snapshot) {
+          return snapshot.docs.map((doc) {
+            Product product = Product.fromDoc(doc);
+
+            return product;
+          }).toList();
+        }));
 
 class IsCategoriesOpeneNotifier extends StateNotifier<bool> {
   IsCategoriesOpeneNotifier() : super(isOpened);

@@ -13,14 +13,14 @@ class RegisterProduct extends ChangeNotifier {
   static String idDocument = "bandiis";
 
   Future<bool> registerProduct(
-      String productName,
-      Map<String, double> productPrice,
-      int productQuantity,
-      String color,
-      String secondaryColor,
-      String category,
-      MemoryImage imgProduct,
-      WidgetRef ref) async {
+    String productName,
+    Map<String, double> productPrice,
+    int productQuantity,
+    String color,
+    String secondaryColor,
+    String category,
+    Uint8List imgBytes, // Accept Uint8List directly
+  ) async {
     final businessCollection = _firestore.collection('business');
 
     try {
@@ -35,6 +35,7 @@ class RegisterProduct extends ChangeNotifier {
         'name': productName,
         'categories': category,
         'price': productPrice,
+        // 'avgUnitPrice': 0,
         'quantity': productQuantity,
         'color': color,
         'secondaryColor': secondaryColor,
@@ -42,20 +43,21 @@ class RegisterProduct extends ChangeNotifier {
         'status': 1
       }).then((product) async {
         var storageReference = storage.ref('products/${product.id}');
-        TaskSnapshot result = await storageReference.putData(
-            imgProduct.bytes, SettableMetadata(contentType: 'image/png'));
+        await storageReference
+            .putData(imgBytes, SettableMetadata(contentType: 'image/png'))
+            .then((updateProduct) async {
+          var imageProduct = await updateProduct.ref.getMetadata();
+
+          print('imageProduct.name ===== ${imageProduct.name}   ');
+          if (imageProduct.name.isNotEmpty) {
+            await businessCollection
+                .doc(idDocument)
+                .collection("products")
+                .doc(product.id)
+                .update(<String, String>{'photo_url': imageProduct.name});
+          }
+        });
         // String imageUri = await result.ref.getDownloadURL();
-        var imageProduct = await result.ref.getMetadata();
-        if (imageProduct.name.isNotEmpty) {
-          ref
-              .read(lastProductNotifier.notifier)
-              .lastProductingImg(imageProduct.name);
-          await businessCollection
-              .doc(idDocument)
-              .collection("products")
-              .doc(product.id)
-              .update(<String, String>{'photo_url': imageProduct.name});
-        }
       });
 
       return true;

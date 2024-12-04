@@ -22,32 +22,47 @@ class ProductCardImage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     double height = MediaQuery.of(context).size.height;
-    useValueChanged(ref.watch(isReloagingImgNotifier), (_, __) async {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        // if (filter['category'].isEmpty) {
-        // List<Product>? products = ref.watch(productProvider).value;
-        // if (products != null) {
-        //   ref.read(pictureProductListProvider.notifier).clear();
-        //   for (var i = 0; i < products.length; i++) {
-        //     WidgetsBinding.instance.addPostFrameCallback((_) {
-        //       ref.read(pictureProductListProvider.notifier).fetchPictureList(
-        //           RemotePicture(
-        //             mapKey: product.logo!,
-        //             imagePath:
-        //                 'gs://appparcial-123.appspot.com/products/${product.logo!}',
-        //           ),
-        //           products.length);
-        //     });
-        //   }
-        // }
-        ref.read(isReloagingImgNotifier.notifier).isReloadingImg(false);
-        ref.read(lastProductNotifier.notifier).clearLastProduct();
-      });
-    });
+    // useValueChanged(ref.watch(isReloagingImgNotifier), (_, __) async {
+    //   WidgetsBinding.instance.addPostFrameCallback((_) {
+    //     // if (filter['category'].isEmpty) {
+    //     List<Product>? products = ref.watch(productProvider).value;
+    //     if (products != null) {
+    //       print("products.length useValueChanged ==== ${products.length}");
+    //       // ref.read(pictureProductListProvider.notifier).clear();
+    //       for (var i = 0; i < products.length; i++) {
+    //         WidgetsBinding.instance.addPostFrameCallback((_) {
+    //           ref.read(pictureProductListProvider.notifier).add(
+    //               RemotePicture(
+    //                 mapKey: product.logo!,
+    //                 imagePath:
+    //                     'gs://appparcial-123.appspot.com/products/${product.logo!}',
+    //               ),
+    //               products.length);
+    //         });
+    //       }
+    //     }
+    //     ref.read(isReloagingImgNotifier.notifier).isReloadingImg(false);
+    //     // ref.read(lastProductNotifier.notifier).clearLastProduct();
+    //   });
+    // });
 
     List<dynamic> cachePictures = kIsWeb
         ? ref.watch(pictureProductListProvider)
         : ref.watch(pictureProductListAndroidProvider);
+
+    print("cachePictures ===== ${cachePictures.length}");
+    // print("product.logo ===== ${product.logo}");
+
+    if (kIsWeb) {
+      cachePictures.forEach((e) {
+        if (e.mapKey == product.logo) {
+          print(
+              '${product.name} e.mapKey: ${e.mapKey} ===== product.logo: ${product.logo}');
+        } else {
+          print('${product.name}: ${e.mapKey}');
+        }
+      });
+    }
 
     return kIsWeb
         ? cachePictures.any(<RemotePicture>(e) => e.mapKey == product.logo)

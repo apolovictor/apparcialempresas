@@ -25,6 +25,8 @@ class ProductsList extends HookConsumerWidget {
     AsyncValue<List<Product>> filteredProducts =
         ref.watch(filteredProductsProvider(products ?? []));
 
+    // print("products ==== ${products?.length}");
+
     // useValueChanged(filter, (_, __) async {
     //   // WidgetsBinding.instance.addPostFrameCallback((_) {
     //   ref.read(filteredProductListProvider.notifier).fetchFilteredList(products!
@@ -80,6 +82,8 @@ class ProductsList extends HookConsumerWidget {
               childDelegate: ListWheelChildLoopingListDelegate(
                 children: filteredProducts.when(
                   data: (List<Product> data) {
+                    print("data ==== ${data.length}");
+
                     return
                         //  filter['category'].isNotEmpty
                         //     ?
@@ -92,10 +96,10 @@ class ProductsList extends HookConsumerWidget {
                                       product: data[index],
                                     ));
                               })
-                            : [SizedBox()];
+                            : [const SizedBox()];
                   },
                   error: (err, stack) => [Text('Error: $err')],
-                  loading: () => [CircularProgressIndicator()],
+                  loading: () => [const CircularProgressIndicator()],
                 ),
               ),
               itemExtent: itemWidth,

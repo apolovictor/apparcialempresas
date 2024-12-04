@@ -43,6 +43,8 @@ Future main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  initializeDateFormatting('pt_BR');
+
   // await FirebaseAppCheck.instance.activate(
   //   androidProvider: AndroidProvider.debug,
   // );
@@ -58,136 +60,61 @@ class MyApp extends ConsumerWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    List<Product>? products = ref.watch(productProvider).value;
-    final categories = ref.watch(categoriesNotifier).value;
-    if (categories != null) {
-      for (var i = 0; i < categories.length; i++) {
-        // print("categories[i].documentId === ${categories[i].documentId}");
-      }
-    }
-    if (kIsWeb) {
-      if (products != null) {
-        WidgetsBinding.instance.addPostFrameCallback((_) async {
-          for (var index = 0; index < products.length; index++) {
-            await ref.read(pictureProductListProvider.notifier).add(
-                  RemotePicture(
-                    mapKey: products[index].logo!,
-                    imagePath:
-                        'gs://appparcial-123.appspot.com/products/${products[index].logo!}',
-                  ),
-                  products.length,
-                );
-          }
-        });
-      }
-      if (categories != null) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          for (var i = 0; i < categories.length; i++) {
-            print("categories[i].documentId === ${categories[i].documentId}");
-            ref.read(pictureCategoryListProvider.notifier).add(
-                RemotePicture(
-                  mapKey: categories[i].documentId,
-                  imagePath:
-                      'gs://appparcial-123.appspot.com/categories_icons/${categories[i].documentId}.png',
-                ),
-                categories.length);
-          }
-        });
-      }
-      // running on the web!
-      initializeDateFormatting('pt_BR');
-    } else {
-      if (Platform.isAndroid) {
-        if (products != null) {
-          WidgetsBinding.instance.addPostFrameCallback((_) async {
-            for (var index = 0; index < products.length; index++) {
-              await ref.read(pictureProductListAndroidProvider.notifier).add(
-                    products[index].logo!,
-                    products.length,
-                  );
-            }
-          });
-        }
-
-        if (categories != null) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            for (var i = 0; i < categories.length; i++) {
-              ref
-                  .read(pictureCategoriesListAndroidProvider.notifier)
-                  .add(categories[i].documentId, categories.length);
-            }
-          });
-        }
-        // NOT running on the web! You can check for additional platforms here.
-        // Intl.defaultLocale = 'pt_BR';
-        initializeDateFormatting('pt_BR');
-      }
-    }
-    List<dynamic> cachePictures = kIsWeb
-        ? ref.watch(pictureProductListProvider)
-        : ref.watch(pictureProductListAndroidProvider);
-
     // print("cachePictures.length === ${cachePictures.length}");
 
     // cachePictures.forEach(<FileResponse>(element) {
     //   print(elemen);
     // });
 
-    return products != null
-        ? cachePictures.length == products.length
-            ?
-            // ? MaterialApp(title: ' Loaded')
-            MaterialApp(
-                title: ref.watch(responseProvider("bandiis")).when(
-                    data: (dataResponse) => dataResponse.name,
-                    error: (err, stack) => err.toString(),
-                    loading: () => ""),
-                debugShowCheckedModeBanner: false,
-                theme: ThemeData(
-                  appBarTheme: const AppBarTheme(
-                    color: Colors.white,
-                    titleTextStyle: TextStyle(color: Colors.black87),
-                  ),
+    return
+        // ? MaterialApp(title: ' Loaded')
+        MaterialApp(
+      title: ref.watch(responseProvider("bandiis")).when(
+          data: (dataResponse) => dataResponse.name,
+          error: (err, stack) => err.toString(),
+          loading: () => ""),
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        appBarTheme: const AppBarTheme(
+          color: Colors.white,
+          titleTextStyle: TextStyle(color: Colors.black87),
+        ),
+        fontFamily: 'HelveticaNeue',
+        primaryColor: Colors.white,
+        colorScheme: ThemeData().colorScheme.copyWith(
+            secondary: const Color(0xFF181818), background: Colors.white),
+        textTheme: ThemeData().textTheme.copyWith(
+              bodySmall: const TextStyle(
+                  fontSize: 12,
                   fontFamily: 'HelveticaNeue',
-                  primaryColor: Colors.white,
-                  colorScheme: ThemeData().colorScheme.copyWith(
-                      secondary: const Color(0xFF181818),
-                      background: Colors.white),
-                  textTheme: ThemeData().textTheme.copyWith(
-                        bodySmall: const TextStyle(
-                            fontSize: 12,
-                            fontFamily: 'HelveticaNeue',
-                            fontWeight: FontWeight.w100),
-                        bodyMedium: const TextStyle(
-                            fontSize: 14,
-                            fontFamily: 'HelveticaNeue',
-                            fontWeight: FontWeight.w400),
-                        bodyLarge: const TextStyle(
-                            fontSize: 22,
-                            fontFamily: 'HelveticaNeue',
-                            fontWeight: FontWeight.w800),
-                      ),
-                  pageTransitionsTheme: PageTransitionsTheme(
-                    // makes all platforms that can run Flutter apps display routes without any animation
-                    builders: Map<TargetPlatform,
-                            _InanimatePageTransitionsBuilder>.fromIterable(
-                        TargetPlatform.values.toList(),
-                        key: (dynamic k) => k,
-                        value: (dynamic _) =>
-                            const _InanimatePageTransitionsBuilder()),
-                  ),
-                ),
-                initialRoute: RouteNames.home,
-                navigatorObservers: [AppRouteObserver()],
-                routes: {
-                  RouteNames.home: (_) => const HomeDashboard(),
-                  RouteNames.products: (_) => const HomeProducts(),
-                  RouteNames.productDetails: (_) => ProductDetails(),
-                  RouteNames.reports: (_) => const ReportsDashboard(),
-                },
-              )
-            : const MaterialApp()
-        : const MaterialApp();
+                  fontWeight: FontWeight.w100),
+              bodyMedium: const TextStyle(
+                  fontSize: 14,
+                  fontFamily: 'HelveticaNeue',
+                  fontWeight: FontWeight.w400),
+              bodyLarge: const TextStyle(
+                  fontSize: 22,
+                  fontFamily: 'HelveticaNeue',
+                  fontWeight: FontWeight.w800),
+            ),
+        pageTransitionsTheme: PageTransitionsTheme(
+          // makes all platforms that can run Flutter apps display routes without any animation
+          builders: Map<TargetPlatform,
+                  _InanimatePageTransitionsBuilder>.fromIterable(
+              TargetPlatform.values.toList(),
+              key: (dynamic k) => k,
+              value: (dynamic _) => const _InanimatePageTransitionsBuilder()),
+        ),
+      ),
+      initialRoute: RouteNames.home,
+      navigatorObservers: [AppRouteObserver()],
+      routes: {
+        RouteNames.home: (_) => const HomeDashboard(),
+        RouteNames.products: (_) => const HomeProducts(),
+        RouteNames.productDetails: (_) => ProductDetails(),
+        RouteNames.reports: (_) => const ReportsDashboard(),
+      },
+    );
   }
 }
 

@@ -56,69 +56,71 @@ class RegisterButton extends HookConsumerWidget {
 
                 return;
               } else {
-                final result = await ref
+                final imgBytes = await imgConverted.bytes; // Get bytes here
+
+                await ref
                     .read(registerProductProvider)
                     .registerProduct(
-                        ref.watch(addProductNameProvider).text,
-                        {
-                          'price': double.parse(ref
-                              .watch(addProductPriceProvider)
-                              .text
-                              .replaceAll(',', '.')
-                              .replaceAll('R\$', '')),
-                          'promo':
-                              ref.watch(addProductPromoProvider).text.isEmpty
-                                  ? 0
-                                  : double.parse(ref
-                                      .watch(addProductPromoProvider)
-                                      .text
-                                      .replaceAll(',', '.')
-                                      .replaceAll('R\$', ''))
-                        },
-                        int.parse(ref.watch(addProductQuantityProvider).text),
-                        categories!
-                            .firstWhere((e) => e.documentId == category)
-                            .color!,
-                        categories
-                            .firstWhere((e) => e.documentId == category)
-                            .secondaryColor!,
-                        category,
-                        imgConverted,
-                        ref);
+                      ref.watch(addProductNameProvider).text,
+                      {
+                        'price': double.parse(ref
+                            .watch(addProductPriceProvider)
+                            .text
+                            .replaceAll(',', '.')
+                            .replaceAll('R\$', '')),
+                        'promo': ref.watch(addProductPromoProvider).text.isEmpty
+                            ? 0
+                            : double.parse(ref
+                                .watch(addProductPromoProvider)
+                                .text
+                                .replaceAll(',', '.')
+                                .replaceAll('R\$', ''))
+                      },
+                      int.parse(ref.watch(addProductQuantityProvider).text),
+                      categories!
+                          .firstWhere((e) => e.documentId == category)
+                          .color!,
+                      categories
+                          .firstWhere((e) => e.documentId == category)
+                          .secondaryColor!,
+                      category,
+                      imgBytes,
+                    )
+                    .then((result) {
+                  if (result) {
+                    ref.read(addProductNameProvider.notifier).clear();
+                    ref.read(addProductPriceProvider.notifier).clear();
+                    ref.read(addProductQuantityProvider.notifier).clear();
 
-                if (result) {
-                  ref.read(addProductNameProvider.notifier).clear();
-                  ref.read(addProductPriceProvider.notifier).clear();
-                  ref.read(addProductQuantityProvider.notifier).clear();
+                    ref.read(categoryProductNotifier.notifier).clear();
+                    ref.read(imgFileProvider.notifier).clear();
+                    ref.read(imgConvertedProvider.notifier).clear();
+                    ref
+                        .read(isReloagingImgNotifier.notifier)
+                        .isReloadingImg(true);
+                    ref.read(isProductsOpenedProvider.notifier).fetch(false);
+                    WidgetsBinding.instance.addPostFrameCallback((_) async {});
 
-                  ref.read(isProductsOpenedProvider.notifier).fetch(false);
-                  ref.read(categoryProductNotifier.notifier).clear();
-                  ref.read(imgFileProvider.notifier).clear();
-                  ref.read(imgConvertedProvider.notifier).clear();
-
-                  ref
-                      .read(isReloagingImgNotifier.notifier)
-                      .isReloadingImg(true);
-
-                  Fluttertoast.showToast(
-                      msg: "Produto cadastrado com sucesso!",
+                    Fluttertoast.showToast(
+                        msg: "Produto cadastrado com sucesso!",
+                        toastLength: Toast.LENGTH_LONG,
+                        gravity: ToastGravity.TOP,
+                        timeInSecForIosWeb: 3,
+                        webBgColor: '#151515',
+                        textColor: Colors.white,
+                        fontSize: 18.0);
+                  } else {
+                    Fluttertoast.showToast(
+                      msg: result.toString(),
                       toastLength: Toast.LENGTH_LONG,
                       gravity: ToastGravity.TOP,
                       timeInSecForIosWeb: 3,
                       webBgColor: '#151515',
                       textColor: Colors.white,
-                      fontSize: 18.0);
-                } else {
-                  Fluttertoast.showToast(
-                    msg: result.toString(),
-                    toastLength: Toast.LENGTH_LONG,
-                    gravity: ToastGravity.TOP,
-                    timeInSecForIosWeb: 3,
-                    webBgColor: '#151515',
-                    textColor: Colors.white,
-                    fontSize: 18.0,
-                  );
-                }
+                      fontSize: 18.0,
+                    );
+                  }
+                });
               }
             }),
       ),

@@ -30,7 +30,7 @@ class ReportScreen extends HookConsumerWidget {
       final List<Cogs> stateCogsList = ref.watch(cogsReportProvider);
       List<CategoriesReportModel> categoriesReport = [];
 
-      categoriesReport.clear();
+      // categoriesReport.clear();
 
       Future.wait([
         firestoreProductsSold.then((value) {
@@ -124,6 +124,7 @@ class ReportScreen extends HookConsumerWidget {
               height: height * 0.37,
               width: width * 0.42,
               child: LayoutBuilder(builder: (context, constraints) {
+                // return SizedBox();
                 return categoriesReport.isNotEmpty
                     ? NightingaleChart(
                         width: constraints.maxWidth,

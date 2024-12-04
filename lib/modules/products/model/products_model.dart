@@ -72,7 +72,9 @@ class Product {
       name: doc.data()!['name'],
       price: Price.fromDoc(doc.data()!['price']),
       quantity: doc.data()!['quantity'].toDouble(),
-      avgUnitPrice: doc.data()!['avgUnitPrice'].toDouble(),
+      avgUnitPrice: doc.data()?['avgUnitPrice'] == null
+          ? doc.data()!['price']['price']
+          : doc.data()!['avgUnitPrice'].toDouble(),
       description: doc.data()!['description'],
       logo: doc.data()!['photo_url'],
       avgServiceTime: doc.data()!['avgServiceTime'],
