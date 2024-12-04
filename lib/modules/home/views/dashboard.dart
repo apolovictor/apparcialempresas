@@ -33,8 +33,8 @@ class Dashboard extends HookConsumerWidget {
               // color: Colors.grey[900],
               height: height * 0.27,
               width: width * 0.42,
-              child: const SizedBox(),
-              // child: const Overview(),
+              // child: const SizedBox(),
+              child: const Overview(),
             ),
           ),
           Align(
