@@ -53,34 +53,71 @@ class StockSales extends ChangeNotifier {
     return response;
   }
 
+  // Future<List<Cogs>> getCogs() async {
+  //   var now = DateTime.now();
+
+  //   final timeStamp = dateTimetoTimeStamp(now.subtract(Duration(days: 32)));
+  //   double total = 0;
+
+  //   List<Cogs> response = [];
+  //   await _businessCollection
+  //       .doc(idDocument)
+  //       .collection('products')
+  //       .get()
+  //       .then((e) async {
+  //     for (var i = 0; i < e.docs.length; i++) {
+  //       await _businessCollection
+  //           .doc(idDocument)
+  //           .collection('products')
+  //           .doc(e.docs[i].id)
+  //           .collection('stockTransactions')
+  //           .where('type', isEqualTo: 'out')
+  //           .where('date', isGreaterThanOrEqualTo: timeStamp)
+  //           .get()
+  //           .then((value) async {
+  //         var result = value.docs.map((e) => Cogs.fromDoc(e)).toList();
+
+  //         result.forEach((e) => response.add(e));
+  //       });
+  //     }
+  //   });
+  //   return response;
+  // }
+
   Future<List<Cogs>> getCogs() async {
     var now = DateTime.now();
 
-    final timeStamp = dateTimetoTimeStamp(now.subtract(Duration(days: 32)));
-    double total = 0;
+    final timeStamp =
+        dateTimetoTimeStamp(now.subtract(const Duration(days: 32)));
 
     List<Cogs> response = [];
-    await _businessCollection
-        .doc(idDocument)
-        .collection('products')
-        .get()
-        .then((e) async {
-      for (var i = 0; i < e.docs.length; i++) {
-        await _businessCollection
-            .doc(idDocument)
-            .collection('products')
-            .doc(e.docs[i].id)
-            .collection('stockTransactions')
+    final productsSnapshot =
+        await _businessCollection.doc(idDocument).collection('products').get();
+
+    for (var productDoc in productsSnapshot.docs) {
+      final stockTransactionsCollection = _businessCollection
+          .doc(idDocument)
+          .collection('products')
+          .doc(productDoc.id)
+          .collection('stockTransactions');
+
+      try {
+        final stockTransactionsSnapshot = await stockTransactionsCollection
             .where('type', isEqualTo: 'out')
             .where('date', isGreaterThanOrEqualTo: timeStamp)
-            .get()
-            .then((value) async {
-          var result = value.docs.map((e) => Cogs.fromDoc(e)).toList();
-
-          result.forEach((e) => response.add(e));
-        });
+            .get();
+        var result =
+            stockTransactionsSnapshot.docs.map((e) => Cogs.fromDoc(e)).toList();
+        response.addAll(result); // More efficient than individual adds
+      } catch (e) {
+        //The collection stockTransactions doesn't exist
+        print(
+            "Error getting stock transactions for product ${productDoc.id}: $e");
+        //Handle the error appropriately (e.g., log it, return an empty list, etc.)
+        //If the collection not exist. Don't show to the user this product.
+        continue; //Skip to the next product
       }
-    });
+    }
     return response;
   }
 

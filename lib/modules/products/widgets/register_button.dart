@@ -84,6 +84,11 @@ class RegisterButton extends HookConsumerWidget {
                           .firstWhere((e) => e.documentId == category)
                           .secondaryColor!,
                       category,
+                      double.parse(ref
+                          .watch(addProductUnityPriceProvider)
+                          .text
+                          .replaceAll(',', '.')
+                          .replaceAll('R\$', '')),
                       imgBytes,
                     )
                     .then((result) {

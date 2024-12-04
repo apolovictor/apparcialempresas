@@ -101,24 +101,32 @@ class Price {
 }
 
 class Cogs {
-  double unitPrice;
-  DateTime? date;
-  int quantity;
-  String idDocument;
+  double unitPrice; // Now nullable
+  DateTime? date; // Already nullable
+  int quantity; // Now nullable
+  String? idDocument; // Now nullable
 
   Cogs({
-    required this.unitPrice,
-    required this.date,
-    required this.quantity,
-    required this.idDocument,
+    required this.unitPrice, // Nullable
+    this.date, // Nullable
+    required this.quantity, // Nullable
+    this.idDocument, // Nullable
   });
 
   static Cogs fromDoc(DocumentSnapshot<Map<String, dynamic>> doc) {
     return Cogs(
-      unitPrice: doc['unitPrice']!.toDouble(),
-      date: timeStampToDate(doc['date']),
-      quantity: doc['quantity'],
-      idDocument: doc['idDocument'],
+      unitPrice: doc.get('unitPrice') != null
+          ? (doc.get('unitPrice') as num).toDouble()
+          : 0, // Safe conversion
+      date: doc.get('date') != null
+          ? timeStampToDate(doc.get('date') as Timestamp)
+          : null, //Safe conversion for date
+      quantity: doc.get('quantity') != null
+          ? doc.get('quantity') as int
+          : 0, //Safe conversion
+      idDocument: doc.get('idDocument') != null
+          ? doc.get('idDocument') as String
+          : null, // Safe conversion
     );
   }
 }

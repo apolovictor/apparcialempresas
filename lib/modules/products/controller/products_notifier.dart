@@ -400,6 +400,21 @@ class AddProductQuantityController
   }
 }
 
+class AddProductUnityPriceController
+    extends StateNotifier<TextEditingController> {
+  AddProductUnityPriceController() : super(productUnityPrice);
+  static TextEditingController productUnityPrice = TextEditingController();
+
+  fetchProductUnityPrice(TextEditingController productUnityPrice) {
+    state = productUnityPrice;
+    return state;
+  }
+
+  clear() {
+    state.clear();
+  }
+}
+
 final productNameProvider =
     StateNotifierProvider<ProductNameController, TextEditingController>(
         (ref) => ProductNameController());
@@ -427,6 +442,9 @@ final addProductPromoProvider =
 final addProductQuantityProvider =
     StateNotifierProvider<AddProductQuantityController, TextEditingController>(
         (ref) => AddProductQuantityController());
+final addProductUnityPriceProvider = StateNotifierProvider<
+    AddProductUnityPriceController,
+    TextEditingController>((ref) => AddProductUnityPriceController());
 final isProductsOpenedProvider =
     StateNotifierProvider<IsCProductDetailOpeneNotifier, bool>(
         (ref) => IsCProductDetailOpeneNotifier());

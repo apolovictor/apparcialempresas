@@ -12,6 +12,7 @@ import '../../routes/controller/routes_controller.dart';
 import '../controller/product_register.dart';
 import '../controller/products_notifier.dart';
 import '../services/services.dart';
+import '../widgets/quick_fields.dart';
 import '../widgets/register_button.dart';
 import '../widgets/register_fields.dart';
 import '../widgets/register_soft_control.dart';
@@ -37,6 +38,8 @@ class ProductAdd extends HookConsumerWidget {
         ref.watch(addProductPriceProvider);
     final TextEditingController productQuantityController =
         ref.watch(addProductQuantityProvider);
+    final TextEditingController productUnitPriceController =
+        ref.watch(addProductUnityPriceProvider);
     final imgConverted = ref.watch(imgConvertedProvider);
 
     productNameController.addListener(() {
@@ -53,6 +56,11 @@ class ProductAdd extends HookConsumerWidget {
       ref
           .read(addProductQuantityProvider.notifier)
           .fetchProductQuantity(productQuantityController);
+    });
+    productUnitPriceController.addListener(() {
+      ref
+          .read(addProductUnityPriceProvider.notifier)
+          .fetchProductUnityPrice(productUnitPriceController);
     });
 
     AnimationController registerController =
@@ -342,15 +350,18 @@ class ProductAdd extends HookConsumerWidget {
                                         ),
                                       )
                                     : const SizedBox(),
-                                const SizedBox(height: 50),
+                                const SizedBox(height: 40),
                                 registerFieldWidget(
                                     productNameController, "Nome", context),
-                                const SizedBox(height: 50),
+                                const SizedBox(height: 40),
                                 registerFieldWidget(
                                     productPriceController, "Preço", context),
-                                const SizedBox(height: 50),
+                                const SizedBox(height: 40),
                                 registerFieldWidget(productQuantityController,
-                                    "Quantidade", context),
+                                    "Quantidade (Estoque)", context),
+                                const SizedBox(height: 40),
+                                registerFieldWidget(productUnitPriceController,
+                                    "Preço Unitário", context),
                               ],
                             ),
                           ),

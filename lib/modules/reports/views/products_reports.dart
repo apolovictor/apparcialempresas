@@ -274,7 +274,7 @@ class Bar extends StatefulHookConsumerWidget {
   final GlobalKey stickKey;
   final Product product;
   final int index;
-  final Map<String, List<Cogs>> newMapCogs;
+  final Map<String?, List<Cogs>> newMapCogs;
   final Map<String, List<ProductsSold>> newMapProductSales;
 
   @override
@@ -289,7 +289,7 @@ class _BarsState extends ConsumerState<Bar> with OverLayStateMixin {
               .value
               .fold(0.0, (prev, element) {
               // print(element.idDocument);
-              return prev + (element.unitPrice * element.quantity);
+              return prev + (element.unitPrice ?? 0 * element.quantity ?? 0);
             })
           : 0.0;
   double get productSalesAmount => widget.newMapProductSales.entries

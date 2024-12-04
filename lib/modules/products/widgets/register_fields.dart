@@ -7,7 +7,7 @@ Widget registerFieldWidget(
   String fieldName,
   BuildContext context,
 ) {
-  return fieldName == "Preço"
+  return fieldName == "Preço" || fieldName == "Preço Unitário"
       ? TextFormField(
           inputFormatters: [
               CurrencyTextInputFormatter.currency(
