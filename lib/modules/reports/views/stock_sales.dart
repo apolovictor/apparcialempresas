@@ -97,7 +97,7 @@ class StockSalesReport extends HookConsumerWidget {
       double cogsTotal = 0.0;
 
       cogsList.forEach((e) {
-        cogsTotal += e.quantity ?? 0 * e.unitPrice! ?? 0;
+        cogsTotal += e.quantity * e.unitPrice;
       });
       productList.forEach((e) {
         // print("element from stockSales ====  ${e.name}");
