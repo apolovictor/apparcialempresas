@@ -82,7 +82,7 @@ class ProductsList extends HookConsumerWidget {
               childDelegate: ListWheelChildLoopingListDelegate(
                 children: filteredProducts.when(
                   data: (List<Product> data) {
-                    print("data ==== ${data.length}");
+                    // print("data ==== ${data.length}");
 
                     return
                         //  filter['category'].isNotEmpty

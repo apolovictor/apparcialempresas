@@ -26,7 +26,6 @@ class ProductsReport extends HookConsumerWidget {
       for (var i = 0; i < productList.length; i++) GlobalKey()
     ];
 
-    print("productList.length === ${productList.length}");
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: LayoutBuilder(builder: (context, constraints) {

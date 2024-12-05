@@ -39,7 +39,7 @@ class CategoriesList extends HookConsumerWidget {
             to: const Duration(milliseconds: 600),
             tag: 'avatarSize')
         .addAnimatable(
-            animatable: Tween(begin: 0.0, end: 40.0),
+            animatable: Tween(begin: 0.0, end: 35.0),
             curve: Curves.easeOut,
             from: const Duration(milliseconds: 500),
             to: const Duration(milliseconds: 750),

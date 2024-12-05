@@ -26,10 +26,8 @@ class RecentOrdersState extends ConsumerState<RecentOrders> {
   Widget build(BuildContext context) {
     var cacheProducts = ProductInServices().getAllProduct();
 
-    double widthValue = 0.0;
+    // double widthValue = 0.0;
 
-    print(
-        "cacheProducts === ${cacheProducts.map((ProductInServiceModel e) => e.serviceStartedIn)}");
     return SingleChildScrollView(
       child: Column(
         children: [

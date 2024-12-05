@@ -254,7 +254,7 @@ class ProductCard extends HookConsumerWidget {
                                               ? 0.8
                                               : height > 900
                                                   ? 1.0
-                                                  : 0.9,
+                                                  : 0.8,
                         )
                       : Alignment(
                           0.0,
@@ -274,7 +274,7 @@ class ProductCard extends HookConsumerWidget {
                                                       ? 0.5
                                                       : height > 800
                                                           ? 0.7
-                                                          : 0.7),
+                                                          : 0.9),
                   duration: const Duration(milliseconds: 375),
                   child: Container(
                     height: 50.0,

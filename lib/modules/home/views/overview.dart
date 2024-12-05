@@ -24,7 +24,7 @@ class Overview extends HookConsumerWidget {
                     style: TextStyle(
                         color: Colors.grey,
                         fontWeight: FontWeight.bold,
-                        fontSize: 20),
+                        fontSize: 18),
                   ),
                 ],
               ),
@@ -52,148 +52,199 @@ class CategoriesScroller extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Container(
-        width: width,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Expanded(
-              child: Container(
-                width: 150,
-                // margin: const EdgeInsets.only(right: 20),
-                height: double.infinity,
-                decoration: BoxDecoration(
-                    color: Colors.orange.shade400,
-                    borderRadius:
-                        const BorderRadius.all(Radius.circular(20.0))),
-                child: const Padding(
-                  padding: EdgeInsets.all(12.0),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          "Total\nVendas",
-                          style: TextStyle(
-                              fontSize: 25,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          "R\$ 2.500,00",
-                          style: TextStyle(fontSize: 16, color: Colors.white),
-                        ),
-                      ],
+    return Padding(
+      padding: const EdgeInsets.only(right: 10.0),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Container(
+          width: width - 10 + (width / 4),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Expanded(
+                child: Container(
+                  width: double.infinity,
+                  // margin: const EdgeInsets.only(right: 20),
+                  height: double.infinity,
+                  decoration: BoxDecoration(
+                      color: Colors.greenAccent.shade400,
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(20.0))),
+                  child: const Padding(
+                    padding: EdgeInsets.all(12.0),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            "Vendas",
+                            style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            "R\$ 2.500,00",
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-            Expanded(
-              child: Container(
-                width: 150,
-                // margin: EdgeInsets.only(right: 20),
-                height: double.infinity,
-                decoration: BoxDecoration(
-                    color: Colors.blue.shade400,
-                    borderRadius: BorderRadius.all(Radius.circular(20.0))),
-                child: const Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          "Top\nProdutos",
-                          style: TextStyle(
-                              fontSize: 25,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Queijo Coalho - 45",
-                              style:
-                                  TextStyle(fontSize: 14, color: Colors.white),
-                            ),
-                            Text(
-                              "Heineken - 40",
-                              style:
-                                  TextStyle(fontSize: 14, color: Colors.white),
-                            ),
-                            Text(
-                              "Alcatra 37",
-                              style:
-                                  TextStyle(fontSize: 14, color: Colors.white),
-                            ),
-                          ],
-                        )
-                      ],
+              Expanded(
+                child: Container(
+                  width: double.infinity,
+                  // margin: const EdgeInsets.only(right: 20),
+                  height: double.infinity,
+                  decoration: BoxDecoration(
+                      color: Colors.orange.shade400,
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(20.0))),
+                  child: const Padding(
+                    padding: EdgeInsets.all(12.0),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            "Estoque",
+                            style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            "R\$ 2.500,00",
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-            Expanded(
-              child: Container(
-                width: 150,
-                margin: EdgeInsets.only(right: 20),
-                height: double.infinity,
-                decoration: BoxDecoration(
-                    color: Colors.lightBlueAccent.shade400,
-                    borderRadius: BorderRadius.all(Radius.circular(20.0))),
-                child: const Padding(
-                  padding: EdgeInsets.all(12.0),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          "Total por\nCategoria",
-                          style: TextStyle(
-                              fontSize: 25,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Bebidas\nR\$ 1.750,00",
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                            Text(
-                              "Espetos\nR\$ 750,00",
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ],
-                        )
-                      ],
+              Expanded(
+                child: Container(
+                  width: double.infinity,
+                  // margin: EdgeInsets.only(right: 20),
+                  height: double.infinity,
+                  decoration: BoxDecoration(
+                      color: Colors.blue.shade400,
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(20.0))),
+                  child: const Padding(
+                    padding: EdgeInsets.all(12.0),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            "Produtos",
+                            style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Queijo Coalho - 45",
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                              Text(
+                                "Heineken - 40",
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                              Text(
+                                "Alcatra 37",
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+              Expanded(
+                child: Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  decoration: BoxDecoration(
+                      color: Colors.lightBlueAccent.shade400,
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(20.0))),
+                  child: const Padding(
+                    padding: EdgeInsets.all(12.0),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            "Categorias",
+                            style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Bebidas\nR\$ 1.750,00",
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                              Text(
+                                "Espetos\nR\$ 750,00",
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

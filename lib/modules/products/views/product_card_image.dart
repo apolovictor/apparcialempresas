@@ -50,20 +50,6 @@ class ProductCardImage extends HookConsumerWidget {
         ? ref.watch(pictureProductListProvider)
         : ref.watch(pictureProductListAndroidProvider);
 
-    print("cachePictures ===== ${cachePictures.length}");
-    // print("product.logo ===== ${product.logo}");
-
-    if (kIsWeb) {
-      cachePictures.forEach((e) {
-        if (e.mapKey == product.logo) {
-          print(
-              '${product.name} e.mapKey: ${e.mapKey} ===== product.logo: ${product.logo}');
-        } else {
-          print('${product.name}: ${e.mapKey}');
-        }
-      });
-    }
-
     return kIsWeb
         ? cachePictures.any(<RemotePicture>(e) => e.mapKey == product.logo)
             ? ClipRRect(

@@ -23,7 +23,7 @@ class TablesDashboard extends HookConsumerWidget {
                     style: TextStyle(
                         color: Colors.grey,
                         fontWeight: FontWeight.bold,
-                        fontSize: 20),
+                        fontSize: 18),
                   ),
                 ],
               ),

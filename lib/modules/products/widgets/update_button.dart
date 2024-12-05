@@ -10,12 +10,10 @@ import '../controller/products_notifier.dart';
 class UpdateButton extends HookConsumerWidget {
   const UpdateButton({
     super.key,
-    required this.buttonName,
     required this.animation,
     required this.product,
   });
 
-  final String buttonName;
   final Animation<double> animation;
   final Product product;
 
@@ -31,7 +29,7 @@ class UpdateButton extends HookConsumerWidget {
               minimumSize: const Size.fromHeight(60)),
           // icon: const Icon(Icons.done_outline, color: Colors.white, size: 32),
           child: const Text(
-            'Enviar',
+            'Salvar',
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 20,

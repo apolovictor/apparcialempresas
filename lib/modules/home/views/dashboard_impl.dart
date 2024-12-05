@@ -20,9 +20,7 @@ class HomeDashboard extends HookConsumerWidget {
     List<Product>? products = ref.watch(productProvider).value;
     final categories = ref.watch(categoriesNotifier).value;
     if (categories != null) {
-      for (var i = 0; i < categories.length; i++) {
-        // print("categories[i].documentId === ${categories[i].documentId}");
-      }
+      for (var i = 0; i < categories.length; i++) {}
     }
     if (kIsWeb) {
       if (products != null) {
@@ -43,7 +41,6 @@ class HomeDashboard extends HookConsumerWidget {
       if (categories != null) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           for (var i = 0; i < categories.length; i++) {
-            print("categories[i].documentId === ${categories[i].documentId}");
             ref.read(pictureCategoryListProvider.notifier).add(
                 RemotePicture(
                   mapKey: categories[i].documentId,

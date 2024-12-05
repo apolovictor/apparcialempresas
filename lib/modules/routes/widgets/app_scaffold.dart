@@ -1,6 +1,4 @@
-import 'package:botecaria/modules/orders/controller/orders_notifier.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../orders/views/add_order.dart';
@@ -47,9 +45,9 @@ class AppScaffold extends HookConsumerWidget {
         ref.watch(filteredProductsProvider(products ?? []));
 
     int selected = ref.watch(selectedProductNotifier);
-    AnimationController _controller = useAnimationController(
-      duration: const Duration(milliseconds: 600),
-    );
+    // AnimationController _controller = useAnimationController(
+    //   duration: const Duration(milliseconds: 600),
+    // );
 
     // _controller.forward();
     // });
@@ -67,7 +65,7 @@ class AppScaffold extends HookConsumerWidget {
               permanentlyDisplay: false,
             )
           : null,
-      body: Container(
+      body: SizedBox(
         height: height,
         width: width,
         child: Stack(
@@ -117,7 +115,7 @@ class AppScaffold extends HookConsumerWidget {
               top: height * 0.1,
               left: 0,
               right: 0,
-              child: Container(
+              child: SizedBox(
                   height: height * 0.9,
                   width: width,
                   child: Padding(
@@ -157,7 +155,7 @@ class AppScaffold extends HookConsumerWidget {
                                     : const SizedBox();
                           },
                           error: (err, stack) => Text('Error: $err'),
-                          loading: () => CircularProgressIndicator(),
+                          loading: () => const CircularProgressIndicator(),
                         )
                       : const SizedBox();
                 },

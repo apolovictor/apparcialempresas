@@ -41,7 +41,7 @@ class DashboardProduct extends HookConsumerWidget {
               style: TextStyle(
                   color: Colors.grey,
                   fontWeight: FontWeight.bold,
-                  fontSize: 20),
+                  fontSize: 18),
             ),
           ],
         ),
@@ -54,7 +54,7 @@ class DashboardProduct extends HookConsumerWidget {
               height: height * 0.15,
               child: categoriesScroller),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 25),
         Expanded(child: ProductList(width: width)),
       ]);
     }));
@@ -72,7 +72,7 @@ class ProductList extends StatefulHookConsumerWidget {
 
 class _ProductListState extends ConsumerState<ProductList> {
   final scrollController = ScrollController();
-  final double itemSize = 120;
+  final double itemSize = 100.0;
   bool startAnimation = false;
 
   void onListenerController() {
@@ -186,7 +186,7 @@ class _ProductListState extends ConsumerState<ProductList> {
                                               horizontal: 20.0, vertical: 10),
                                           child: Row(
                                             mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
+                                                MainAxisAlignment.spaceAround,
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: <Widget>[
@@ -200,23 +200,20 @@ class _ProductListState extends ConsumerState<ProductList> {
                                                       _productDashboard[index]
                                                           .name,
                                                       style: const TextStyle(
-                                                          fontSize: 24,
+                                                          fontSize: 20,
                                                           fontWeight:
                                                               FontWeight.bold),
                                                     ),
                                                     Text(
                                                       "R\$ ${_productDashboard[index].price.price.toString()}",
                                                       style: const TextStyle(
-                                                          fontSize: 17,
+                                                          fontSize: 18,
                                                           color: Colors.grey),
-                                                    ),
-                                                    const SizedBox(
-                                                      height: 10,
                                                     ),
                                                     Text(
                                                       "Quantidade ${_productDashboard[index].quantity}",
                                                       style: const TextStyle(
-                                                          fontSize: 20,
+                                                          fontSize: 16,
                                                           color: Colors.black,
                                                           fontWeight:
                                                               FontWeight.bold),

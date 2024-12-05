@@ -20,19 +20,15 @@ class HomeProducts extends HookConsumerWidget {
     List<Product>? products = ref.watch(productsStreamProvider).value;
     final categories = ref.watch(categoriesNotifier).value;
     if (categories != null) {
-      for (var i = 0; i < categories.length; i++) {
-        // print("categories[i].documentId === ${categories[i].documentId}");
-      }
+      for (var i = 0; i < categories.length; i++) {}
     }
     // running on the web!
 
     if (kIsWeb) {
       if (products != null) {
-        print("products.length ==== ${products?.length}");
         WidgetsBinding.instance.addPostFrameCallback((_) async {
           for (var index = 0; index < products.length; index++) {
             if (products[index].logo != null) {
-              print('products[index].logo!  === ${products[index].logo!}');
               await ref.read(pictureProductListProvider.notifier).add(
                     RemotePicture(
                       mapKey: products[index].logo!,
@@ -47,7 +43,6 @@ class HomeProducts extends HookConsumerWidget {
       if (categories != null) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           for (var i = 0; i < categories.length; i++) {
-            // print("categories[i].documentId === ${categories[i].documentId}");
             ref.read(pictureCategoryListProvider.notifier).add(
                 RemotePicture(
                   mapKey: categories[i].documentId,
@@ -147,17 +142,17 @@ class HomeProducts extends HookConsumerWidget {
                               fontWeight: FontWeight.w900,
                               color: Colors.black54),
                           headlineSmall: const TextStyle(
-                              fontSize: 22,
+                              fontSize: 20,
                               fontFamily: 'HelveticaNeue',
                               fontWeight: FontWeight.w100,
                               color: Colors.black87),
                           headlineMedium: const TextStyle(
-                              fontSize: 26,
+                              fontSize: 24,
                               fontFamily: 'HelveticaNeue',
                               fontWeight: FontWeight.w700,
                               color: Colors.black87),
                           headlineLarge: const TextStyle(
-                              fontSize: 32,
+                              fontSize: 30,
                               fontFamily: 'HelveticaNeue',
                               fontWeight: FontWeight.w700,
                               color: Colors.black87),

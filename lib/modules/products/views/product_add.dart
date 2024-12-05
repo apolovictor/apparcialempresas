@@ -8,11 +8,9 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../routes/controller/routes_controller.dart';
 import '../controller/product_register.dart';
 import '../controller/products_notifier.dart';
 import '../services/services.dart';
-import '../widgets/quick_fields.dart';
 import '../widgets/register_button.dart';
 import '../widgets/register_fields.dart';
 import '../widgets/register_soft_control.dart';
@@ -79,11 +77,17 @@ class ProductAdd extends HookConsumerWidget {
             to: const Duration(milliseconds: 750),
             tag: 'iconSize')
         .addAnimatable(
-            animatable: Tween<double>(begin: 0.0, end: 12.0),
+            animatable: Tween<double>(begin: 0.0, end: 20.0),
             curve: Curves.easeOut,
             from: const Duration(milliseconds: 500),
             to: const Duration(milliseconds: 750),
             tag: 'fontSize')
+        .addAnimatable(
+            animatable: Tween<double>(begin: 0.0, end: 1.0),
+            curve: Curves.easeOut,
+            from: const Duration(milliseconds: 0),
+            to: const Duration(milliseconds: 300),
+            tag: 'switch')
         .animate(registerController);
 
     final Animation<double> addProductAnimation = Tween(begin: .0, end: 1.0)
@@ -111,11 +115,10 @@ class ProductAdd extends HookConsumerWidget {
     }
 
     return Stack(
-      clipBehavior: Clip.hardEdge,
       children: [
         AnimatedContainer(
-          duration: const Duration(milliseconds: 375),
-          width: isActiveProductRegister ? width * 0.3 : 0,
+          duration: const Duration(milliseconds: 50),
+          width: isActiveProductRegister ? (width * 0.3) : 0,
           height: isActiveProductRegister ? height : 0,
           decoration: const BoxDecoration(
             borderRadius: BorderRadius.only(
@@ -160,6 +163,7 @@ class ProductAdd extends HookConsumerWidget {
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
                                 Align(
                                   alignment: Alignment.topLeft,
@@ -171,8 +175,7 @@ class ProductAdd extends HookConsumerWidget {
                                           color: Colors.white,
                                         ),
                                         onPressed: () {
-                                          // registerController
-                                          //     .reverse();
+                                          registerController.reverse();
 
                                           ref
                                               .read(isProductsOpenedProvider
@@ -187,6 +190,7 @@ class ProductAdd extends HookConsumerWidget {
                                               color: Colors.white,
                                               fontSize: 20,
                                               fontWeight: FontWeight.w700),
+                                          overflow: TextOverflow.visible,
                                         ),
                                       ),
                                     ],
@@ -219,7 +223,7 @@ class ProductAdd extends HookConsumerWidget {
                                             blurRadius: 2)
                                       ]),
                                   child: MaterialButton(
-                                    shape: CircleBorder(),
+                                    shape: const CircleBorder(),
                                     onPressed: () async {
                                       await getGalleryImage(
                                         200,
@@ -310,35 +314,10 @@ class ProductAdd extends HookConsumerWidget {
                                                                                       padding: 15,
                                                                                       // color: ,
                                                                                     ),
-                                                                                    //  CircleAvatar(
-                                                                                    //     radius: sequenceAnimation['avatarSize'].value,
-                                                                                    //     backgroundColor: Color(int.parse('${categories[i].color != null ? categories[i].color : 0xFFF4F4F6}')),
-                                                                                    //     child: FutureBuilder<String>(
-                                                                                    //         future: downloadUrl(categories[i].icon),
-                                                                                    //         builder: (context, snapshot) {
-                                                                                    //           if (snapshot.connectionState == ConnectionState.waiting) {
-                                                                                    //             return const Center(
-                                                                                    //               child: CircularProgressIndicator(),
-                                                                                    //             );
-                                                                                    //           } else {
-                                                                                    //             if (snapshot.data != null) {
-                                                                                    //               return SvgPicture.network(
-                                                                                    //                 snapshot.data.toString(),
-                                                                                    //                 color: Colors.black,
-                                                                                    //                 height: sequenceAnimation['iconSize'].value,
-                                                                                    //               );
-                                                                                    //             } else {
-                                                                                    //               return const SizedBox();
-                                                                                    //             }
-                                                                                    //           }
-                                                                                    //         })),
                                                                                   ),
-                                                                                  const SizedBox(height: 15),
                                                                                   Text(
                                                                                     categories[i].name.toUpperCase(),
-                                                                                    style: Theme.of(context).textTheme.bodyLarge!.apply(
-                                                                                          color: Colors.white,
-                                                                                        ),
+                                                                                    style: Theme.of(context).textTheme.bodyLarge!.apply(color: Colors.white, fontSizeFactor: 0.75),
                                                                                   ),
                                                                                 ],
                                                                               ),
@@ -350,18 +329,32 @@ class ProductAdd extends HookConsumerWidget {
                                         ),
                                       )
                                     : const SizedBox(),
-                                const SizedBox(height: 40),
-                                registerFieldWidget(
-                                    productNameController, "Nome", context),
-                                const SizedBox(height: 40),
-                                registerFieldWidget(
-                                    productPriceController, "Preço", context),
-                                const SizedBox(height: 40),
-                                registerFieldWidget(productQuantityController,
-                                    "Quantidade (Estoque)", context),
-                                const SizedBox(height: 40),
-                                registerFieldWidget(productUnitPriceController,
-                                    "Preço Unitário", context),
+                                SizedBox(
+                                  height: height * 0.35,
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      registerFieldWidget(productNameController,
+                                          "Nome", context, 55),
+                                      registerFieldWidget(
+                                          productPriceController,
+                                          "Preço",
+                                          context,
+                                          55),
+                                      registerFieldWidget(
+                                          productQuantityController,
+                                          "Quantidade (Estoque)",
+                                          context,
+                                          55),
+                                      registerFieldWidget(
+                                          productUnitPriceController,
+                                          "Preço Unitário",
+                                          context,
+                                          55),
+                                    ],
+                                  ),
+                                )
                               ],
                             ),
                           ),
@@ -375,9 +368,9 @@ class ProductAdd extends HookConsumerWidget {
           ),
         ),
         Positioned(
-          bottom: 0,
+          bottom: -20,
           left: 0,
-          child: Container(
+          child: SizedBox(
             height: 80,
             width: isActiveProductRegister ? width * 0.3 : 0,
             child: RegisterButton(

@@ -315,6 +315,8 @@ class ProducQuickEdit extends HookConsumerWidget {
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 10.0),
                                   child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
                                     children: [
                                       ScaleTransition(
                                           scale: animation,
@@ -336,9 +338,6 @@ class ProducQuickEdit extends HookConsumerWidget {
                                                 const Text(''),
                                             loading: () => const Text(''),
                                           )),
-                                      const SizedBox(
-                                        height: 20,
-                                      ),
                                       ScaleTransition(
                                           scale: animation,
                                           child: filteredProducts.when(
@@ -362,9 +361,6 @@ class ProducQuickEdit extends HookConsumerWidget {
                                                 const Text(''),
                                             loading: () => const Text(''),
                                           )),
-                                      const SizedBox(
-                                        height: 20,
-                                      ),
                                       ScaleTransition(
                                           scale: animation,
                                           child: filteredProducts.when(
@@ -388,9 +384,6 @@ class ProducQuickEdit extends HookConsumerWidget {
                                                 const Text(''),
                                             loading: () => const Text(''),
                                           )),
-                                      const SizedBox(
-                                        height: 20,
-                                      ),
                                       ScaleTransition(
                                           scale: animation,
                                           child: filteredProducts.when(
@@ -413,9 +406,6 @@ class ProducQuickEdit extends HookConsumerWidget {
                                                 const Text(''),
                                             loading: () => const Text(''),
                                           )),
-                                      const SizedBox(
-                                        height: 20,
-                                      ),
                                       ScaleTransition(
                                           scale: animation,
                                           child: filteredProducts.when(
@@ -475,7 +465,6 @@ class ProducQuickEdit extends HookConsumerWidget {
                                   child: filteredProducts.when(
                                     data: (List<Product> data) {
                                       return UpdateButton(
-                                          buttonName: "Salvar",
                                           animation: animation,
                                           product: data[productSelected]);
                                     },

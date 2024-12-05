@@ -1,10 +1,10 @@
+import 'package:botecaria/modules/products/views/categories_list.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../controller/product_list.notifier.dart';
 import '../controller/products_notifier.dart';
 import '../model/products_model.dart';
-import 'categories_list.dart';
 import 'product_list.dart';
 
 class ProductScreen extends HookConsumerWidget {
@@ -59,27 +59,21 @@ class ProductScreen extends HookConsumerWidget {
                         //     : const SizedBox(),
                         Expanded(
                           flex: !displayMobileLayout && height > 805
-                              ? 5
+                              ? 4
                               : height < 806 && !displayMobileLayout
-                                  ? 6
+                                  ? 5
                                   : 2,
                           child: SizedBox(
                             width: double.infinity,
                             child: Column(
                               children: [
                                 Row(children: [
-                                  Text(
-                                    ' Categorias ',
-                                    style: height < 806
-                                        ? Theme.of(context)
-                                            .textTheme
-                                            .headlineMedium
-                                        : Theme.of(context)
-                                            .textTheme
-                                            .headlineLarge,
-                                  ),
+                                  Text(' Categorias ',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineMedium),
                                 ]),
-                                const SizedBox(height: 20),
+                                const SizedBox(height: 5),
                                 const Expanded(child: CategoriesList()),
                               ],
                             ),
@@ -88,89 +82,85 @@ class ProductScreen extends HookConsumerWidget {
                         Expanded(
                           flex: !displayMobileLayout ? 12 : 4,
                           child: SizedBox(
-                              width: double.infinity,
-                              child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                            width: double.infinity,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Row(
-                                          children: [
-                                            Text(
-                                              ' Meus Produtos',
-                                              style: height < 800
-                                                  ? Theme.of(context)
-                                                      .textTheme
-                                                      .headlineMedium
-                                                  : Theme.of(context)
-                                                      .textTheme
-                                                      .headlineLarge,
-                                            ),
-                                            filteredProducts.when(
-                                              data: (List<Product> data) {
-                                                return Text(
-                                                    data.length.toString());
-                                                //  filter['category'].isNotEmpty
-                                              },
-                                              error: (err, stack) =>
-                                                  Text('Error: $err'),
-                                              loading: () =>
-                                                  const CircularProgressIndicator(),
-                                            ),
-                                          ],
+                                        Text(' Meus Produtos',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headlineMedium),
+                                        filteredProducts.when(
+                                          data: (List<Product> data) {
+                                            return Text(
+                                                ' (${data.length.toString()})',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headlineSmall);
+                                            //  filter['category'].isNotEmpty
+                                          },
+                                          error: (err, stack) =>
+                                              Text('Error: $err'),
+                                          loading: () =>
+                                              const CircularProgressIndicator(),
                                         ),
-                                        Row(
-                                          children: [
-                                            FilterChip(
-                                              onSelected: (value) {
-                                                if (isActiveEdit == true) {
-                                                  ref
-                                                      .read(isActiveEditNotifier
-                                                          .notifier)
-                                                      .setIsActiveEdit(false);
-                                                  Future.delayed(
-                                                      const Duration(
-                                                          milliseconds: 400),
-                                                      () {
-                                                    ref
-                                                        .read(
-                                                            isProductsOpenedProvider
-                                                                .notifier)
-                                                        .fetch(true);
-                                                  });
-                                                } else {
-                                                  ref
-                                                      .read(
-                                                          isProductsOpenedProvider
-                                                              .notifier)
-                                                      .fetch(true);
-                                                }
-                                              },
-                                              side: const BorderSide(
-                                                  color: Colors.transparent),
-                                              backgroundColor: Colors.grey[200],
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                              label: SizedBox(
-                                                  child: Text(
-                                                      "Adicionar Produto",
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .bodyLarge!
-                                                          .apply(
-                                                              color: Colors
-                                                                  .black87))),
-                                            )
-                                          ],
-                                        )
                                       ],
                                     ),
-                                    const ProductsList(),
-                                  ])),
+                                    Row(
+                                      children: [
+                                        FilterChip(
+                                          onSelected: (value) {
+                                            if (isActiveEdit == true) {
+                                              ref
+                                                  .read(isActiveEditNotifier
+                                                      .notifier)
+                                                  .setIsActiveEdit(false);
+                                              Future.delayed(
+                                                  const Duration(
+                                                      milliseconds: 400), () {
+                                                ref
+                                                    .read(
+                                                        isProductsOpenedProvider
+                                                            .notifier)
+                                                    .fetch(true);
+                                              });
+                                            } else {
+                                              ref
+                                                  .read(isProductsOpenedProvider
+                                                      .notifier)
+                                                  .fetch(true);
+                                            }
+                                          },
+                                          side: const BorderSide(
+                                              color: Colors.transparent),
+                                          backgroundColor: Colors.grey[200],
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                          label: SizedBox(
+                                              child: Text("Adicionar Produto",
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyLarge!
+                                                      .apply(
+                                                          color:
+                                                              Colors.black87))),
+                                        )
+                                      ],
+                                    )
+                                  ],
+                                ),
+                                const ProductsList(),
+                              ],
+                            ),
+                          ),
                         )
                       ]),
                 ),

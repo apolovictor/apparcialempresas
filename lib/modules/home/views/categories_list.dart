@@ -87,7 +87,9 @@ class CategoriesScroller extends HookConsumerWidget {
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodyLarge!
-                                            .apply(color: Colors.grey[500])),
+                                            .apply(
+                                                color: Colors.grey[500],
+                                                fontSizeFactor: 0.75)),
                                   ],
                                 )
                               : const SizedBox(),
@@ -154,8 +156,8 @@ class CategoriesScroller extends HookConsumerWidget {
                                                     .textTheme
                                                     .bodyLarge!
                                                     .apply(
-                                                        color:
-                                                            Colors.grey[500]),
+                                                        color: Colors.grey[500],
+                                                        fontSizeFactor: 0.75),
                                               ),
                                             ],
                                           ),
